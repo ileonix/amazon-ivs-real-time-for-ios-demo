@@ -16,10 +16,17 @@ protocol ServerDelegate: AnyObject {
 class ServerModel: ObservableObject {
     var delegate: ServerDelegate?
     var decoder = JSONDecoder()
-
+    
+    enum HTTPMethod: String {
+        case GET
+        case POST
+        case PUT
+        case DELETE
+    }
+    
     // Verify authentication code
     func verify(silent: Bool, _ onComplete: @escaping (Bool) -> Void) {
-        send(silent: silent, "GET", endpoint: "verify", body: nil) { _, _, error in
+        send(silent: silent, .GET, endpoint: "verify", body: nil) { _, _, error in
             if let error = error {
                 print("ℹ ❌ Could not verify customer code: \(error)")
                 self.delegate?.didEmitError(error: "Invalid code")
@@ -32,7 +39,7 @@ class ServerModel: ObservableObject {
     }
 
     func getStages(onlyActive: Bool = true, _ onComplete: @escaping (Bool, [StageDetails]) -> Void) {
-        send("GET",
+        send(.GET,
              endpoint: "",
              body: nil,
              queryItems: onlyActive ? [URLQueryItem(name: "status", value: "active")] : nil,
@@ -86,7 +93,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("POST", endpoint: "create", body: body, onComplete: { [weak self] _, data, errorMessage in
+        send(.POST, endpoint: "create", body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -124,7 +131,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("POST", endpoint: "chatToken/create", body: body, onComplete: { [weak self] _, data, errorMessage in
+        send(.POST, endpoint: "chatToken/create", body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -162,7 +169,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("POST", endpoint: "join", body: body, onComplete: { [weak self] _, data, errorMessage in
+        send(.POST, endpoint: "join", body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -196,7 +203,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("DELETE", endpoint: "", body: body, onComplete: { success, _, errorMessage in
+        send(.DELETE, endpoint: "", body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -215,7 +222,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("PUT", endpoint: "update/mode", body: body, onComplete: { success, _, errorMessage in
+        send(.PUT, endpoint: "update/mode", body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -234,7 +241,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("PUT", endpoint: "update/seats", body: body, onComplete: { success, _, errorMessage in
+        send(.PUT, endpoint: "update/seats", body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -252,7 +259,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("POST", endpoint: "castVote", body: body, onComplete: { success, _, errorMessage in
+        send(.POST, endpoint: "castVote", body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -271,7 +278,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send("PUT", endpoint: "disconnect", body: body, onComplete: { success, _, errorMessage in
+        send(.PUT, endpoint: "disconnect", body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -290,7 +297,7 @@ class ServerModel: ObservableObject {
         }
     }
 
-    private func send(silent: Bool = false, _ method: String, endpoint: String, body: String?, queryItems: [URLQueryItem]? = nil, onComplete: @escaping (Bool, Data?, String?) -> Void) {
+    private func send(silent: Bool = false, _ method: HTTPMethod, endpoint: String, body: String?, queryItems: [URLQueryItem]? = nil, onComplete: @escaping (Bool, Data?, String?) -> Void) {
         guard let customerCode = UserDefaults.standard.string(forKey: Constants.kCustomerCode) else {
             if silent { return }
             delegate?.didEmitError(error: "Customer code not set")
@@ -311,7 +318,7 @@ class ServerModel: ObservableObject {
         let session = URLSession(configuration: .default)
         var request = URLRequest(url: url)
         request.timeoutInterval = 30
-        request.httpMethod = method
+        request.httpMethod = method.rawValue
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue(UserDefaults.standard.string(forKey: Constants.kApiKey) ?? "", forHTTPHeaderField: "x-api-key")
 

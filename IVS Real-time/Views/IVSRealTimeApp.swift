@@ -26,6 +26,14 @@ struct IVSRealTimeApp: App {
                             .transition(!appModel.isSetupCompleted ? .opacity : .move(edge: .trailing))
                             .preferredColorScheme(.light)
                     }
+                    
+                    NavigationLink(
+                        destination: CustomerShopLanding(stagesModel: appModel.stagesModel,
+                                                         stageModel: appModel.stageModel)
+                            .environmentObject(appModel)
+                            .preferredColorScheme(.dark),
+                        isActive: $appModel.isReadyToGoCustomerLanding
+                    ){ EmptyView() }
 
                     NavigationLink(
                         destination: FeedsView(stagesModel: appModel.stagesModel,

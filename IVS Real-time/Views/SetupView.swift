@@ -51,10 +51,10 @@ struct SetupView: View {
 
                 VStack(alignment: .leading) {
                     HStack(spacing: 4) {
-                        Text("IVS")
+                        Text("BBTV")//("IVS")
                             .font(Constants.fInterBlack36)
                             .foregroundColor(.black)
-                        Text("Real-time")
+                        Text("Shopping")//("Real-time")
                             .foregroundColor(Color("Orange"))
                             .font(Constants.fInterBlack36)
                     }
@@ -64,50 +64,56 @@ struct SetupView: View {
                 .frame(maxWidth: 600)
 
                 VStack(spacing: 12) {
-                    Button {
-                        withAnimation {
-                            isStageSelectionPresent.toggle()
+                    
+                    if appModel.userRole == .merchant {
+                        Button {
+                            withAnimation {
+                                isStageSelectionPresent.toggle()
+                            }
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text("")
+                                    .frame(maxWidth: .infinity)
+                                Text("สร้างห้องไลฟ์แชทขายของ") //Create new stage
+                                    .foregroundColor(.black)
+                                    .font(Constants.fInterExtraBold22)
+                                    .padding(.top, 50)
+                                    .padding(.bottom, 1)
+                                    .frame(alignment: .leading)
+                            }
+                            .padding(.vertical, 20)
+                            .padding(.horizontal, 30)
+                            .background(
+                                Color("Orange")
+                            )
+                            .cornerRadius(20)
                         }
-                    } label: {
-                        VStack(alignment: .leading) {
-                            Text("")
-                                .frame(maxWidth: .infinity)
-                            Text("Create new stage")
-                                .foregroundColor(.black)
-                                .font(Constants.fInterExtraBold22)
-                                .padding(.top, 50)
-                                .padding(.bottom, 1)
-                                .frame(alignment: .leading)
-                        }
-                        .padding(.vertical, 20)
-                        .padding(.horizontal, 30)
-                        .background(
-                            Color("Orange")
-                        )
-                        .cornerRadius(20)
                     }
-
-                    Button {
-                        withAnimation {
-                            appModel.isSetupCompleted.toggle()
+                    
+                    if appModel.userRole == .customer {
+                        Button {
+                            withAnimation {
+                                //appModel.isSetupCompleted.toggle()
+                                appModel.isReadyToGoCustomerLanding.toggle()
+                            }
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text("")
+                                    .frame(maxWidth: .infinity)
+                                Text("เข้าห้องไลฟ์แชทขายของ") //Join stage (feed view)
+                                    .font(Constants.fInterExtraBold22)
+                                    .foregroundColor(.black)
+                                    .padding(.top, 50)
+                            }
+                            .padding(.vertical, 20)
+                            .padding(.horizontal, 30)
+                            .background(
+                                LinearGradient(colors: [Color("Gradient1"), Color("Gradient2")],
+                                               startPoint: .top,
+                                               endPoint: .bottom)
+                            )
+                            .cornerRadius(20)
                         }
-                    } label: {
-                        VStack(alignment: .leading) {
-                            Text("")
-                                .frame(maxWidth: .infinity)
-                            Text("Join stage (feed view)")
-                                .font(Constants.fInterExtraBold22)
-                                .foregroundColor(.black)
-                                .padding(.top, 50)
-                        }
-                        .padding(.vertical, 20)
-                        .padding(.horizontal, 30)
-                        .background(
-                            LinearGradient(colors: [Color("Gradient1"), Color("Gradient2")],
-                                           startPoint: .top,
-                                           endPoint: .bottom)
-                        )
-                        .cornerRadius(20)
                     }
                 }
                 .padding(.bottom, 16)

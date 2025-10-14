@@ -10,7 +10,9 @@ import SwiftUI
 struct WelcomeView: View {
     @EnvironmentObject var appModel: AppModel
     @State var isCodeInputPresent = false
+    @State var isRoleSelectionPresent = false
     @State var customerCodeInput: String = ""
+    @State var selectedRole: UserRole = .customer
 
     private func setCustomerCodeAndApiKey() {
         print("ℹ scanned qr '\(customerCodeInput)'")
@@ -42,14 +44,15 @@ struct WelcomeView: View {
                 Text("Welcome to")
                     .font(Constants.fInterBlack42)
                     .foregroundColor(.black)
-                Text("IVS Real-time")
+                Text("BBTV Live Shopping") //IVS Real-time
                     .font(Constants.fInterBlack42)
                     .foregroundColor(.black)
                     .padding(.bottom, 60)
 
                 Button(action: {
                     withAnimation {
-                        isCodeInputPresent = true
+                        //isCodeInputPresent = true
+                        isRoleSelectionPresent = true
                     }
                 }) {
                     Text("Get started")
@@ -60,7 +63,25 @@ struct WelcomeView: View {
                 .padding(.bottom, 16)
             }
             .padding(.horizontal, 16)
-
+            
+            if isRoleSelectionPresent {
+                RoleSelectionView(
+                    showBottomSheet: $isRoleSelectionPresent,
+                    selectedRole: $selectedRole,
+                    submitAction: {
+                        //d1lde5orfs6vr3-ds7o7a53HfbkM6UYiMfx
+                        let customerCode = "d1lde5orfs6vr3"
+                        let apiKey = "ds7o7a53HfbkM6UYiMfx"
+                        UserDefaults.standard.set(customerCode.lowercased(), forKey: Constants.kCustomerCode)
+                        UserDefaults.standard.set(apiKey, forKey: Constants.kApiKey)
+                        appModel.userRole = selectedRole
+                        UserDefaults.standard.set(selectedRole.rawValue, forKey: Constants.kUserRole)
+                        appModel.verify { _ in }
+                    }
+                )
+            }
+            
+            /*
             if isCodeInputPresent {
                 CustomerCodeInputView(
                     isPresent: $isCodeInputPresent,
@@ -82,11 +103,14 @@ struct WelcomeView: View {
                     }
                 }
             }
+             */
         }
         .onAppear {
             if let customerCode = UserDefaults.standard.string(forKey: Constants.kCustomerCode),
-               let apiKey = UserDefaults.standard.string(forKey: Constants.kApiKey) {
+               let apiKey = UserDefaults.standard.string(forKey: Constants.kApiKey),
+               let userRole = UserDefaults.standard.string(forKey: Constants.kUserRole){
                 customerCodeInput = customerCode + "-" + apiKey
+                appModel.userRole = .init(rawValue: userRole)
             }
 
             withAnimation(.easeOut.delay(0.3)) {

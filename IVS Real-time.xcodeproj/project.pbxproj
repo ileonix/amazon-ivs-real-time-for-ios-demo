@@ -65,6 +65,10 @@
 		4BFB13D529D30F5500B9AB5E /* fruits.json in Resources */ = {isa = PBXBuildFile; fileRef = 4BFB13D429D30F5500B9AB5E /* fruits.json */; };
 		4BFB13D729D3100E00B9AB5E /* UsernameProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFB13D629D3100E00B9AB5E /* UsernameProvider.swift */; };
 		8099BA0DF1C1F945EDA27DA2 /* libPods-IVS Real-time.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B68EA93899856DE756F2E31D /* libPods-IVS Real-time.a */; };
+		EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */; };
+		EC551E452E98C891004DBBC0 /* CustomerShopLanding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */; };
+		EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */; };
+		EC551E4D2E9923B5004DBBC0 /* LocalPreviewCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +132,9 @@
 		4BFB13D629D3100E00B9AB5E /* UsernameProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameProvider.swift; sourceTree = "<group>"; };
 		4F84395AA4C69D55CC38D390 /* Pods-IVS Real-time.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.debug.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.debug.xcconfig"; sourceTree = "<group>"; };
 		B68EA93899856DE756F2E31D /* libPods-IVS Real-time.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IVS Real-time.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelection.swift; sourceTree = "<group>"; };
+		EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerShopLanding.swift; sourceTree = "<group>"; };
+		EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPreviewCache.swift; sourceTree = "<group>"; };
 		EDB6AD6B4EE3CAD44C979997 /* Pods-IVS Real-time.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.release.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,6 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */,
 				4B865C992A15FE0300D7A1DB /* CodeScanner in Frameworks */,
 				8099BA0DF1C1F945EDA27DA2 /* libPods-IVS Real-time.a in Frameworks */,
 			);
@@ -223,6 +231,9 @@
 		4BCC450029D2BD33003F371E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EC551E432E98C86A004DBBC0 /* Merchant */,
+				EC551E422E98C860004DBBC0 /* Customer */,
+				EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */,
 				4BB7FD3429D2BB9400E2894D /* IVSRealTimeApp.swift */,
 				4BCC450529D2BFEC003F371E /* WelcomeView.swift */,
 				4BCC450729D2C45E003F371E /* SetupView.swift */,
@@ -286,6 +297,7 @@
 		4BCC450C29D2C776003F371E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */,
 				4B92D07C29E8240700DD440D /* DeviceShake.swift */,
 				4BCC450D29D2C787003F371E /* Modifiers.swift */,
 				4B92D07A29E8174700DD440D /* MultiTapView.swift */,
@@ -305,6 +317,21 @@
 				EDB6AD6B4EE3CAD44C979997 /* Pods-IVS Real-time.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		EC551E422E98C860004DBBC0 /* Customer */ = {
+			isa = PBXGroup;
+			children = (
+				EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */,
+			);
+			path = Customer;
+			sourceTree = "<group>";
+		};
+		EC551E432E98C86A004DBBC0 /* Merchant */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Merchant;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,6 +354,7 @@
 			name = "IVS Real-time";
 			packageProductDependencies = (
 				4B865C982A15FE0300D7A1DB /* CodeScanner */,
+				EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */,
 			);
 			productName = "IVS Real-time";
 			productReference = 4BB7FD3129D2BB9400E2894D /* IVS Real-time.app */;
@@ -358,6 +386,7 @@
 			mainGroup = 4BB7FD2829D2BB9400E2894D;
 			packageReferences = (
 				4B865C972A15FE0300D7A1DB /* XCRemoteSwiftPackageReference "CodeScanner" */,
+				EC551E492E98EC84004DBBC0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			productRefGroup = 4BB7FD3229D2BB9400E2894D /* Products */;
 			projectDirPath = "";
@@ -397,9 +426,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -442,6 +475,7 @@
 				4BB7961629D6FE80005A4521 /* StageModel+Extensions.swift in Sources */,
 				4B10635929D47F6D00242A05 /* ChatTokenRequest.swift in Sources */,
 				4B92D07B29E8174700DD440D /* MultiTapView.swift in Sources */,
+				EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */,
 				4BB7960C29D6EE7A005A4521 /* AvatarView.swift in Sources */,
 				4BB7961229D6FB3B005A4521 /* StageParticipantView.swift in Sources */,
 				4B10635D29D47FD800242A05 /* User.swift in Sources */,
@@ -477,8 +511,10 @@
 				4B10635B29D47F9D00242A05 /* ServerResponses.swift in Sources */,
 				4B10635529D47F1B00242A05 /* ChatMessagesView.swift in Sources */,
 				4BCC450829D2C45E003F371E /* SetupView.swift in Sources */,
+				EC551E4D2E9923B5004DBBC0 /* LocalPreviewCache.swift in Sources */,
 				4B32DFF429F7FFB900EAA130 /* JitterView.swift in Sources */,
 				4BCC450E29D2C787003F371E /* Modifiers.swift in Sources */,
+				EC551E452E98C891004DBBC0 /* CustomerShopLanding.swift in Sources */,
 				4B1DA9C229D5BCBB00DC7D42 /* LoadingView.swift in Sources */,
 				4BCC450629D2BFEC003F371E /* WelcomeView.swift in Sources */,
 			);
@@ -610,10 +646,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = JH78EL5532;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "IVS-Real-time-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "IVS-Stage-Realtime-Live-Shop";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App needs access to camera";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "App needs access to microphone";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -627,7 +664,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.ivs.stagesrealtime;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanonp.amazon.ivs.stagesrealtime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -644,10 +681,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = JH78EL5532;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "IVS-Real-time-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "IVS-Stage-Realtime-Live-Shop";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App needs access to camera";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "App needs access to microphone";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -661,7 +699,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.ivs.stagesrealtime;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanonp.amazon.ivs.stagesrealtime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -701,6 +739,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		EC551E492E98EC84004DBBC0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -708,6 +754,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B865C972A15FE0300D7A1DB /* XCRemoteSwiftPackageReference "CodeScanner" */;
 			productName = CodeScanner;
+		};
+		EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EC551E492E98EC84004DBBC0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

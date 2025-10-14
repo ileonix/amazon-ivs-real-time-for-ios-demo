@@ -35,4 +35,5 @@ struct Constants {
     static let kMaxBitrate = "k_max_bitrate"
     static let kIsSimulcastOn = "k_is_simulcast_on"
     static let kIsStatsOn = "k_is_stats_on"
+    static let kUserRole = "k_user_role"
 }

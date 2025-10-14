@@ -36,6 +36,15 @@ struct StageParticipantView: View {
                                     }
                             }
                         }
+                        .onAppear {
+                            // Try to capture a thumbnail for this participant when the preview becomes visible
+                            if let pv = preview {
+                                // avoid capturing if already cached
+                                if LocalPreviewCache.shared.image(for: participant.hostId) == nil {
+                                    LocalPreviewCache.shared.capturePreview(from: pv, for: participant.hostId)
+                                }
+                            }
+                        }
                 }
             }
 

@@ -14,10 +14,19 @@ class AppModel: ObservableObject {
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
     @Published var user: User
+    var userRole: UserRole? {
+        get {
+            user.userRole
+        }
+        set {
+            user.userRole = newValue
+        }
+    }
 
     @Published var isConnected: Bool = false
     @Published var wasConnected: Bool = false
     @Published var isSetupCompleted: Bool = false
+    @Published var isReadyToGoCustomerLanding: Bool = false
     @Published var isSimulcastOn: Bool = false {
         didSet {
             UserDefaults.standard.set(isSimulcastOn, forKey: Constants.kIsSimulcastOn)

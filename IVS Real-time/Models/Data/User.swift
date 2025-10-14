@@ -18,6 +18,7 @@ class User: ObservableObject {
     var participantId: String?
     var participant: IVSParticipantInfo?
     var seatIndex: Int?
+    var userRole: UserRole?
 
     var hostParticipantToken: HostParticipantToken?
     var isHost: Bool {
@@ -107,7 +108,7 @@ class User: ObservableObject {
         self.hostId = username
         self.isLocal = isLocal
         self.avatar = avatar
-
+        
         numberFormatter.numberStyle = .decimal
         numberFormatter.maximumFractionDigits = 2
         numberFormatter.decimalSeparator = "."

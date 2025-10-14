@@ -140,4 +140,20 @@ class StagesModel: ObservableObject {
 
         setActiveStage()
     }
+
+    /// Returns logical (deduplicated) stages for UI consumption. The internal
+    /// `stages` array may contain duplicate copies (when there are exactly 2
+    /// stages we append copies to support the scrolling animation). Use
+    /// `logicalStages` when you need the actual list of distinct stages.
+    var logicalStages: [Stage] {
+        var seenHostIds: Set<String> = []
+        var unique: [Stage] = []
+        for stage in stages {
+            if !seenHostIds.contains(stage.hostId) {
+                unique.append(stage)
+                seenHostIds.insert(stage.hostId)
+            }
+        }
+        return unique
+    }
 }
