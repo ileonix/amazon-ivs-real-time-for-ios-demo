@@ -18,6 +18,26 @@ struct ControlButtonsView: View {
             if !appModel.user.isHost, let avatar = appModel.hostAvatar {
                 AvatarView(avatar: avatar, withBorder: true)
             }
+            
+            ControlButton(icon: Image("plusOutline"),
+                          iconColor: .red,
+                          backColor: .red) {
+                print("CPK: Button pressed")
+                if appModel.isSetupCompleted, appModel.user.isOnStage {
+                    appModel.recordVideo(completion: { videoPath in
+                        appModel.captureImage(completion: { imagePath in
+                            print("CPK: videoPath \(videoPath)")
+                            print("CPK: imagePath \(imagePath)")
+                            if let videoPath = videoPath, let imagePath = imagePath {
+                                appModel.server.createS3UploadUrls(user: appModel.user, hostCaptureVideoPath: videoPath, hostCaptureImagePath: imagePath, onComplete: { urls in
+                                    print("CPK: appModel.stageModel.localUser.isOnStage \(appModel.stageModel.localUser.isOnStage)")
+                                    //print("CPK: urls \(urls?.videoKeyName)")
+                                })
+                            }
+                        })
+                    })
+                }
+            }
 
             if appModel.user.isOnStage {
                 ControlButton(icon: stageModel.localUserAudioMuted ? Image("microphone-slash") : Image("microphone"),
