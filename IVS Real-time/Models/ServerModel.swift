@@ -17,6 +17,19 @@ class ServerModel: ObservableObject {
     var delegate: ServerDelegate?
     var decoder = JSONDecoder()
     
+    enum Endpoint: String {
+        case root = ""
+        case verify
+        case create
+        case uploads
+        case chatTokenCreate = "chatToken/create"
+        case join
+        case updateMode = "update/mode"
+        case updateSeats = "update/seats"
+        case castVote
+        case disconnect
+    }
+    
     enum HTTPMethod: String {
         case GET
         case POST
@@ -26,7 +39,7 @@ class ServerModel: ObservableObject {
     
     // Verify authentication code
     func verify(silent: Bool, _ onComplete: @escaping (Bool) -> Void) {
-        send(silent: silent, .GET, endpoint: "verify", body: nil) { _, _, error in
+        send(silent: silent, .GET, endpoint: .verify, body: nil) { _, _, error in
             if let error = error {
                 print("ℹ ❌ Could not verify customer code: \(error)")
                 self.delegate?.didEmitError(error: "Invalid code")
@@ -40,7 +53,7 @@ class ServerModel: ObservableObject {
 
     func getStages(onlyActive: Bool = true, _ onComplete: @escaping (Bool, [StageDetails]) -> Void) {
         send(.GET,
-             endpoint: "",
+             endpoint: .root,
              body: nil,
              queryItems: onlyActive ? [URLQueryItem(name: "status", value: "active")] : nil,
              onComplete: { [weak self] success, data, errorMessage in
@@ -93,7 +106,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.POST, endpoint: "create", body: body, onComplete: { [weak self] _, data, errorMessage in
+        send(.POST, endpoint: .create, body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -107,6 +120,7 @@ class ServerModel: ObservableObject {
 
             do {
                 let hostParticipantToken = try self?.decoder.decode(HostParticipantToken.self, from: data)
+                //let uploadPreviewUrls = try self?.decoder.decode(UploadPreviewUrls.self, from: data)
                 print("ℹ got host participant token: \(String(describing: hostParticipantToken))")
                 onComplete(true, hostParticipantToken)
             } catch {
@@ -116,6 +130,114 @@ class ServerModel: ObservableObject {
             }
         })
     }
+    
+    func createS3UploadUrls(user: User, hostCaptureVideoPath: String, hostCaptureImagePath: String, onComplete: @escaping (UploadPreviewUrls?) -> Void) {
+        let body = """
+            {
+                "hostId": "\(user.hostId)"
+            }
+        """
+        send(.POST, endpoint: .uploads, body: body, onComplete: { [weak self] _, data, errorMessage in
+            guard let self = self else {
+                onComplete(nil)
+                return
+            }
+            if let error = errorMessage {
+                print("ℹ ❌ \(error)")
+                onComplete(nil)
+            }
+            
+            guard let data = data else {
+                print("ℹ ❌ No data in response")
+                onComplete(nil)
+                return
+            }
+            
+            do {
+                let uploadPreviewUrls = try decoder.decode(UploadPreviewUrlsWrapper.self, from: data)
+                guard let uploadVideoSignedUrl = URL(string: uploadPreviewUrls.uploadPreviewUrls.uploadVideoSignedUrl ?? "")
+                    ,let uploadImageSignedUrl = URL(string: uploadPreviewUrls.uploadPreviewUrls.uploadImageSignedUrl ?? "")
+                else {
+                    onComplete(nil)
+                    return
+                }
+                
+                Task {
+                    do {
+                        
+                        print("CPK: before upload video local video path\(hostCaptureVideoPath)")
+                        print("CPK: before upload video s3 upload path \(uploadVideoSignedUrl)")
+                        try await self.uploadFileToS3PresignedURL(
+                            fileURL: URL(fileURLWithPath: hostCaptureVideoPath),
+                            presignedURL: uploadVideoSignedUrl,
+                            contentType: "video/mp4"
+                        )
+                        
+                        print("CPK: before upload image local video path\(hostCaptureImagePath)")
+                        print("CPK: before upload image s3 upload path \(uploadImageSignedUrl)")
+                        try await self.uploadFileToS3PresignedURL(
+                            fileURL: URL(fileURLWithPath: hostCaptureImagePath),
+                            presignedURL: uploadImageSignedUrl,
+                            contentType: "image/jpeg"
+                        )
+                        
+                        onComplete(uploadPreviewUrls.uploadPreviewUrls)
+                    } catch {
+                        print("CPK:❌ Upload failed: \(error) \(error.localizedDescription)")
+                        onComplete(nil)
+                    }
+                }
+                
+                onComplete(uploadPreviewUrls.uploadPreviewUrls)
+            } catch {
+                print("CPK:ℹ ❌ \(error)")
+                onComplete(nil)
+                return
+            }
+        })
+    }
+    
+    private func uploadFileToS3PresignedURL(fileURL: URL, presignedURL: URL, contentType: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        var request = URLRequest(url: presignedURL)
+        request.httpMethod = "PUT"
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+
+        let task = URLSession.shared.uploadTask(with: request, fromFile: fileURL) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(NSError(domain: "InvalidResponse", code: -1)))
+                return
+            }
+
+            if (200...299).contains(httpResponse.statusCode) {
+                completion(.success(()))
+            } else {
+                let statusError = NSError(domain: "S3Upload", code: httpResponse.statusCode, userInfo: [
+                    NSLocalizedDescriptionKey: "Upload failed with status code: \(httpResponse.statusCode)"
+                ])
+                completion(.failure(statusError))
+            }
+        }
+
+        task.resume()
+    }
+    
+    private func uploadFileToS3PresignedURL(fileURL: URL, presignedURL: URL, contentType: String) async throws {
+        var request = URLRequest(url: presignedURL)
+        request.httpMethod = "PUT"
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+
+        let (_, response) = try await URLSession.shared.upload(for: request, fromFile: fileURL)
+
+        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            throw NSError(domain: "S3Upload", code: (response as? HTTPURLResponse)?.statusCode ?? -1)
+        }
+    }
+
 
     func createChatToken(for user: User, stageHostId: String, onComplete: @escaping (Bool, ChatAuthToken?) -> Void) {
         let body = """
@@ -131,7 +253,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.POST, endpoint: "chatToken/create", body: body, onComplete: { [weak self] _, data, errorMessage in
+        send(.POST, endpoint: .chatTokenCreate, body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -169,7 +291,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.POST, endpoint: "join", body: body, onComplete: { [weak self] _, data, errorMessage in
+        send(.POST, endpoint: .join, body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -203,7 +325,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.DELETE, endpoint: "", body: body, onComplete: { success, _, errorMessage in
+        send(.DELETE, endpoint: .root, body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -222,7 +344,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.PUT, endpoint: "update/mode", body: body, onComplete: { success, _, errorMessage in
+        send(.PUT, endpoint: .updateMode, body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -241,7 +363,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.PUT, endpoint: "update/seats", body: body, onComplete: { success, _, errorMessage in
+        send(.PUT, endpoint: .updateSeats, body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -259,7 +381,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.POST, endpoint: "castVote", body: body, onComplete: { success, _, errorMessage in
+        send(.POST, endpoint: .castVote, body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -278,7 +400,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.PUT, endpoint: "disconnect", body: body, onComplete: { success, _, errorMessage in
+        send(.PUT, endpoint: .disconnect, body: body, onComplete: { success, _, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false)
@@ -297,7 +419,7 @@ class ServerModel: ObservableObject {
         }
     }
 
-    private func send(silent: Bool = false, _ method: HTTPMethod, endpoint: String, body: String?, queryItems: [URLQueryItem]? = nil, onComplete: @escaping (Bool, Data?, String?) -> Void) {
+    private func send(silent: Bool = false, _ method: HTTPMethod, endpoint: Endpoint, body: String?, queryItems: [URLQueryItem]? = nil, onComplete: @escaping (Bool, Data?, String?) -> Void) {
         guard let customerCode = UserDefaults.standard.string(forKey: Constants.kCustomerCode) else {
             if silent { return }
             delegate?.didEmitError(error: "Customer code not set")
@@ -308,7 +430,7 @@ class ServerModel: ObservableObject {
         urlComponents.scheme = "https"
         urlComponents.host = "\(customerCode).\(Constants.API_URL)"
         urlComponents.queryItems = queryItems
-        urlComponents.path = "/\(endpoint)"
+        urlComponents.path = "/\(endpoint.rawValue)"
 
         guard let url = urlComponents.url else {
             onComplete(false, nil, "Couldn't get url from URLComponents")

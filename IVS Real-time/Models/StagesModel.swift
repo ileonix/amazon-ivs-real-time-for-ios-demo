@@ -98,6 +98,8 @@ class StagesModel: ObservableObject {
         for detail in details {
             let stage = Stage(id: detail.createdAt,
                               stageArn: detail.stageArn,
+                              imagePreviewUrl: detail.imagePreviewUrl,
+                              videoPreviewUrl: detail.videoPreviewUrl,
                               hostId: detail.hostId,
                               type: detail.type,
                               mode: detail.mode,

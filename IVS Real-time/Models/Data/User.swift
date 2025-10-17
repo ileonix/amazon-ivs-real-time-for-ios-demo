@@ -87,6 +87,7 @@ class User: ObservableObject {
     private var imageDevice: IVSImageDevice? {
         return streams.lazy.compactMap { $0.device as? IVSImageDevice }.first
     }
+    private var existingPreview: IVSImagePreviewView?
 
     let numberFormatter = NumberFormatter()
     private var timer: Timer?
@@ -94,12 +95,19 @@ class User: ObservableObject {
     var previewView: StageParticipantView {
         var preview: IVSImagePreviewView?
         do {
-            preview = try imageDevice?.previewView(with: .fill)
+            let newPreview = try imageDevice?.previewView(with: .fill)
+            self.existingPreview = newPreview // Store the reference
+            preview = newPreview
         } catch {
             print("ℹ ❌ got error when trying to get participant preview view from IVSImageDevice: \(error)")
         }
         let view = StageParticipantView(preview: preview, participant: self)
         return view
+    }
+    
+    func getPreviewView() -> IVSImagePreviewView? {
+        // Return the existing preview view that is on screen
+        return existingPreview
     }
 
     init(isLocal: Bool, username: String, avatar: Avatar) {

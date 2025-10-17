@@ -23,6 +23,8 @@ class Stage: ObservableObject, Identifiable, Equatable, Hashable {
 
     let id: String
     let stageArn: String
+    let imagePreviewUrl: String?
+    let videoPreviewUrl: String?
     var hostId: String
     var createdAt: String
     @Published var type: StageType
@@ -47,6 +49,8 @@ class Stage: ObservableObject, Identifiable, Equatable, Hashable {
 
     init(id: String,
          stageArn: String,
+         imagePreviewUrl: String? = nil,
+         videoPreviewUrl: String? = nil,
          hostId: String,
          type: StageType,
          mode: StageMode,
@@ -57,6 +61,8 @@ class Stage: ObservableObject, Identifiable, Equatable, Hashable {
         self.id = id
         self.stageArn = stageArn
         self.hostId = hostId
+        self.imagePreviewUrl = imagePreviewUrl
+        self.videoPreviewUrl = videoPreviewUrl
         self.type = type
         self.mode = mode
         self.status = status

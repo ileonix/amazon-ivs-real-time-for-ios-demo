@@ -9,7 +9,7 @@ import SwiftUI
 import Network
 import AmazonIVSBroadcast
 
-class AppModel: ObservableObject {
+class AppModel: NSObject, ObservableObject {
     @ObservedObject var server: ServerModel
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
@@ -78,6 +78,7 @@ class AppModel: ObservableObject {
     var activeVotingSessionTally: [String: Int]?
     let activeStageBottomSpace: CGFloat = 40
     let dateFormatter = DateFormatter()
+
     let monitor = NWPathMonitor()
     let queue = DispatchQueue(label: "NetworkMonitor")
     var hostAvatar: Avatar? {
@@ -100,16 +101,19 @@ class AppModel: ObservableObject {
         return bitrate
     }
 
-    init() {
+    override init() {
         self.server = ServerModel()
         self.user = User(isLocal: true, username: UsernameProvider.getRandomUsername(), avatar: Avatar())
         self.stagesModel = StagesModel()
         self.stageModel = StageModel()
-        self.dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        UserDefaults.standard.register(defaults: [Constants.kIsStatsOn: true])
         self.isSimulcastOn = UserDefaults.standard.bool(forKey: Constants.kIsSimulcastOn)
         self.isStatsOn = UserDefaults.standard.bool(forKey: Constants.kIsStatsOn)
-
+        
+        super.init()
+        
+        self.dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        UserDefaults.standard.register(defaults: [Constants.kIsStatsOn: true])
+        
         username = user.username
         stageModel.localUser = user
 
@@ -207,6 +211,7 @@ class AppModel: ObservableObject {
                 self?.stageModel.collectInboundDebugData = false
                 self?.user.participantId = hostToken?.tokenData.participantId
 
+
                 DispatchQueue.main.async {
                     self?.activeStageHostParticipant = self?.user
                     self?.activeStageHostUsername = self?.user.username ?? ""
@@ -214,6 +219,7 @@ class AppModel: ObservableObject {
 
                 self?.stageModel.joinAsHost(onComplete: { [weak self] success in
                     print("ℹ stage joined as host: \(success ? "✅" : "❌")")
+                    
 
                     self?.getCreatedStage({ stage in
                         self?.finishStageCreation(stage)
@@ -257,7 +263,40 @@ class AppModel: ObservableObject {
         }
 
         toggleLoading(false)
+        
+        //TODO: capture image and video preview after this when stage creation is complete
+        // Now that the stage is created, you have the pre-signed URLs.
+        // You can trigger the capture and upload process here.
+        // For this example, we will assume the user triggers it via a button.
+        print("ℹ Stage creation complete. Ready to capture previews.")
     }
+
+    // MARK: - Image and Video Capture
+    
+    func captureImage(completion: @escaping (String?) -> Void) {
+        stageModel.captureImage { [weak self] outputPath in
+            guard let self = self, let outputPath = outputPath else {
+                print("CPK: ❌ Image capture failed or was cancelled.")
+                completion(nil)
+                return
+            }
+            print("CPK: ✅ Image capture completed. Path: \(outputPath.path)")
+            completion(outputPath.path)
+        }
+    }
+
+    func recordVideo(completion: @escaping (String?) -> Void) {
+        stageModel.recordVideo(duration: 5.0) { [weak self] outputPath in
+            guard let self = self, let outputPath = outputPath else {
+                print("CPK:ℹ ❌ Video recording failed or was cancelled.")
+                completion(nil)
+                return
+            }
+            print("CPK:ℹ ✅ Video recording completed. Path: \(outputPath.path)")
+            completion(outputPath.path)
+        }
+    }
+
 
     func publishToAudioStage(inAudioSeat: Int) {
         guard let participantId = user.participantId else {
@@ -679,6 +718,7 @@ class AppModel: ObservableObject {
         toggleLoading(false)
     }
 }
+
 
 extension AppModel: ServerDelegate {
     func didEmitError(error: String) {

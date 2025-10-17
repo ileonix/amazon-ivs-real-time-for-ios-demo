@@ -19,14 +19,32 @@ struct StageDetails: Decodable {
     let status: String
     let seats: [String]?
     let stageArn: String
+    let imagePreviewUrl: String?
+    let videoPreviewUrl: String?
 }
 
 struct HostParticipantToken: Decodable {
     let region: String
     let tokenData: TokenData
+    let uploadPreviewUrls: UploadPreviewUrls
 
     enum CodingKeys: String, CodingKey {
-        case region, tokenData = "hostParticipantToken"
+        case region, tokenData = "hostParticipantToken", uploadPreviewUrls
+    }
+}
+
+struct UploadPreviewUrlsWrapper: Decodable {
+    let uploadPreviewUrls: UploadPreviewUrls
+}
+
+struct UploadPreviewUrls: Decodable {
+    let uploadImageSignedUrl: String?
+    let uploadVideoSignedUrl: String?
+    let imageKeyName: String
+    let videoKeyName: String
+    
+    enum CodCodeKeys: String, CodingKey {
+        case uploadImageSignedUrl, uploadVideoSignedUrl, imageKeyName, videoKeyName
     }
 }
 

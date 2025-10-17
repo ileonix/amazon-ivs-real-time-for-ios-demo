@@ -65,10 +65,12 @@
 		4BFB13D529D30F5500B9AB5E /* fruits.json in Resources */ = {isa = PBXBuildFile; fileRef = 4BFB13D429D30F5500B9AB5E /* fruits.json */; };
 		4BFB13D729D3100E00B9AB5E /* UsernameProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFB13D629D3100E00B9AB5E /* UsernameProvider.swift */; };
 		8099BA0DF1C1F945EDA27DA2 /* libPods-IVS Real-time.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B68EA93899856DE756F2E31D /* libPods-IVS Real-time.a */; };
+		EC3334FE2EA120DB00C111AD /* ScreenRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */; };
 		EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */; };
 		EC551E452E98C891004DBBC0 /* CustomerShopLanding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */; };
 		EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */; };
 		EC551E4D2E9923B5004DBBC0 /* LocalPreviewCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */; };
+		ECBAA4B52EA1E81E0056E526 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -132,9 +134,11 @@
 		4BFB13D629D3100E00B9AB5E /* UsernameProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameProvider.swift; sourceTree = "<group>"; };
 		4F84395AA4C69D55CC38D390 /* Pods-IVS Real-time.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.debug.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.debug.xcconfig"; sourceTree = "<group>"; };
 		B68EA93899856DE756F2E31D /* libPods-IVS Real-time.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IVS Real-time.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecorder.swift; sourceTree = "<group>"; };
 		EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelection.swift; sourceTree = "<group>"; };
 		EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerShopLanding.swift; sourceTree = "<group>"; };
 		EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPreviewCache.swift; sourceTree = "<group>"; };
+		ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
 		EDB6AD6B4EE3CAD44C979997 /* Pods-IVS Real-time.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.release.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -297,6 +301,7 @@
 		4BCC450C29D2C776003F371E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */,
 				EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */,
 				4B92D07C29E8240700DD440D /* DeviceShake.swift */,
 				4BCC450D29D2C787003F371E /* Modifiers.swift */,
@@ -322,6 +327,7 @@
 		EC551E422E98C860004DBBC0 /* Customer */ = {
 			isa = PBXGroup;
 			children = (
+				ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */,
 				EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */,
 			);
 			path = Customer;
@@ -474,6 +480,8 @@
 				4BCC450B29D2C533003F371E /* CustomerCodeInputView.swift in Sources */,
 				4BB7961629D6FE80005A4521 /* StageModel+Extensions.swift in Sources */,
 				4B10635929D47F6D00242A05 /* ChatTokenRequest.swift in Sources */,
+				ECBAA4B52EA1E81E0056E526 /* VideoPreviewView.swift in Sources */,
+				EC3334FE2EA120DB00C111AD /* ScreenRecorder.swift in Sources */,
 				4B92D07B29E8174700DD440D /* MultiTapView.swift in Sources */,
 				EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */,
 				4BB7960C29D6EE7A005A4521 /* AvatarView.swift in Sources */,

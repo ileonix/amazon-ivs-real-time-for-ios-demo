@@ -7,6 +7,8 @@
 
 import SwiftUI
 import AmazonIVSBroadcast
+import ReplayKit
+import AVFoundation
 
 protocol StageModelDelegate: AnyObject {
     func didEmitError(_ error: String)
@@ -41,7 +43,11 @@ class StageModel: NSObject, ObservableObject {
     private(set) var videoConfig = IVSLocalStageStreamVideoConfiguration()
     private var shouldRepublishWhenEnteringForeground = false
     private var stage: IVSStage?
-
+    
+    // For Video Recording
+    private var assetWriter: AVAssetWriter?
+    private var assetWriterVideoInput: AVAssetWriterInput?
+    private var isRecording = false
     var participantUsers: [User] = [] {
         didSet {
             delegate?.participantUsersChanged()
@@ -116,6 +122,7 @@ class StageModel: NSObject, ObservableObject {
         if let camera = getLocalDevices().compactMap({ $0 as? IVSCamera }).first {
             if let cameraSource = camera.listAvailableInputSources()
                 .first(where: { position == .back ? $0.position == position && $0.isDefault : $0.position == position }) {
+                camera.delegate = self
                 print("ℹ local camera source: \(cameraSource)")
                 camera.setPreferredInputSource(cameraSource) { [weak self] in
                     if let error = $0 {
@@ -126,7 +133,9 @@ class StageModel: NSObject, ObservableObject {
                     print("ℹ localy selected camera: \(String(describing: self?.selectedCamera))")
                 }
             }
-            self.localStreams.append(IVSLocalStageStream(device: camera, configuration: self.videoConfig))
+            let ivsLocalStageStream = IVSLocalStageStream(device: camera, configuration: videoConfig)
+            
+            self.localStreams.append(ivsLocalStageStream)
         }
     }
 
@@ -195,6 +204,106 @@ class StageModel: NSObject, ObservableObject {
         joinStage(hostToken.tokenData.token) { success in
             print("ℹ Stage joined as host")
             onComplete(success)
+        }
+    }
+    
+    func captureImage(completion: @escaping (URL?) -> Void) {
+        DispatchQueue.main.async {
+            guard let window = UIApplication.shared.windows.first else {
+                print("CPK: ❌ No window found")
+                return completion(nil)
+            }
+
+            let renderer = UIGraphicsImageRenderer(size: window.bounds.size)
+            let image = renderer.image { ctx in
+                window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+            }
+
+            guard let imageData = image.jpegData(compressionQuality: 0.9) else {
+                print("CPK: ❌ Failed to convert image to JPEG")
+                return completion(nil)
+            }
+
+            let outputURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("\(self.localUser.hostId).jpg")
+            try? FileManager.default.removeItem(at: outputURL)
+
+            do {
+                try imageData.write(to: outputURL)
+                print("CPK: ✅ Screenshot saved to: \(outputURL)")
+                completion(outputURL)
+            } catch {
+                print("❌ Failed to write image to disk: \(error)")
+                completion(nil)
+            }
+        }
+    }
+
+    func recordVideo(duration: TimeInterval, completion: @escaping (URL?) -> Void) {
+//        guard localUser.isHost, !isRecording else {
+//            completion(nil)
+//            return
+//        }
+//
+//        let outputPath = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(localUser.hostId).mp4")
+//        try? FileManager.default.removeItem(at: outputPath)
+//
+//        do {
+//            assetWriter = try AVAssetWriter(outputURL: outputPath, fileType: .mp4)
+//            let outputSettings: [String: Any] = [
+//                AVVideoCodecKey: AVVideoCodecType.h264,
+//                AVVideoWidthKey: 720,
+//                AVVideoHeightKey: 1280
+//            ]
+//            assetWriterVideoInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings)
+//            assetWriterVideoInput?.expectsMediaDataInRealTime = true
+//
+//            if let writer = assetWriter, let input = assetWriterVideoInput, writer.canAdd(input) {
+//                writer.add(input)
+//                writer.startWriting()
+//                writer.startSession(atSourceTime: .zero)
+//                isRecording = true
+//                print("CPK: 🎥 Started recording video...")
+//
+//                DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+//                    self?.stopRecording(completion: completion)
+//                }
+//            }
+//            
+//        } catch {
+//            print("CPK: ❌ Failed to setup asset writer: \(error)")
+//            completion(nil)
+//        }
+        
+        
+        let recorder = ScreenRecorder()
+        recorder.startRecording(hostId: localUser.hostId) { fileURL in
+            if let fileURL = fileURL {
+                completion(fileURL)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+
+    private func stopRecording(completion: @escaping (URL?) -> Void) {
+        guard isRecording, let writer = assetWriter else {
+            completion(nil)
+            return
+        }
+
+        isRecording = false
+        assetWriterVideoInput?.markAsFinished()
+        writer.finishWriting { [weak self] in
+            if writer.status == .completed {
+                print("CPK: ✅ Video recording finished successfully.")
+                completion(writer.outputURL)
+            } else {
+                print("CPK: ❌ Video recording failed: \(writer.error?.localizedDescription ?? "Unknown error")")
+                completion(nil)
+            }
+            self?.assetWriter = nil
+            self?.assetWriterVideoInput = nil
         }
     }
 
@@ -559,4 +668,20 @@ class StageModel: NSObject, ObservableObject {
             self.debugData.participantStats[stream.device.tag()]?.fps = inbound["framesPerSecond"]
         }
     }
+}
+
+extension StageModel: IVSCameraDelegate {
+    func camera(_ camera: IVSCamera, didOutputSampleBuffer sampleBuffer: CMSampleBuffer) {
+        guard isRecording,
+              let writer = assetWriter, writer.status == .writing,
+              let input = assetWriterVideoInput,
+              input.isReadyForMoreMediaData else {
+            return
+        }
+        input.append(sampleBuffer)
+    }
+}
+
+extension StageModel: RPPreviewViewControllerDelegate {
+    
 }

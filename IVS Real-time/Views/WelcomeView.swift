@@ -69,9 +69,17 @@ struct WelcomeView: View {
                     showBottomSheet: $isRoleSelectionPresent,
                     selectedRole: $selectedRole,
                     submitAction: {
-                        //d1lde5orfs6vr3-ds7o7a53HfbkM6UYiMfx
-                        let customerCode = "d1lde5orfs6vr3"
-                        let apiKey = "ds7o7a53HfbkM6UYiMfx"
+                        /*
+                         CloudFormation stacks
+                         IVS-Realtime-Chat-Shop-2
+                         - ddqs04nk76rcv.cloudfront.net
+                         - gtc2T2d4mlkY9O6UnDJC
+                         IVS-Realtime-Chat-Shop
+                         let customerCode = "d2xcfozmvpjoaq"
+                         let apiKey = "8bLC1rUNEaVF8qyz2XbG"
+                         */
+                        let customerCode = "ddqs04nk76rcv"
+                        let apiKey = "gtc2T2d4mlkY9O6UnDJC"
                         UserDefaults.standard.set(customerCode.lowercased(), forKey: Constants.kCustomerCode)
                         UserDefaults.standard.set(apiKey, forKey: Constants.kApiKey)
                         appModel.userRole = selectedRole

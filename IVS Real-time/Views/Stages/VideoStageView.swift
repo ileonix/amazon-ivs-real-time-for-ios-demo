@@ -17,8 +17,29 @@ struct VideoStageView: View {
             if stage == appModel.activeStage {
                 switch stage.mode {
                     case .none, .spot:
-                        VideoView(stage: stage)
-                            .transition(.opacity)
+                        ZStack {
+                            VideoView(stage: stage)
+                                .transition(.opacity)
+                                .onTapGesture {
+                                    print("CPK: onAppear setup completed: \(appModel.isSetupCompleted)")
+                                    if appModel.isSetupCompleted, appModel.user.isOnStage {
+                                        appModel.recordVideo(completion: { videoPath in
+                                            appModel.captureImage(completion: { imagePath in
+                                                print("CPK: videoPath \(videoPath)")
+                                                print("CPK: imagePath \(imagePath)")
+                                                if let videoPath = videoPath, let imagePath = imagePath {
+                                                    appModel.server.createS3UploadUrls(user: appModel.user, hostCaptureVideoPath: videoPath, hostCaptureImagePath: imagePath ?? "", onComplete: { urls in
+                                                        print("CPK: appModel.stageModel.localUser.isOnStage \(appModel.stageModel.localUser.isOnStage)")
+                                                        print("CPK: urls \(urls?.videoKeyName)")
+                                                    })
+                                                }
+                                            })
+                                        })
+                                    }
+                                }
+                            Text("HostId: \(stage.hostId)")
+                                .foregroundColor(appModel.isSetupCompleted ? .green : .red)
+                        }
                     case .pk:
                         PKView(stage: stage)
                             .transition(.scale)

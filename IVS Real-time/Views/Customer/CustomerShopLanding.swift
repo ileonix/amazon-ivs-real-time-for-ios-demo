@@ -13,64 +13,6 @@ struct BannerItem {
     let imgUrl: String
 }
 
-// Small cell view that prefers a locally cached preview image for a stage.
-struct ShopPreviewCell: View {
-    @ObservedObject var stage: Stage
-    @State private var previewImage: UIImage? = nil
-
-    var body: some View {
-        VStack {
-            Group {
-                if let uiImage = previewImage {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(maxWidth: .infinity)
-                        .aspectRatio(9/16, contentMode: .fit)
-                        .cornerRadius(8, corners: .allCorners)
-                        .clipped()
-                } else {
-                    Rectangle()
-                        .fill(Color.black)
-                        .cornerRadius(8, corners: .allCorners)
-                        .aspectRatio(9/16, contentMode: .fit)
-                        .overlay(
-                            Text(stage.hostId)
-                                .foregroundColor(.white)
-                                .font(.caption)
-                                .bold()
-                        )
-                }
-            }
-            .onAppear {
-                // Try memory cache first
-                if let img = LocalPreviewCache.shared.image(for: stage.hostId) {
-                    previewImage = img
-                    return
-                }
-
-                // Otherwise try loading from disk asynchronously
-                LocalPreviewCache.shared.load(for: stage.hostId) { img in
-                    if let img = img {
-                        previewImage = img
-                    }
-                }
-            }
-            .contextMenu {
-                Button(action: {
-                    LocalPreviewCache.shared.generateTestPreview(for: stage.hostId)
-                    // Immediately set previewImage from memory
-                    if let img = LocalPreviewCache.shared.image(for: stage.hostId) {
-                        previewImage = img
-                    }
-                }) {
-                    Text("Generate test preview")
-                }
-            }
-        }
-    }
-}
-
 struct BrandAvatar {
     let name: String
     let imgUrl: String
@@ -147,7 +89,6 @@ struct ShopAvatarView: View {
                             .scaledToFill()
                             .frame(width: 64, height: 64)
                             .clipShape(Circle())
-                            //.overlay(Circle().stroke(.black, lineWidth: 1))
                             .shadow(radius: 1)
                             .overlay(
                                 Text("LIVE")
@@ -204,15 +145,6 @@ struct PromotionBannerSectionView: View {
             .menuIndicator(.hidden) //hide and use outside view custom indicator
             .frame(width: UIScreen.main.bounds.width - 16)
             .aspectRatio(16/9, contentMode: .fit)
-            
-//            HStack {
-//                ForEach(0..<banners.count, id: \.self) { index in
-//                    Circle()
-//                        .fill(index == currentIndex ? Color.orange : Color.gray)
-//                        .frame(width: 8, height: 8)
-//                }
-//            }
-//            .padding(.top, 2)
         }
         .frame(width: UIScreen.main.bounds.width - 16)
         .padding(.horizontal)
@@ -273,40 +205,250 @@ struct OldPromotionBannerSectionView: View {
     }
 }
 
+//MARK: - Geometry Fallback for iOS 15–16 for ShopLivePreviewView
+
+struct ViewOffsetKey: PreferenceKey {
+    static var defaultValue: [Int: CGFloat] = [:]
+
+    static func reduce(value: inout [Int: CGFloat], nextValue: () -> [Int: CGFloat]) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
+
+struct TrackOffset: ViewModifier {
+    let index: Int
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                GeometryReader { geo in
+                    Color.clear.preference(
+                        key: ViewOffsetKey.self,
+                        value: [index: geo.frame(in: .global).minY]
+                    )
+                }
+            )
+    }
+}
+
+extension View {
+    func trackOffset(index: Int) -> some View {
+        self.modifier(TrackOffset(index: index))
+    }
+}
+
+//MARK: - Multiple track offset
+struct TrackOffsetModifier: ViewModifier {
+    let index: Int
+    @Binding var visibleIndices: Set<Int>
+    
+    func body(content: Content) -> some View {
+        content
+            .background(
+                GeometryReader { geo in
+                    Color.clear
+                        .onAppear {
+                            updateVisibility(in: geo)
+                        }
+                        .onChange(of: geo.frame(in: .global)) { _ in
+                            updateVisibility(in: geo)
+                        }
+                        .onDisappear {
+                            visibleIndices.remove(index)
+                        }
+                }
+            )
+    }
+    
+    private func updateVisibility(in geo: GeometryProxy) {
+        let frame = geo.frame(in: .global)
+        let screenHeight = UIScreen.main.bounds.height
+        let isVisible = frame.maxY > 0 && frame.minY < screenHeight
+        DispatchQueue.main.async {
+            if isVisible {
+                visibleIndices.insert(index)
+            } else {
+                visibleIndices.remove(index)
+            }
+        }
+    }
+}
+
+extension View {
+    func trackOffset(index: Int, visibleIndices: Binding<Set<Int>>) -> some View {
+        self.modifier(TrackOffsetModifier(index: index, visibleIndices: visibleIndices))
+    }
+}
+
+//MARK: - Shimmer and skeleton
+extension View {
+    func shimmering(active: Bool = true, duration: Double = 1.5) -> some View {
+        self
+            .overlay(
+                ShimmerView()
+                    .opacity(active ? 1 : 0)
+            )
+    }
+}
+
+struct ShimmerView: View {
+    @State private var move = false
+
+    var body: some View {
+        GeometryReader { geo in
+            LinearGradient(gradient: Gradient(colors: [Color.clear, Color.white.opacity(0.4), Color.clear]),
+                           startPoint: .topLeading,
+                           endPoint: .bottomTrailing)
+                .rotationEffect(.degrees(30))
+                .offset(x: move ? geo.size.width : -geo.size.width)
+                .animation(Animation.linear(duration: 1.5).repeatForever(autoreverses: false), value: move)
+                .onAppear { move = true }
+        }
+        .clipped()
+    }
+}
+
+//MARK: - ShopLivePreviewView
 struct ShopLivePreviewView: View {
     @EnvironmentObject var appModel: AppModel
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
     @State private var isStagesListEmpty: Bool = false
     @State var timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
+    @State private var visibleIndex: Int = -1
+    @State private var isLoading: Bool = true
+    private let skeletonCount = 6
     
-    //let items: [String] = Array(repeating: "Channel", count: 10)
+    //TODO: remove mock duplicate stages for test many stage
+    var mockStages: [Stage] {
+        var duplicated = appModel.stagesModel.logicalStages
+        duplicated += duplicated // Duplicate entire array
+        duplicated += duplicated
+        duplicated += duplicated
+        duplicated += duplicated
+        return duplicated
+    }
     
+    private let columns = [
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8)
+    ]
+
     var body: some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible(), spacing: 8),
-            GridItem(.flexible(), spacing: 8)
-        ], spacing: 8) {
-            ForEach(appModel.stagesModel.logicalStages, id: \.self) { stage in
-                if stage.type == .video {
-                    ShopPreviewCell(stage: stage)
+        LazyVGrid(columns: columns, spacing: 8) {
+            if isLoading {
+                ForEach(0..<skeletonCount, id: \.self) { _ in
+                    skeletonCell
+                }
+            } else {
+                //ForEach(Array(appModel.stagesModel.logicalStages.enumerated()), id: \.offset) { index, stage in
+                ForEach(Array(mockStages.enumerated()), id: \.offset) { index, stage in
+                    if stage.type == .video {
+                        ShopPreviewCell(
+                            stage: stage,
+                            isEnableVideoPreview: visibleIndex == index
+                        )
+                        .background(
+                            GeometryReader { geo in
+                                Color.clear
+                                    .preference(
+                                        key: ViewOffsetKey.self,
+                                        value: [index: geo.frame(in: .global).minY]
+                                    )
+                            }
+                        )
+                        .environmentObject(appModel)
+                        //.shadow(color: visibleIndex == index ? .green : .red, radius: 8)
+                        .trackOffset(index: index)
                         .onTapGesture {
                             appModel.isSetupCompleted = true
                         }
+                    }
                 }
             }
         }
         .padding()
         .onAppear {
             _ = timer.upstream.autoconnect()
+            fetchData()
         }
         .onDisappear {
             timer.upstream.connect().cancel()
         }
-            .onReceive(timer) { _ in
-                appModel.getStages { isSuccess in
-                    print("CPK: Stages fetched success \(isSuccess)  count:\(appModel.stagesModel.logicalStages.count)")
+        .onReceive(timer) { _ in
+            fetchData()
+        }
+        .onPreferenceChange(ViewOffsetKey.self) { offsets in
+            if let closest = offsets.min(by: { abs($0.value) < abs($1.value) }) {
+                visibleIndex = closest.key
+            }
+        }
+    }
+    
+    private func fetchData() {
+        appModel.getStages { isSuccess in
+            print("CPK: Fetched stages: \(isSuccess), count: \(appModel.stagesModel.logicalStages.count)")
+            if isSuccess {
+                withAnimation {
+                    isLoading = false
                 }
             }
+        }
+    }
+    
+    private var skeletonCell: some View {
+        Rectangle()
+            .fill(Color.gray.opacity(0.3))
+            .aspectRatio(9/16, contentMode: .fit)
+            .cornerRadius(8)
+            .shimmering()
+    }
+}
+
+struct ShopPreviewCell: View {
+    @EnvironmentObject var appModel: AppModel
+    @ObservedObject var stage: Stage
+    @State private var previewImageUrl: String? = nil
+    @State private var previewVideoUrl: String? = nil
+    @State private var isVideoReady: Bool = false
+
+    var isEnableVideoPreview: Bool = false
+
+    var body: some View {
+        ZStack {
+            if let imgURL = previewImageUrl.flatMap(URL.init) {
+                WebImage(url: imgURL)
+                    .resizable()
+                    .aspectRatio(9/16, contentMode: .fit)
+                    .cornerRadius(8)
+                    .opacity((isEnableVideoPreview && isVideoReady) ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.3), value: isVideoReady)
+            }
+
+            if isEnableVideoPreview, let videoURL = previewVideoUrl.flatMap(URL.init) {
+                VideoPreview(url: videoURL, isMuted: true, isReady: $isVideoReady)
+                    .aspectRatio(9/16, contentMode: .fit)
+                    .cornerRadius(8)
+                    .clipped()
+                    .opacity(isVideoReady ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: isVideoReady)
+            }
+
+            if !isEnableVideoPreview && previewImageUrl == nil {
+                Rectangle()
+                    .fill(Color.gray)
+                    .aspectRatio(9/16, contentMode: .fit)
+                    .cornerRadius(8)
+                    .overlay(Text(stage.hostId).foregroundColor(.white))
+            }
+        }
+        .onAppear {
+            if let imgUrl = stage.imagePreviewUrl?.components(separatedBy: "?").first {
+                previewImageUrl = imgUrl
+            }
+            if let videoUrl = stage.videoPreviewUrl?.components(separatedBy: "?").first {
+                previewVideoUrl = videoUrl
+            }
+        }
     }
 }
