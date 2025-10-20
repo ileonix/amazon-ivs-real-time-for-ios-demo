@@ -71,6 +71,13 @@
 		EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */; };
 		EC551E4D2E9923B5004DBBC0 /* LocalPreviewCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */; };
 		ECBAA4B52EA1E81E0056E526 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */; };
+		ECBAA4BF2EA5DC660056E526 /* ProductSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4BE2EA5DC630056E526 /* ProductSwiftUIView.swift */; };
+		ECBAA4C22EA5DCB90056E526 /* ProductsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4C12EA5DCB90056E526 /* ProductsContainerView.swift */; };
+		ECBAA4C52EA5DCF60056E526 /* Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4C42EA5DCF60056E526 /* Products.swift */; };
+		ECBAA4C72EA5DD340056E526 /* Products.json in Resources */ = {isa = PBXBuildFile; fileRef = ECBAA4C62EA5DD340056E526 /* Products.json */; };
+		ECBAA4C92EA5DDF30056E526 /* CommerceButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4C82EA5DDF30056E526 /* CommerceButtonStyle.swift */; };
+		ECBAA4CC2EA60C910056E526 /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4CB2EA60C910056E526 /* CartItem.swift */; };
+		ECBAA4CE2EA60CA90056E526 /* ShoppingCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4CD2EA60CA90056E526 /* ShoppingCartView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -139,6 +146,13 @@
 		EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerShopLanding.swift; sourceTree = "<group>"; };
 		EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPreviewCache.swift; sourceTree = "<group>"; };
 		ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
+		ECBAA4BE2EA5DC630056E526 /* ProductSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSwiftUIView.swift; sourceTree = "<group>"; };
+		ECBAA4C12EA5DCB90056E526 /* ProductsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsContainerView.swift; sourceTree = "<group>"; };
+		ECBAA4C42EA5DCF60056E526 /* Products.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Products.swift; sourceTree = "<group>"; };
+		ECBAA4C62EA5DD340056E526 /* Products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Products.json; sourceTree = "<group>"; };
+		ECBAA4C82EA5DDF30056E526 /* CommerceButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommerceButtonStyle.swift; sourceTree = "<group>"; };
+		ECBAA4CB2EA60C910056E526 /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
+		ECBAA4CD2EA60CA90056E526 /* ShoppingCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartView.swift; sourceTree = "<group>"; };
 		EDB6AD6B4EE3CAD44C979997 /* Pods-IVS Real-time.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.release.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -220,6 +234,7 @@
 		4BB7FD3329D2BB9400E2894D /* IVS Real-time */ = {
 			isa = PBXGroup;
 			children = (
+				ECBAA4C62EA5DD340056E526 /* Products.json */,
 				4B10633F29D45ACA00242A05 /* IVS-Real-time-Info.plist */,
 				4BCC450229D2BD59003F371E /* Constants.swift */,
 				4BCC450129D2BD43003F371E /* Models */,
@@ -235,6 +250,8 @@
 		4BCC450029D2BD33003F371E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				ECBAA4CA2EA60AEC0056E526 /* ShoppingCart */,
+				ECBAA4C02EA5DCB20056E526 /* Product */,
 				EC551E432E98C86A004DBBC0 /* Merchant */,
 				EC551E422E98C860004DBBC0 /* Customer */,
 				EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */,
@@ -252,6 +269,7 @@
 		4BCC450129D2BD43003F371E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				ECBAA4C32EA5DCE50056E526 /* Products */,
 				4B10635E29D4808600242A05 /* Data */,
 				4BFB13D029D2DA6C00B9AB5E /* AppModel.swift */,
 				4B10635629D47F4A00242A05 /* ChatModel.swift */,
@@ -327,6 +345,7 @@
 		EC551E422E98C860004DBBC0 /* Customer */ = {
 			isa = PBXGroup;
 			children = (
+				ECBAA4BE2EA5DC630056E526 /* ProductSwiftUIView.swift */,
 				ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */,
 				EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */,
 			);
@@ -338,6 +357,32 @@
 			children = (
 			);
 			path = Merchant;
+			sourceTree = "<group>";
+		};
+		ECBAA4C02EA5DCB20056E526 /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				ECBAA4C82EA5DDF30056E526 /* CommerceButtonStyle.swift */,
+				ECBAA4C12EA5DCB90056E526 /* ProductsContainerView.swift */,
+			);
+			path = Product;
+			sourceTree = "<group>";
+		};
+		ECBAA4C32EA5DCE50056E526 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ECBAA4CB2EA60C910056E526 /* CartItem.swift */,
+				ECBAA4C42EA5DCF60056E526 /* Products.swift */,
+			);
+			path = Products;
+			sourceTree = "<group>";
+		};
+		ECBAA4CA2EA60AEC0056E526 /* ShoppingCart */ = {
+			isa = PBXGroup;
+			children = (
+				ECBAA4CD2EA60CA90056E526 /* ShoppingCartView.swift */,
+			);
+			path = ShoppingCart;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -408,6 +453,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECBAA4C72EA5DD340056E526 /* Products.json in Resources */,
 				4B10634829D45C8600242A05 /* Inter-ExtraBold.ttf in Resources */,
 				4B10634929D45C8600242A05 /* Inter-Black.ttf in Resources */,
 				4BFB13D529D30F5500B9AB5E /* fruits.json in Resources */,
@@ -484,8 +530,10 @@
 				EC3334FE2EA120DB00C111AD /* ScreenRecorder.swift in Sources */,
 				4B92D07B29E8174700DD440D /* MultiTapView.swift in Sources */,
 				EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */,
+				ECBAA4BF2EA5DC660056E526 /* ProductSwiftUIView.swift in Sources */,
 				4BB7960C29D6EE7A005A4521 /* AvatarView.swift in Sources */,
 				4BB7961229D6FB3B005A4521 /* StageParticipantView.swift in Sources */,
+				ECBAA4C22EA5DCB90056E526 /* ProductsContainerView.swift in Sources */,
 				4B10635D29D47FD800242A05 /* User.swift in Sources */,
 				4BB7961429D6FBFF005A4521 /* IVSImagePreviewViewWrapper.swift in Sources */,
 				4BE1A2F429E5564F0017BCC2 /* ReactionView.swift in Sources */,
@@ -494,16 +542,20 @@
 				4B10633029D321E100242A05 /* StageOverlayView.swift in Sources */,
 				4B10632E29D3203400242A05 /* AudioStageView.swift in Sources */,
 				4B9210122A1B4738001AA945 /* UISliderView.swift in Sources */,
+				ECBAA4CE2EA60CA90056E526 /* ShoppingCartView.swift in Sources */,
 				4B10636029D4814C00242A05 /* Stage.swift in Sources */,
+				ECBAA4C92EA5DDF30056E526 /* CommerceButtonStyle.swift in Sources */,
 				4B10636229D54CCD00242A05 /* ServerModel.swift in Sources */,
 				4B10635329D46AD900242A05 /* ControlButtonsView.swift in Sources */,
 				4BFB13D329D2F7CA00B9AB5E /* BottomSheetConfirmationView.swift in Sources */,
 				4B865C962A0E6AB100D7A1DB /* DebugView.swift in Sources */,
+				ECBAA4C52EA5DCF60056E526 /* Products.swift in Sources */,
 				4B92D08129EFB8A600DD440D /* DebugDataView.swift in Sources */,
 				4B10633629D41CA600242A05 /* PKView.swift in Sources */,
 				4B32DFF229F7FF7000EAA130 /* VoteBarView.swift in Sources */,
 				4B10635729D47F4A00242A05 /* ChatModel.swift in Sources */,
 				4BABD0772AB9959800831B32 /* SettingsView.swift in Sources */,
+				ECBAA4CC2EA60C910056E526 /* CartItem.swift in Sources */,
 				4BB7961829DAF408005A4521 /* ErrorView.swift in Sources */,
 				4BFB13D729D3100E00B9AB5E /* UsernameProvider.swift in Sources */,
 				4B10632A29D3200200242A05 /* VideoStageView.swift in Sources */,
