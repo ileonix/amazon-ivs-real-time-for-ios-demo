@@ -423,18 +423,15 @@ struct ShopPreviewCell: View {
                     .cornerRadius(8)
                     .opacity((isEnableVideoPreview && isVideoReady) ? 0 : 1)
                     .animation(.easeInOut(duration: 0.3), value: isVideoReady)
-            }
-
-            if isEnableVideoPreview, let videoURL = previewVideoUrl.flatMap(URL.init) {
+            } else if isEnableVideoPreview, let videoURL = previewVideoUrl.flatMap(URL.init) {
                 VideoPreview(url: videoURL, isMuted: true, isReady: $isVideoReady)
                     .aspectRatio(9/16, contentMode: .fit)
                     .cornerRadius(8)
                     .clipped()
                     .opacity(isVideoReady ? 1 : 0)
                     .animation(.easeInOut(duration: 0.3), value: isVideoReady)
-            }
-
-            if !isEnableVideoPreview && previewImageUrl == nil {
+            } else {
+                //!isEnableVideoPreview && previewImageUrl == nil
                 Rectangle()
                     .fill(Color.gray)
                     .aspectRatio(9/16, contentMode: .fit)
