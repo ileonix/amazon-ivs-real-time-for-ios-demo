@@ -55,7 +55,7 @@ class AppModel: NSObject, ObservableObject {
     @Published var participantsChanged: Bool = false
 
     @Published var reactionViews: [ReactionView] = []
-
+    @Published var pinProductPosition: CGPoint = CGPoint(x: 150, y: 150)
     @Published var votesCountHost: Int = 0
     @Published var votesCountParticipant: Int = 0
     @Published var votingSessionIsActive: Bool = false
@@ -913,6 +913,13 @@ extension AppModel: ChatEventDelegate {
     func didReceive(_ reaction: String) {
         DispatchQueue.main.async {
             self.reactionViews.append(ReactionView(reaction: reaction))
+            
+        }
+    }
+    
+    func didHostUpdatePinProductPosition(_ productPosition: CGPoint) {
+        DispatchQueue.main.async {
+            self.pinProductPosition = productPosition
         }
     }
 }

@@ -126,10 +126,10 @@ struct StageOverlayView: View {
                                 productDragOffset = value.translation
                             }
                             .onEnded { value in
-                                
                                 productPosition.x += value.translation.width
                                 productPosition.y += value.translation.height
                                 productDragOffset = .zero
+                                appModel.chatModel?.hostUpdatePinProductPosition(position: productPosition)
                             }
                     )
                 }
@@ -218,7 +218,8 @@ struct StageOverlayView: View {
                             .cornerRadius(16)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                             .scaleEffect(0.5)
-                            .position(x: productPosition.x, y: productPosition.y)
+                            .position(x: appModel.pinProductPosition.x, y: appModel.pinProductPosition.y)
+                            
                         }
                     }
                 }.onAppear {

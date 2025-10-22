@@ -7,6 +7,7 @@
 
 import Foundation
 import AmazonIVSChatMessaging
+import UIKit
 
 protocol ChatEventDelegate: AnyObject {
     func modeDidChange(_ attributes: [String: String]?)
@@ -14,6 +15,7 @@ protocol ChatEventDelegate: AnyObject {
     func votesChanged(_ attributes: [String: String]?)
     func didReceive(_ reaction: String)
     func votingStarted()
+    func didHostUpdatePinProductPosition(_ productPosition: CGPoint)
 }
 
 class ChatModel: ObservableObject, Equatable, Hashable {
@@ -78,6 +80,18 @@ class ChatModel: ObservableObject, Equatable, Hashable {
                           onSuccess: { _ in print("ℹ reaction sent ✅") },
                           onFailure: { chatError in print("ℹ ❌ Error sending reaction: \(chatError)") })
     }
+    
+    func hostUpdatePinProductPosition(position: CGPoint) {
+        let hostScreenSize = "\(UIScreen.main.bounds.width),\(UIScreen.main.bounds.height)"
+        let request = SendMessageRequest(content: "heart",
+                                         attributes: ["type": MessageType.event.rawValue,
+                                                      "hostScreenSize": hostScreenSize,
+                                                      "pinProductPosition": "\(position.x),\(position.y)"])
+        
+        room?.sendMessage(with: request,
+                          onSuccess: { _ in print("CPK: pinProductPosition sent ✅ \(hostScreenSize) and \(position)") },
+                          onFailure: { chatError in print("ℹ ❌ Error sending reaction: \(chatError)") })
+    }
 
     static func == (lhs: ChatModel, rhs: ChatModel) -> Bool {
         return lhs.room == rhs.room
@@ -101,9 +115,22 @@ extension ChatModel: ChatRoomDelegate {
         print("ℹ Chat did receive message: \(message.content), attributes: \(message.attributes ?? [:])")
 
         if let type = message.attributes?["type"],
-           type == MessageType.event.rawValue,
-           let reaction = message.attributes?["reaction"] {
-            eventDelegate?.didReceive(reaction)
+           type == MessageType.event.rawValue {
+            if let reaction = message.attributes?["reaction"] {
+                eventDelegate?.didReceive(reaction)
+            }
+            if let pinPosition = message.attributes?["pinProductPosition"], let hostScreenSize = message.attributes?["hostScreenSize"] {
+                let hostSize = hostScreenSize.split(separator: ",").compactMap { Double($0) }
+                let widthRatio = (hostSize.first ?? 1.0) / UIScreen.main.bounds.width
+                let heightRatio = (hostSize.last ?? 1.0) / UIScreen.main.bounds.height
+                let position = pinPosition.split(separator: ",").compactMap { Double($0) }
+                let newPosition = CGPoint(x: (position.first ?? 150.0)/widthRatio, y: (position.last ?? 150.0)/heightRatio)
+                let screenBound = UIScreen.main.bounds
+                print("CPK: ratio w:\(widthRatio) h:\(heightRatio) hpos:\(position) npos:]\(newPosition)")
+                if newPosition.x > 0, newPosition.y > 0, newPosition.x <= screenBound.size.width, newPosition.y <= screenBound.size.height {
+                    eventDelegate?.didHostUpdatePinProductPosition(newPosition)
+                }
+            }
         } else {
             DispatchQueue.main.async {
                 self.messages.append(Message(type: .message, message: message))
