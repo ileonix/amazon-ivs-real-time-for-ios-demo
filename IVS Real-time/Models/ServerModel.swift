@@ -8,28 +8,6 @@
 import Foundation
 import SwiftUI
 
-// MARK: - Broadcast Models
-//struct ChannelCredentials: Codable {
-//    let channelArn: String
-//    let ingestEndpoint: String
-//    let streamKey: String
-//    let playbackUrl: String
-//    let chatRoomArn: String
-//}
-//
-//struct ChannelDetails: Codable {
-//    let channelArn: String
-//    let playbackUrl: String
-//    let chatRoomArn: String
-//    let hostId: String
-//    let status: String
-//    let hostAttributes: [String: String]?
-//}
-//
-//struct Channels: Codable {
-//    let channels: [ChannelDetails]
-//}
-
 protocol ServerDelegate: AnyObject {
     func didEmitError(error: String)
     func activeVotingSessionInProgress(_ session: VotingSession)
