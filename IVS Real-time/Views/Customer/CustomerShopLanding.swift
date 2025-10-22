@@ -322,10 +322,10 @@ struct ShopLivePreviewView: View {
     //TODO: remove mock duplicate stages for test many stage
     var mockStages: [Stage] {
         var duplicated = appModel.stagesModel.logicalStages
-        duplicated += duplicated // Duplicate entire array
-        duplicated += duplicated
-        duplicated += duplicated
-        duplicated += duplicated
+//        duplicated += duplicated // Duplicate entire array
+//        duplicated += duplicated
+//        duplicated += duplicated
+//        duplicated += duplicated
         return duplicated
     }
     
