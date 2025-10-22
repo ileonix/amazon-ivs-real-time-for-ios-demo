@@ -8,6 +8,28 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Broadcast Models
+//struct ChannelCredentials: Codable {
+//    let channelArn: String
+//    let ingestEndpoint: String
+//    let streamKey: String
+//    let playbackUrl: String
+//    let chatRoomArn: String
+//}
+//
+//struct ChannelDetails: Codable {
+//    let channelArn: String
+//    let playbackUrl: String
+//    let chatRoomArn: String
+//    let hostId: String
+//    let status: String
+//    let hostAttributes: [String: String]?
+//}
+//
+//struct Channels: Codable {
+//    let channels: [ChannelDetails]
+//}
+
 protocol ServerDelegate: AnyObject {
     func didEmitError(error: String)
     func activeVotingSessionInProgress(_ session: VotingSession)
@@ -17,15 +39,23 @@ class ServerModel: ObservableObject {
     var delegate: ServerDelegate?
     var decoder = JSONDecoder()
     
+    // Mode selection flag
+    @Published var useBroadcastMode: Bool = false // false = Real-time stages, true = Broadcast sessions
+    
     enum Endpoint: String {
         case root = ""
         case verify
+        // Real-time stage endpoints
         case create
-        case uploads
-        case chatTokenCreate = "chatToken/create"
         case join
         case updateMode = "update/mode"
         case updateSeats = "update/seats"
+        // Broadcast session endpoints
+        case createChannel = "channel/create"
+        case getChannels = "channels"
+        // Common endpoints
+        case uploads
+        case chatTokenCreate = "chatToken/create"
         case castVote
         case disconnect
     }
@@ -126,6 +156,87 @@ class ServerModel: ObservableObject {
             } catch {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
+                return
+            }
+        })
+    }
+    
+    // MARK: - Broadcast Session Methods
+    
+    func createChannel(user: User, onComplete: @escaping (Bool, ChannelCredentials?) -> Void) {
+        guard let customerCode = UserDefaults.standard.string(forKey: Constants.kCustomerCode) else {
+            delegate?.didEmitError(error: "Customer code not set")
+            return
+        }
+
+        let body = """
+            {
+                "cid": "\(customerCode)",
+                "hostId": "\(user.hostId)",
+                "hostAttributes": {
+                    "avatarColBottom": "\(user.avatar.colBottom)",
+                    "avatarColLeft": "\(user.avatar.colLeft)",
+                    "avatarColRight": "\(user.avatar.colRight)",
+                    "username": "\(user.username)"
+                },
+                "type": "live_shopping"
+            }
+        """
+
+        send(.POST, endpoint: .createChannel, body: body, onComplete: { [weak self] _, data, errorMessage in
+            if let error = errorMessage {
+                print("ℹ ❌ \(error)")
+                onComplete(false, nil)
+            }
+
+            guard let data = data else {
+                print("ℹ ❌ No data in response")
+                onComplete(false, nil)
+                return
+            }
+
+            do {
+                let channelCredentials = try self?.decoder.decode(ChannelCredentials.self, from: data)
+                print("ℹ got channel credentials: \(String(describing: channelCredentials))")
+                onComplete(true, channelCredentials)
+            } catch {
+                print("ℹ ❌ \(error)")
+                onComplete(false, nil)
+                return
+            }
+        })
+    }
+    
+    func getChannels(onlyActive: Bool = true, _ onComplete: @escaping (Bool, [ChannelDetails]) -> Void) {
+        send(.GET,
+             endpoint: .getChannels,
+             body: nil,
+             queryItems: onlyActive ? [URLQueryItem(name: "status", value: "active")] : nil,
+             onComplete: { [weak self] success, data, errorMessage in
+            if let error = errorMessage {
+                print("ℹ ❌ \(error)")
+                onComplete(false, [])
+            }
+
+            guard let data = data else {
+                print("ℹ ❌ No data in response")
+                onComplete(false, [])
+                return
+            }
+
+            do {
+                let rawChannels = try self?.decoder.decode(Channels.self, from: data)
+                guard let channels = rawChannels?.channels else {
+                    print("ℹ ❌ Got something else than channels array")
+                    onComplete(false, [])
+                    return
+                }
+                print("ℹ got \(channels.count) channels")
+                onComplete(success, channels)
+
+            } catch {
+                print("❌ \(error)")
+                onComplete(false, [])
                 return
             }
         })

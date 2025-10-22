@@ -8,8 +8,9 @@
 import UIKit
 import AmazonIVSBroadcast
 import AmazonIVSChatMessaging
+import AVFoundation
 
-class User: ObservableObject {
+class User: NSObject, ObservableObject {
     let isLocal: Bool
     var userId: String
     var hostId: String
@@ -88,19 +89,27 @@ class User: ObservableObject {
         return streams.lazy.compactMap { $0.device as? IVSImageDevice }.first
     }
     private var existingPreview: IVSImagePreviewView?
+    
+    // Filter support for publishers only
+    var filterHelper: FilterHelper?
+    var customImageSource: IVSCustomImageSource?
+    var captureSession: AVCaptureSession?
+    private let captureQueue = DispatchQueue(label: "capture-queue")
 
     let numberFormatter = NumberFormatter()
     private var timer: Timer?
 
     var previewView: StageParticipantView {
         var preview: IVSImagePreviewView?
+        
         do {
             let newPreview = try imageDevice?.previewView(with: .fill)
-            self.existingPreview = newPreview // Store the reference
+            self.existingPreview = newPreview
             preview = newPreview
         } catch {
-            print("ℹ ❌ got error when trying to get participant preview view from IVSImageDevice: \(error)")
+            print("CPK: FILTER ℹ ❌ got error when trying to get participant preview view from IVSImageDevice: \(error)")
         }
+        
         let view = StageParticipantView(preview: preview, participant: self)
         return view
     }
@@ -167,17 +176,71 @@ class User: ObservableObject {
             })
         }
     }
+    
+    // Filter methods for publishers only
+    func setupFilterForPublisher() {
+        guard isLocal && isPublishing else { return }
+        filterHelper = FilterHelper()
+    }
+    
+    func setupCustomImageSource(_ source: IVSCustomImageSource) {
+        guard isLocal else { return }
+        customImageSource = source
+        setupCaptureSession()
+    }
+    
+    private func setupCaptureSession() {
+        let session = AVCaptureSession()
+        session.beginConfiguration()
+        
+        if let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front),
+           let videoInput = try? AVCaptureDeviceInput(device: videoDevice),
+           session.canAddInput(videoInput) {
+            session.addInput(videoInput)
+            
+            let videoOutput = AVCaptureVideoDataOutput()
+            videoOutput.setSampleBufferDelegate(self, queue: captureQueue)
+            videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
+            
+            if session.canAddOutput(videoOutput) {
+                session.addOutput(videoOutput)
+            }
+        }
+        
+        session.commitConfiguration()
+        session.startRunning()
+        captureSession = session
+    }
+    
+    func applyFilter(_ filterName: String) {
+        // Filter selection would need to be implemented in FilterHelper
+        // Currently FilterHelper only has ColorFilterRenderer
+    }
+    
+
+    
+    func sendCameraFrame(_ sampleBuffer: CMSampleBuffer) -> CMSampleBuffer? {
+        guard let filterHelper = filterHelper else {
+            return sampleBuffer
+        }
+        return filterHelper.process(inputBuffer: sampleBuffer) ?? sampleBuffer
+    }
 }
 
-extension User: Codable, Hashable {
+extension User: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        let finalBuffer = filterHelper?.process(inputBuffer: sampleBuffer) ?? sampleBuffer
+        customImageSource?.onSampleBuffer(finalBuffer)
+    }
+}
+
+extension User: Codable {
     static func == (lhs: User, rhs: User) -> Bool {
         return lhs.username == rhs.username
     }
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(username)
-        hasher.combine(isHost)
-        hasher.combine(userId)
+    override var hash: Int {
+        return username.hashValue ^ isHost.hashValue ^ userId.hashValue
     }
 
     func encode(to encoder: Encoder) throws {

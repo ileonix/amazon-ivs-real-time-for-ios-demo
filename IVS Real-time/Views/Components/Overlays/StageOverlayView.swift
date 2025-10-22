@@ -95,7 +95,44 @@ struct StageOverlayView: View {
             }
             
             if appModel.user.isHost {
-                
+                //Single Product
+                if let product = viewModelForPick.currentProduct ?? productsViewModel.products.randomElement(),
+                    appModel.isConnected {
+                    VStack(spacing: 12) {
+                        VerticalProductSwiftUIView(product: product,
+                                                   showBottomSeparator: false,
+                                                   isCompact: true)
+                        VStack {
+                            Button("Add to Cart") {
+                                cartViewModel.addToCart(product)
+                            }
+                                .buttonStyle(CommerceButtonStyle(backgroundColor: .gray))
+                            Button("Buy Now") {
+                                isProductListVisible.toggle()
+                            }.buttonStyle(CommerceButtonStyle(backgroundColor: .orange))
+                        }
+                    }
+                    .frame(width: UIScreen.main.bounds.width / 3)
+                    .padding()
+                    .background(Color.black.opacity(0.7))
+                    .cornerRadius(16)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .scaleEffect(0.5)
+                    .position(x: productPosition.x + productDragOffset.width,
+                              y: productPosition.y + productDragOffset.height)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                productDragOffset = value.translation
+                            }
+                            .onEnded { value in
+                                
+                                productPosition.x += value.translation.width
+                                productPosition.y += value.translation.height
+                                productDragOffset = .zero
+                            }
+                    )
+                }
             } else {
                 VStack {
                     Spacer().frame(height: 50)
@@ -159,7 +196,8 @@ struct StageOverlayView: View {
                         .ignoresSafeArea(edges: .bottom)
                     } else {
                         //Single Product
-                        if let product = viewModelForPick.currentProduct ?? productsViewModel.products.randomElement() {
+                        if let product = viewModelForPick.currentProduct ?? productsViewModel.products.randomElement(),
+                            appModel.isConnected {
                             VStack(spacing: 12) {
                                 VerticalProductSwiftUIView(product: product,
                                                            showBottomSeparator: false,
@@ -178,23 +216,9 @@ struct StageOverlayView: View {
                             .padding()
                             .background(Color.black.opacity(0.7))
                             .cornerRadius(16)
-                            //.padding(.horizontal)
-                            //.fixedSize(horizontal: false, vertical: true)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                             .scaleEffect(0.5)
-                            .position(x: productPosition.x + productDragOffset.width,
-                                      y: productPosition.y + productDragOffset.height)
-                            .gesture(
-                                DragGesture()
-                                    .onChanged { value in
-                                        productDragOffset = value.translation
-                                    }
-                                    .onEnded { value in
-                                        productPosition.x += value.translation.width
-                                        productPosition.y += value.translation.height
-                                        productDragOffset = .zero
-                                    }
-                            )
+                            .position(x: productPosition.x, y: productPosition.y)
                         }
                     }
                 }.onAppear {

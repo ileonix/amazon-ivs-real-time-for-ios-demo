@@ -77,6 +77,7 @@ struct WelcomeView: View {
                          IVS-Realtime-Chat-Shop
                          let customerCode = "d2xcfozmvpjoaq"
                          let apiKey = "8bLC1rUNEaVF8qyz2XbG"
+                         ddqs04nk76rcv-gtc2T2d4mlkY9O6UnDJC
                          */
                         let customerCode = "ddqs04nk76rcv"
                         let apiKey = "gtc2T2d4mlkY9O6UnDJC"

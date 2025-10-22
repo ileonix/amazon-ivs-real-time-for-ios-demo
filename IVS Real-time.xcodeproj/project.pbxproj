@@ -70,6 +70,32 @@
 		EC551E452E98C891004DBBC0 /* CustomerShopLanding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */; };
 		EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */; };
 		EC551E4D2E9923B5004DBBC0 /* LocalPreviewCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */; };
+		ECA3188D2EA74FC4002EB9B9 /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA3188C2EA74FC4002EB9B9 /* WebSocketManager.swift */; };
+		ECA318AC2EA78B14002EB9B9 /* flower_face.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189F2EA78B14002EB9B9 /* flower_face.deepar */; };
+		ECA318AD2EA78B14002EB9B9 /* Fire_Effect.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189E2EA78B14002EB9B9 /* Fire_Effect.deepar */; };
+		ECA318AE2EA78B14002EB9B9 /* Humanoid.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A22EA78B14002EB9B9 /* Humanoid.deepar */; };
+		ECA318AF2EA78B14002EB9B9 /* Neon_Devil_Horns.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A42EA78B14002EB9B9 /* Neon_Devil_Horns.deepar */; };
+		ECA318B02EA78B14002EB9B9 /* Elephant_Trunk.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189B2EA78B14002EB9B9 /* Elephant_Trunk.deepar */; };
+		ECA318B12EA78B14002EB9B9 /* Hope.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A12EA78B14002EB9B9 /* Hope.deepar */; };
+		ECA318B22EA78B14002EB9B9 /* Emotion_Meter.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189C2EA78B14002EB9B9 /* Emotion_Meter.deepar */; };
+		ECA318B32EA78B14002EB9B9 /* Pixel_Hearts.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318992EA78B14002EB9B9 /* Pixel_Hearts.deepar */; };
+		ECA318B42EA78B14002EB9B9 /* burning_effect.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189A2EA78B14002EB9B9 /* burning_effect.deepar */; };
+		ECA318B52EA78B14002EB9B9 /* Snail.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A62EA78B14002EB9B9 /* Snail.deepar */; };
+		ECA318B62EA78B14002EB9B9 /* Split_View_Look.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A72EA78B14002EB9B9 /* Split_View_Look.deepar */; };
+		ECA318B72EA78B14002EB9B9 /* Stallone.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A82EA78B14002EB9B9 /* Stallone.deepar */; };
+		ECA318B82EA78B14002EB9B9 /* galaxy_background.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A02EA78B14002EB9B9 /* galaxy_background.deepar */; };
+		ECA318B92EA78B14002EB9B9 /* MakeupLook.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A32EA78B14002EB9B9 /* MakeupLook.deepar */; };
+		ECA318BA2EA78B14002EB9B9 /* Vendetta_Mask.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A92EA78B14002EB9B9 /* Vendetta_Mask.deepar */; };
+		ECA318BB2EA78B14002EB9B9 /* Ping_Pong.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A52EA78B14002EB9B9 /* Ping_Pong.deepar */; };
+		ECA318BC2EA78B14002EB9B9 /* makeup_kim.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318982EA78B14002EB9B9 /* makeup_kim.deepar */; };
+		ECA318BD2EA78B14002EB9B9 /* Emotions_Exaggerator.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189D2EA78B14002EB9B9 /* Emotions_Exaggerator.deepar */; };
+		ECA318BE2EA78B14002EB9B9 /* viking_helmet.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318AA2EA78B14002EB9B9 /* viking_helmet.deepar */; };
+		ECA318C32EA7A452002EB9B9 /* ColorFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318C02EA7A452002EB9B9 /* ColorFilterRenderer.swift */; };
+		ECA318C42EA7A452002EB9B9 /* FilterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318C12EA7A452002EB9B9 /* FilterHelper.swift */; };
+		ECA318C52EA7A452002EB9B9 /* LICENSE.Apple.txt in Resources */ = {isa = PBXBuildFile; fileRef = ECA318BF2EA7A452002EB9B9 /* LICENSE.Apple.txt */; };
+		ECA318C92EA7B78F002EB9B9 /* BroadcastModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318C72EA7B78F002EB9B9 /* BroadcastModels.swift */; };
+		ECA318CA2EA7B78F002EB9B9 /* StreamingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318C82EA7B78F002EB9B9 /* StreamingModel.swift */; };
+		ECA318CB2EA7B78F002EB9B9 /* BroadcastModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318C62EA7B78F002EB9B9 /* BroadcastModel.swift */; };
 		ECBAA4B52EA1E81E0056E526 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */; };
 		ECBAA4BF2EA5DC660056E526 /* ProductSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4BE2EA5DC630056E526 /* ProductSwiftUIView.swift */; };
 		ECBAA4C22EA5DCB90056E526 /* ProductsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4C12EA5DCB90056E526 /* ProductsContainerView.swift */; };
@@ -145,6 +171,32 @@
 		EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelection.swift; sourceTree = "<group>"; };
 		EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerShopLanding.swift; sourceTree = "<group>"; };
 		EC551E4C2E9923B5004DBBC0 /* LocalPreviewCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPreviewCache.swift; sourceTree = "<group>"; };
+		ECA3188C2EA74FC4002EB9B9 /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
+		ECA318982EA78B14002EB9B9 /* makeup_kim.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = makeup_kim.deepar; sourceTree = "<group>"; };
+		ECA318992EA78B14002EB9B9 /* Pixel_Hearts.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pixel_Hearts.deepar; sourceTree = "<group>"; };
+		ECA3189A2EA78B14002EB9B9 /* burning_effect.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = burning_effect.deepar; sourceTree = "<group>"; };
+		ECA3189B2EA78B14002EB9B9 /* Elephant_Trunk.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Elephant_Trunk.deepar; sourceTree = "<group>"; };
+		ECA3189C2EA78B14002EB9B9 /* Emotion_Meter.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Emotion_Meter.deepar; sourceTree = "<group>"; };
+		ECA3189D2EA78B14002EB9B9 /* Emotions_Exaggerator.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Emotions_Exaggerator.deepar; sourceTree = "<group>"; };
+		ECA3189E2EA78B14002EB9B9 /* Fire_Effect.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fire_Effect.deepar; sourceTree = "<group>"; };
+		ECA3189F2EA78B14002EB9B9 /* flower_face.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = flower_face.deepar; sourceTree = "<group>"; };
+		ECA318A02EA78B14002EB9B9 /* galaxy_background.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = galaxy_background.deepar; sourceTree = "<group>"; };
+		ECA318A12EA78B14002EB9B9 /* Hope.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Hope.deepar; sourceTree = "<group>"; };
+		ECA318A22EA78B14002EB9B9 /* Humanoid.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Humanoid.deepar; sourceTree = "<group>"; };
+		ECA318A32EA78B14002EB9B9 /* MakeupLook.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = MakeupLook.deepar; sourceTree = "<group>"; };
+		ECA318A42EA78B14002EB9B9 /* Neon_Devil_Horns.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Neon_Devil_Horns.deepar; sourceTree = "<group>"; };
+		ECA318A52EA78B14002EB9B9 /* Ping_Pong.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ping_Pong.deepar; sourceTree = "<group>"; };
+		ECA318A62EA78B14002EB9B9 /* Snail.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Snail.deepar; sourceTree = "<group>"; };
+		ECA318A72EA78B14002EB9B9 /* Split_View_Look.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Split_View_Look.deepar; sourceTree = "<group>"; };
+		ECA318A82EA78B14002EB9B9 /* Stallone.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Stallone.deepar; sourceTree = "<group>"; };
+		ECA318A92EA78B14002EB9B9 /* Vendetta_Mask.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Vendetta_Mask.deepar; sourceTree = "<group>"; };
+		ECA318AA2EA78B14002EB9B9 /* viking_helmet.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = viking_helmet.deepar; sourceTree = "<group>"; };
+		ECA318BF2EA7A452002EB9B9 /* LICENSE.Apple.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.Apple.txt; sourceTree = "<group>"; };
+		ECA318C02EA7A452002EB9B9 /* ColorFilterRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorFilterRenderer.swift; sourceTree = "<group>"; };
+		ECA318C12EA7A452002EB9B9 /* FilterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterHelper.swift; sourceTree = "<group>"; };
+		ECA318C62EA7B78F002EB9B9 /* BroadcastModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastModel.swift; sourceTree = "<group>"; };
+		ECA318C72EA7B78F002EB9B9 /* BroadcastModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastModels.swift; sourceTree = "<group>"; };
+		ECA318C82EA7B78F002EB9B9 /* StreamingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingModel.swift; sourceTree = "<group>"; };
 		ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
 		ECBAA4BE2EA5DC630056E526 /* ProductSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSwiftUIView.swift; sourceTree = "<group>"; };
 		ECBAA4C12EA5DCB90056E526 /* ProductsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsContainerView.swift; sourceTree = "<group>"; };
@@ -181,6 +233,7 @@
 		4B10633929D421D200242A05 /* Overlays */ = {
 			isa = PBXGroup;
 			children = (
+				ECA3188C2EA74FC4002EB9B9 /* WebSocketManager.swift */,
 				4B10632F29D321E100242A05 /* StageOverlayView.swift */,
 				4B10634E29D465E700242A05 /* StageButtonsOverlayView.swift */,
 			);
@@ -234,6 +287,8 @@
 		4BB7FD3329D2BB9400E2894D /* IVS Real-time */ = {
 			isa = PBXGroup;
 			children = (
+				ECA318C22EA7A452002EB9B9 /* Filter */,
+				ECA318AB2EA78B14002EB9B9 /* Effects */,
 				ECBAA4C62EA5DD340056E526 /* Products.json */,
 				4B10633F29D45ACA00242A05 /* IVS-Real-time-Info.plist */,
 				4BCC450229D2BD59003F371E /* Constants.swift */,
@@ -269,6 +324,9 @@
 		4BCC450129D2BD43003F371E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				ECA318C62EA7B78F002EB9B9 /* BroadcastModel.swift */,
+				ECA318C72EA7B78F002EB9B9 /* BroadcastModels.swift */,
+				ECA318C82EA7B78F002EB9B9 /* StreamingModel.swift */,
 				ECBAA4C32EA5DCE50056E526 /* Products */,
 				4B10635E29D4808600242A05 /* Data */,
 				4BFB13D029D2DA6C00B9AB5E /* AppModel.swift */,
@@ -357,6 +415,42 @@
 			children = (
 			);
 			path = Merchant;
+			sourceTree = "<group>";
+		};
+		ECA318AB2EA78B14002EB9B9 /* Effects */ = {
+			isa = PBXGroup;
+			children = (
+				ECA318982EA78B14002EB9B9 /* makeup_kim.deepar */,
+				ECA318992EA78B14002EB9B9 /* Pixel_Hearts.deepar */,
+				ECA3189A2EA78B14002EB9B9 /* burning_effect.deepar */,
+				ECA3189B2EA78B14002EB9B9 /* Elephant_Trunk.deepar */,
+				ECA3189C2EA78B14002EB9B9 /* Emotion_Meter.deepar */,
+				ECA3189D2EA78B14002EB9B9 /* Emotions_Exaggerator.deepar */,
+				ECA3189E2EA78B14002EB9B9 /* Fire_Effect.deepar */,
+				ECA3189F2EA78B14002EB9B9 /* flower_face.deepar */,
+				ECA318A02EA78B14002EB9B9 /* galaxy_background.deepar */,
+				ECA318A12EA78B14002EB9B9 /* Hope.deepar */,
+				ECA318A22EA78B14002EB9B9 /* Humanoid.deepar */,
+				ECA318A32EA78B14002EB9B9 /* MakeupLook.deepar */,
+				ECA318A42EA78B14002EB9B9 /* Neon_Devil_Horns.deepar */,
+				ECA318A52EA78B14002EB9B9 /* Ping_Pong.deepar */,
+				ECA318A62EA78B14002EB9B9 /* Snail.deepar */,
+				ECA318A72EA78B14002EB9B9 /* Split_View_Look.deepar */,
+				ECA318A82EA78B14002EB9B9 /* Stallone.deepar */,
+				ECA318A92EA78B14002EB9B9 /* Vendetta_Mask.deepar */,
+				ECA318AA2EA78B14002EB9B9 /* viking_helmet.deepar */,
+			);
+			path = Effects;
+			sourceTree = "<group>";
+		};
+		ECA318C22EA7A452002EB9B9 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				ECA318BF2EA7A452002EB9B9 /* LICENSE.Apple.txt */,
+				ECA318C02EA7A452002EB9B9 /* ColorFilterRenderer.swift */,
+				ECA318C12EA7A452002EB9B9 /* FilterHelper.swift */,
+			);
+			path = Filter;
 			sourceTree = "<group>";
 		};
 		ECBAA4C02EA5DCB20056E526 /* Product */ = {
@@ -456,6 +550,26 @@
 				ECBAA4C72EA5DD340056E526 /* Products.json in Resources */,
 				4B10634829D45C8600242A05 /* Inter-ExtraBold.ttf in Resources */,
 				4B10634929D45C8600242A05 /* Inter-Black.ttf in Resources */,
+				ECA318AC2EA78B14002EB9B9 /* flower_face.deepar in Resources */,
+				ECA318AD2EA78B14002EB9B9 /* Fire_Effect.deepar in Resources */,
+				ECA318AE2EA78B14002EB9B9 /* Humanoid.deepar in Resources */,
+				ECA318AF2EA78B14002EB9B9 /* Neon_Devil_Horns.deepar in Resources */,
+				ECA318B02EA78B14002EB9B9 /* Elephant_Trunk.deepar in Resources */,
+				ECA318B12EA78B14002EB9B9 /* Hope.deepar in Resources */,
+				ECA318C52EA7A452002EB9B9 /* LICENSE.Apple.txt in Resources */,
+				ECA318B22EA78B14002EB9B9 /* Emotion_Meter.deepar in Resources */,
+				ECA318B32EA78B14002EB9B9 /* Pixel_Hearts.deepar in Resources */,
+				ECA318B42EA78B14002EB9B9 /* burning_effect.deepar in Resources */,
+				ECA318B52EA78B14002EB9B9 /* Snail.deepar in Resources */,
+				ECA318B62EA78B14002EB9B9 /* Split_View_Look.deepar in Resources */,
+				ECA318B72EA78B14002EB9B9 /* Stallone.deepar in Resources */,
+				ECA318B82EA78B14002EB9B9 /* galaxy_background.deepar in Resources */,
+				ECA318B92EA78B14002EB9B9 /* MakeupLook.deepar in Resources */,
+				ECA318BA2EA78B14002EB9B9 /* Vendetta_Mask.deepar in Resources */,
+				ECA318BB2EA78B14002EB9B9 /* Ping_Pong.deepar in Resources */,
+				ECA318BC2EA78B14002EB9B9 /* makeup_kim.deepar in Resources */,
+				ECA318BD2EA78B14002EB9B9 /* Emotions_Exaggerator.deepar in Resources */,
+				ECA318BE2EA78B14002EB9B9 /* viking_helmet.deepar in Resources */,
 				4BFB13D529D30F5500B9AB5E /* fruits.json in Resources */,
 				4BB7FD3929D2BB9400E2894D /* Assets.xcassets in Resources */,
 				4B10634B29D45C8600242A05 /* Inter-SemiBold.ttf in Resources */,
@@ -559,8 +673,12 @@
 				4BB7961829DAF408005A4521 /* ErrorView.swift in Sources */,
 				4BFB13D729D3100E00B9AB5E /* UsernameProvider.swift in Sources */,
 				4B10632A29D3200200242A05 /* VideoStageView.swift in Sources */,
+				ECA318C92EA7B78F002EB9B9 /* BroadcastModels.swift in Sources */,
+				ECA318CA2EA7B78F002EB9B9 /* StreamingModel.swift in Sources */,
+				ECA318CB2EA7B78F002EB9B9 /* BroadcastModel.swift in Sources */,
 				4BCC451029D2C95F003F371E /* View.swift in Sources */,
 				4B10633829D41CC600242A05 /* VideoView.swift in Sources */,
+				ECA3188D2EA74FC4002EB9B9 /* WebSocketManager.swift in Sources */,
 				4B10636429D5610A00242A05 /* PermissionsManager.swift in Sources */,
 				4B92D07D29E8240700DD440D /* DeviceShake.swift in Sources */,
 				4BB7FD3529D2BB9400E2894D /* IVSRealTimeApp.swift in Sources */,
@@ -571,6 +689,8 @@
 				4B10635B29D47F9D00242A05 /* ServerResponses.swift in Sources */,
 				4B10635529D47F1B00242A05 /* ChatMessagesView.swift in Sources */,
 				4BCC450829D2C45E003F371E /* SetupView.swift in Sources */,
+				ECA318C32EA7A452002EB9B9 /* ColorFilterRenderer.swift in Sources */,
+				ECA318C42EA7A452002EB9B9 /* FilterHelper.swift in Sources */,
 				EC551E4D2E9923B5004DBBC0 /* LocalPreviewCache.swift in Sources */,
 				4B32DFF429F7FFB900EAA130 /* JitterView.swift in Sources */,
 				4BCC450E29D2C787003F371E /* Modifiers.swift in Sources */,

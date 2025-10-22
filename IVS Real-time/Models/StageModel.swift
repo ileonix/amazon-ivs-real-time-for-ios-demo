@@ -123,19 +123,24 @@ class StageModel: NSObject, ObservableObject {
             if let cameraSource = camera.listAvailableInputSources()
                 .first(where: { position == .back ? $0.position == position && $0.isDefault : $0.position == position }) {
                 camera.delegate = self
+                print("CPK: FILTER Camera delegate set to StageModel")
                 print("ℹ local camera source: \(cameraSource)")
                 camera.setPreferredInputSource(cameraSource) { [weak self] in
                     if let error = $0 {
                         print("ℹ ❌ Error on setting preferred input source: \(error)")
                     } else {
                         self?.selectedCamera = cameraSource
+                        print("CPK: FILTER Camera source set successfully")
                     }
                     print("ℹ localy selected camera: \(String(describing: self?.selectedCamera))")
                 }
             }
             let ivsLocalStageStream = IVSLocalStageStream(device: camera, configuration: videoConfig)
+            print("CPK: FILTER Created local stage stream with camera")
             
             self.localStreams.append(ivsLocalStageStream)
+        } else {
+            print("CPK: FILTER No camera device found")
         }
     }
 
@@ -339,6 +344,16 @@ class StageModel: NSObject, ObservableObject {
             self.localUserWantsPublish = true
         }
 
+        // Setup custom image source and filters for local user
+        if user.isLocal {
+            user.setupFilterForPublisher()
+            
+            // Create custom image source for filtering
+            if let customImageSource = createCustomImageSource() {
+                user.setupCustomImageSource(customImageSource)
+            }
+        }
+
         if let participantId = user.participantId {
             toggleSubscribed(forParticipant: participantId)
         }
@@ -359,8 +374,16 @@ class StageModel: NSObject, ObservableObject {
         delegate?.participantLeftOrStoppedPublishing(user.participant)
     }
 
+    private func createCustomImageSource() -> IVSCustomImageSource? {
+        // For real-time stages, you need to use IVSBroadcastSession to create custom sources
+        // This is a limitation - real-time stages don't directly support custom sources
+        // You would need to implement a hybrid approach or use broadcast sessions
+        return nil
+    }
+    
     func leaveStage() {
         print("ℹ Leaving stage")
+        localUser.captureSession?.stopRunning()
         stage?.leave()
         DispatchQueue.main.async {
             while self.participantUsers.count > 1 {
@@ -672,13 +695,18 @@ class StageModel: NSObject, ObservableObject {
 
 extension StageModel: IVSCameraDelegate {
     func camera(_ camera: IVSCamera, didOutputSampleBuffer sampleBuffer: CMSampleBuffer) {
-        guard isRecording,
-              let writer = assetWriter, writer.status == .writing,
-              let input = assetWriterVideoInput,
-              input.isReadyForMoreMediaData else {
-            return
+        print("CPK: FILTER Camera delegate called - processing frame")
+        
+        // Apply filters to camera frames
+        let processedBuffer = localUser.sendCameraFrame(sampleBuffer) ?? sampleBuffer
+        
+        // Use filtered buffer for recording if recording is active
+        if isRecording,
+           let writer = assetWriter, writer.status == .writing,
+           let input = assetWriterVideoInput,
+           input.isReadyForMoreMediaData {
+            input.append(processedBuffer)
         }
-        input.append(sampleBuffer)
     }
 }
 
