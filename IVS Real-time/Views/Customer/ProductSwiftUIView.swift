@@ -89,8 +89,11 @@ struct ProductSwiftUIView: View {
             }
             .padding()
             .onAppear {
-                if var url = URL(string: Constants2.productImageBaseUrl) {
-                    url.appendPathComponent(product.imageUrl)
+//                if var url = URL(string: Constants2.productImageBaseUrl) {
+//                    url.appendPathComponent(product.imageUrl)
+//                    imageLoader.load(from: url)
+//                }
+                if let url = URL(string: product.imageUrl) {
                     imageLoader.load(from: url)
                 }
             }
@@ -154,8 +157,11 @@ struct VerticalProductSwiftUIView: View {
         }
         .padding()
         .onAppear {
-            if var url = URL(string: Constants2.productImageBaseUrl) {
-                url.appendPathComponent(product.imageUrl)
+//            if var url = URL(string: Constants2.productImageBaseUrl) {
+//                url.appendPathComponent(product.imageUrl)
+//                imageLoader.load(from: url)
+//            }
+            if let url = URL(string: product.imageUrl) {
                 imageLoader.load(from: url)
             }
         }

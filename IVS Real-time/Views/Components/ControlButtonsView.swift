@@ -69,7 +69,8 @@ struct ControlButtonsView: View {
                     appModel.userWantsToLeaveStage = true
                 }
             }
-
+            
+            /* Ecommerce no need for this button interaction guest to on stage
             if stage.type != .audio && !appModel.user.isOnStage && !appModel.user.isHost {
                 ControlButton(icon: Image("user-plus"),
                               backColor: Color("ButtonBackgroundGray").opacity(0.8)) {
@@ -80,6 +81,14 @@ struct ControlButtonsView: View {
                             appModel.userWantsToJoinVideoStage = true
                         }
                     }
+                }
+            }
+             */
+            //TODO: remove when no need
+            if stage.type != .audio, !appModel.user.isHost {
+                ControlButton(textTitle: "ราคากี่บาท",
+                              backColor: Color("ButtonBackgroundGray").opacity(0.8)) {
+                    appModel.chatModel?.askForPrice(participantId: appModel.user.participantId ?? "-", productId: appModel.viewModelAllProduct.products.first?.id ?? "-")
                 }
             }
 
@@ -124,7 +133,8 @@ struct ControlButtonsView: View {
 }
 
 struct ControlButton: View {
-    var icon: Image
+    var icon: Image?
+    var textTitle: String?
     var iconColor: Color = .white
     var backColor: Color = Color("BackgroundDark").opacity(0.8)
     var action: () -> Void
@@ -137,9 +147,15 @@ struct ControlButton: View {
                 Circle()
                     .foregroundColor(backColor)
                     .frame(width: 42, height: 42)
-                icon
-                    .renderingMode(.template)
-                    .tint(iconColor)
+                if let textTitle = textTitle {
+                    Text(textTitle)
+                        .font(.caption)
+                        .foregroundColor(iconColor)
+                } else if let icon = icon {
+                    icon
+                        .renderingMode(.template)
+                        .tint(iconColor)
+                }
             }
         }
     }

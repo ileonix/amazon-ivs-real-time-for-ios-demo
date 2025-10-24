@@ -32,7 +32,8 @@ struct StageButtonsOverlayView: View {
             HStack(alignment: .bottom) {
                 ChatView(stage: stage)
 
-                ControlButtonsView(stage: stage, stageModel: appModel.stageModel)
+                ControlButtonsView(stage: stage,
+                                   stageModel: appModel.stageModel)
             }
             .frame(height: 400, alignment: .bottom)
             .padding(.bottom, 8)

@@ -68,7 +68,7 @@ struct SetupView: View {
                     if appModel.userRole == .merchant {
                         Button {
                             withAnimation {
-                                isStageSelectionPresent.toggle()
+                                appModel.createStage(.video)
                             }
                         } label: {
                             VStack(alignment: .leading) {
@@ -93,8 +93,7 @@ struct SetupView: View {
                     if appModel.userRole == .customer {
                         Button {
                             withAnimation {
-                                //appModel.isSetupCompleted.toggle()
-                                appModel.isReadyToGoCustomerLanding.toggle()
+                                appModel.isReadyToGoCustomerLanding = true
                             }
                         } label: {
                             VStack(alignment: .leading) {

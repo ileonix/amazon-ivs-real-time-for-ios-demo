@@ -7,41 +7,6 @@
 
 import SwiftUI
 
-class ProductListViewModel: NSObject, ObservableObject {
-    @Published var currentProduct: Product?
-    @Published var receivedProductsLine: [Product] = []
-
-    var products: [Product] = []
-    private let jsonDecoder = JSONDecoder()
-    private var productTimer: Timer?
-    @Published var productTimeLeft: Int = 0
-    
-    func showNextProduct() {
-//        guard !receivedProductsLine.isEmpty else {
-//            currentProduct = nil
-//            productTimer?.invalidate()
-//            return
-//        }
-        let nextProduct = products.randomElement()//receivedProductsLine.removeFirst()
-        currentProduct = nextProduct
-        startProductCountdown()
-    }
-
-    private func startProductCountdown() {
-        productTimer?.invalidate()
-        productTimeLeft = 10
-        productTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
-            if self.productTimeLeft > 0 {
-                self.productTimeLeft -= 1
-            } else {
-                self.productTimer?.invalidate()
-                self.showNextProduct()
-            }
-        }
-    }
-}
-
 struct StageOverlayView: View {
 
     enum TapState {
@@ -58,7 +23,8 @@ struct StageOverlayView: View {
     
     //Products
     @State private var playerState: PlayerState = .expanded
-    @StateObject private var productsViewModel = ProductsViewModel()
+//    @StateObject private var productsViewModel = ProductsViewModel()
+    @StateObject private var allProducts: ProductsViewModel = ProductsViewModel()
     @StateObject private var cartViewModel = CartViewModel()
     @State private var isProductListVisible: Bool = false
     // State for draggable product list
@@ -67,7 +33,7 @@ struct StageOverlayView: View {
     private let collapsedSize = CGSize(width: 120, height: 200)
     
     //Single product
-    @ObservedObject var viewModelForPick: ProductListViewModel = ProductListViewModel()
+    @State private var currentPinProduct: Product?
     @State private var productControlsVisible = true
     @State private var productDragOffset: CGSize = .zero
     @State private var productPosition: CGPoint = CGPoint(x: 100, y: 150) // Default top-left-ish
@@ -78,13 +44,13 @@ struct StageOverlayView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            if stage.type == .video {
-                MultiTapView {
-                    withAnimation {
-                        overlayHidden.toggle()
-                    }
-                }
-            }
+//            if stage.type == .video {
+//                MultiTapView {
+//                    withAnimation {
+//                        overlayHidden.toggle()
+//                    }
+//                }
+//            }
 
             VStack {
                 OverlayHeaderView()
@@ -94,44 +60,55 @@ struct StageOverlayView: View {
                     .opacity(overlayHidden ? 0 : 1)
             }
             
-            if appModel.user.isHost {
-                //Single Product
-                if let product = viewModelForPick.currentProduct ?? productsViewModel.products.randomElement(),
-                    appModel.isConnected {
-                    VStack(spacing: 12) {
-                        VerticalProductSwiftUIView(product: product,
-                                                   showBottomSeparator: false,
-                                                   isCompact: true)
-                        VStack {
-                            Button("Add to Cart") {
-                                cartViewModel.addToCart(product)
+            if appModel.user.isHost, stage.isJoined {
+                ZStack {
+                    //Single Product
+                    if let product = currentPinProduct,
+                        appModel.isConnected {
+                        VStack(spacing: 12) {
+                            VerticalProductSwiftUIView(product: product,
+                                                       showBottomSeparator: false,
+                                                       isCompact: true)
+                            VStack {
+                                Button("Unpin") {
+                                    self.currentPinProduct = nil
+                                }.buttonStyle(CommerceButtonStyle(backgroundColor: .red))
                             }
-                                .buttonStyle(CommerceButtonStyle(backgroundColor: .gray))
-                            Button("Buy Now") {
-                                isProductListVisible.toggle()
-                            }.buttonStyle(CommerceButtonStyle(backgroundColor: .orange))
                         }
+                        .frame(width: UIScreen.main.bounds.width / 3)
+                        .padding()
+                        .background(Color.black.opacity(0.7))
+                        .cornerRadius(16)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .scaleEffect(0.5)
+                        .position(x: productPosition.x + productDragOffset.width,
+                                  y: productPosition.y + productDragOffset.height)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    productDragOffset = value.translation
+                                    let realtimePosition = CGPoint(x: productPosition.x + productDragOffset.width, y: productPosition.y + productDragOffset.height)
+    //                                appModel.chatModel?.hostUpdatePinProductPosition(position: realtimePosition)
+                                }
+                                .onEnded { value in
+                                    productPosition.x += value.translation.width
+                                    productPosition.y += value.translation.height
+                                    productDragOffset = .zero
+                                    //If need less resource use this
+                                    appModel.chatModel?.hostUpdatePinProductPosition(position: productPosition)
+                                }
+                        )
                     }
-                    .frame(width: UIScreen.main.bounds.width / 3)
-                    .padding()
-                    .background(Color.black.opacity(0.7))
-                    .cornerRadius(16)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .scaleEffect(0.5)
-                    .position(x: productPosition.x + productDragOffset.width,
-                              y: productPosition.y + productDragOffset.height)
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                productDragOffset = value.translation
-                            }
-                            .onEnded { value in
-                                productPosition.x += value.translation.width
-                                productPosition.y += value.translation.height
-                                productDragOffset = .zero
-                                appModel.chatModel?.hostUpdatePinProductPosition(position: productPosition)
-                            }
-                    )
+                }.onAppear {
+                    print("CPK: HOST onAppear - isHost: \(appModel.user.isHost), isConnected: \(appModel.isConnected)")
+                    appModel.getProductList { products in
+                        print("CPK: HOST products fetched \(products.count)")
+                        self.allProducts.setProducts(products)
+                        //self.viewModelForPin.setCurrentPin(products.first)
+                        //products.first(where: { $0.isPinned })
+                        self.currentPinProduct = products.first
+                        print("CPK: HOST after setCurrentPin \(self.currentPinProduct?.name ?? "nil")")
+                    }
                 }
             } else {
                 VStack {
@@ -159,7 +136,7 @@ struct StageOverlayView: View {
                     
                     // Product List
                     if isProductListVisible {
-                        ProductListView(products: productsViewModel.products, playerState: $playerState, homeButtonAction: {
+                        ProductListView(products: allProducts.products, playerState: $playerState, homeButtonAction: {
                             withAnimation(.spring()) {
                                 isProductListVisible = false
                             }
@@ -196,7 +173,7 @@ struct StageOverlayView: View {
                         .ignoresSafeArea(edges: .bottom)
                     } else {
                         //Single Product
-                        if let product = viewModelForPick.currentProduct ?? productsViewModel.products.randomElement(),
+                        if let product = currentPinProduct,//viewModelForPin.currentProduct,
                             appModel.isConnected {
                             VStack(spacing: 12) {
                                 VerticalProductSwiftUIView(product: product,
@@ -223,8 +200,15 @@ struct StageOverlayView: View {
                         }
                     }
                 }.onAppear {
-                    viewModelForPick.products = productsViewModel.products
-                    viewModelForPick.showNextProduct()
+                    print("CPK: VIEWER onAppear - isHost: \(appModel.user.isHost), isConnected: \(appModel.isConnected)")
+                    appModel.getProductList { products in
+                        print("CPK: VIEWER products fetched \(products.count)")
+                        self.allProducts.setProducts(products)
+                        self.currentPinProduct = products.first
+                        print("CPK: VIEWER after setCurrentPin \(self.currentPinProduct?.name ?? "nil")")
+//                        self.viewModelForPin.setCurrentPin(products.first)
+//                        print("CPK: VIEWER after setCurrentPin - currentProduct: \(self.viewModelForPin.currentProduct?.name ?? "nil")")
+                    }
                 }
             }
         }
@@ -250,7 +234,8 @@ struct OverlayHeaderView: View {
                 } else {
                     appModel.leaveActiveStage {}
                 }
-
+                
+                appModel.isReadyToGoCustomerLanding = appModel.user.userRole == .customer
             } label: {
                 Image("arrow-small-left")
             }

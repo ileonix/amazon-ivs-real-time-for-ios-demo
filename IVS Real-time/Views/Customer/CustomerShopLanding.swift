@@ -47,16 +47,23 @@ struct CustomerShopLanding: View {
     ]
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 8) {
-                ShopAvatarView(avatars: avatars)
-                PromotionBannerSectionView(banners: banners, currentIndex: $currentBannerIndex)
-                ShopLivePreviewView(stagesModel: stagesModel, stageModel: stageModel)
-                    .environmentObject(appModel)
-                    .task {
-                        isStagesListEmpty = stagesModel.logicalStages.isEmpty
-                    }
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 8) {
+                    ShopAvatarView(avatars: avatars)
+                    PromotionBannerSectionView(banners: banners, currentIndex: $currentBannerIndex)
+                    ShopLivePreviewView(stagesModel: stagesModel, stageModel: stageModel)
+                        .environmentObject(appModel)
+                        .task {
+                            isStagesListEmpty = stagesModel.logicalStages.isEmpty
+                        }
+                }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading: Button("Back") {
+                appModel.isReadyToGoCustomerLanding = false
+                appModel.isSetupCompleted = false
+            })
         }
         .onAppear {
             startBannerTimer()
@@ -314,7 +321,7 @@ struct ShopLivePreviewView: View {
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
     @State private var isStagesListEmpty: Bool = false
-    @State var timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
+    @State var timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
     @State private var visibleIndex: Int = -1
     @State private var isLoading: Bool = true
     private let skeletonCount = 6
@@ -341,8 +348,8 @@ struct ShopLivePreviewView: View {
                     skeletonCell
                 }
             } else {
-                //ForEach(Array(appModel.stagesModel.logicalStages.enumerated()), id: \.offset) { index, stage in
-                ForEach(Array(mockStages.enumerated()), id: \.offset) { index, stage in
+                ForEach(Array(appModel.stagesModel.logicalStages.enumerated()), id: \.offset) { index, stage in
+//                ForEach(Array(mockStages.enumerated()), id: \.offset) { index, stage in
                     if stage.type == .video {
                         ShopPreviewCell(
                             stage: stage,
@@ -361,6 +368,8 @@ struct ShopLivePreviewView: View {
                         //.shadow(color: visibleIndex == index ? .green : .red, radius: 8)
                         .trackOffset(index: index)
                         .onTapGesture {
+                            appModel.isReadyToGoCustomerLanding = false
+                            appModel.selectedStage = stage
                             appModel.isSetupCompleted = true
                         }
                     }
@@ -411,11 +420,17 @@ struct ShopPreviewCell: View {
     @State private var previewImageUrl: String? = nil
     @State private var previewVideoUrl: String? = nil
     @State private var isVideoReady: Bool = false
-
+    @State private var preLoadViewEnable: Bool = true
     var isEnableVideoPreview: Bool = false
 
     var body: some View {
         ZStack {
+           Rectangle()
+               .border(Color.green, width: 1)
+               .background(Color.clear)
+               .aspectRatio(9/16, contentMode: .fit)
+               .cornerRadius(8)
+               .overlay(Text(stage.hostId).foregroundColor(.white))
             if let imgURL = previewImageUrl.flatMap(URL.init) {
                 WebImage(url: imgURL)
                     .resizable()
@@ -430,13 +445,6 @@ struct ShopPreviewCell: View {
                     .clipped()
                     .opacity(isVideoReady ? 1 : 0)
                     .animation(.easeInOut(duration: 0.3), value: isVideoReady)
-            } else {
-                //!isEnableVideoPreview && previewImageUrl == nil
-                Rectangle()
-                    .fill(Color.gray)
-                    .aspectRatio(9/16, contentMode: .fit)
-                    .cornerRadius(8)
-                    .overlay(Text(stage.hostId).foregroundColor(.white))
             }
         }
         .onAppear {
