@@ -50,6 +50,8 @@ struct Product: Decodable, Equatable {
     var price: Int
     var discountedPrice: Int
     var longDescription: String
+    var stock: Int
+    var isPinned: Bool
 
     func getImage(completion: @escaping (UIImage?) -> Void) {
         if var url = URL(string: Constants2.productImageBaseUrl) {
