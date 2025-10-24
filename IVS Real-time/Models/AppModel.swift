@@ -28,6 +28,7 @@ class AppModel: NSObject, ObservableObject {
     @Published var wasConnected: Bool = false
     @Published var isSetupCompleted: Bool = false
     @Published var isReadyToGoCustomerLanding: Bool = false
+    @Published var selectedStage: Stage? = nil
     @Published var isSimulcastOn: Bool = false {
         didSet {
             UserDefaults.standard.set(isSimulcastOn, forKey: Constants.kIsSimulcastOn)
