@@ -16,6 +16,7 @@ protocol ChatEventDelegate: AnyObject {
     func didReceive(_ reaction: String)
     func votingStarted()
     func didHostUpdatePinProductPosition(_ productPosition: CGPoint)
+    func didHostReplyPriceOf(_ productId: String) -> String?
 }
 
 class ChatModel: ObservableObject, Equatable, Hashable {
@@ -31,6 +32,7 @@ class ChatModel: ObservableObject, Equatable, Hashable {
     var eventDelegate: ChatEventDelegate?
     var tokenRequest: ChatTokenRequest?
     var room: ChatRoom?
+    var isHost: Bool = false
 
     @Published var messages: [Message] = []
 
@@ -81,9 +83,20 @@ class ChatModel: ObservableObject, Equatable, Hashable {
                           onFailure: { chatError in print("ℹ ❌ Error sending reaction: \(chatError)") })
     }
     
+    func askForPrice(participantId: String, productId: String) {
+        let request = SendMessageRequest(content: "askPrice",
+                                         attributes: ["type": MessageType.event.rawValue,
+                                                      "action": "askPrice",
+                                                      "productId": productId,
+                                                      "participantId": participantId])
+        room?.sendMessage(with: request,
+                          onSuccess: { _ in print("CPK: ask price of \(productId) by \(participantId) sent ✅") },
+                          onFailure: { chatError in print("ℹ ❌ Error sending reaction: \(chatError)") })
+    }
+    
     func hostUpdatePinProductPosition(position: CGPoint) {
         let hostScreenSize = "\(UIScreen.main.bounds.width),\(UIScreen.main.bounds.height)"
-        let request = SendMessageRequest(content: "heart",
+        let request = SendMessageRequest(content: "position",
                                          attributes: ["type": MessageType.event.rawValue,
                                                       "hostScreenSize": hostScreenSize,
                                                       "pinProductPosition": "\(position.x),\(position.y)"])
@@ -131,8 +144,61 @@ extension ChatModel: ChatRoomDelegate {
                     eventDelegate?.didHostUpdatePinProductPosition(newPosition)
                 }
             }
+            
+            //MARK: host action
+            if isHost {
+                if let action = message.attributes?["action"] {
+                    if action == "askPrice" {
+                        if let productId = message.attributes?["productId"], let participantId = message.attributes?["participantId"] {
+                            print("CPK: ask price of \(productId) by \(participantId) received 👀")
+                            if let priceReplyAnswer = eventDelegate?.didHostReplyPriceOf(productId) {
+                                let botReplyMessage = priceReplyAnswer
+                                let sendRequest = SendMessageRequest(content: botReplyMessage)
+                                room.sendMessage(with: sendRequest,
+                                                  onSuccess: { _ in
+                                    print("CPK: reply price success")
+                                }, onFailure: { chatError in
+                                    print("CPK: reply price ℹ ❌ Error sending message: \(chatError)")
+                                })
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             DispatchQueue.main.async {
+                if self.isHost {
+                    if message.content.contains("กี่สี") {
+                        let botReplyMessage = "มี 3 สี แดง น้ำเงิน ขาว ครับคุณลูกค้า"
+                        let sendRequest = SendMessageRequest(content: botReplyMessage)
+                        room.sendMessage(with: sendRequest,
+                                          onSuccess: { _ in
+                            print("CPK: reply color success")
+                        }, onFailure: { chatError in
+                            print("CPK: reply color ℹ ❌ Error sending message: \(chatError)")
+                        })
+                    }
+                    if message.content.contains("กี่ไซส์") {
+                        let botReplyMessage = "มี S, M, L, XL ครับคุณลูกค้า"
+                        let sendRequest = SendMessageRequest(content: botReplyMessage)
+                        room.sendMessage(with: sendRequest,
+                                          onSuccess: { _ in
+                            print("CPK: reply size success")
+                        }, onFailure: { chatError in
+                            print("CPK: reply size ℹ ❌ Error sending message: \(chatError)")
+                        })
+                    }
+                    if message.content.contains("เหลือ") {
+                        let botReplyMessage = "25 ชิ้นครับคุณลูกค้า"
+                        let sendRequest = SendMessageRequest(content: botReplyMessage)
+                        room.sendMessage(with: sendRequest,
+                                          onSuccess: { _ in
+                            print("CPK: reply remain success")
+                        }, onFailure: { chatError in
+                            print("CPK: reply remain ℹ ❌ Error sending message: \(chatError)")
+                        })
+                    }
+                }
                 self.messages.append(Message(type: .message, message: message))
                 // Store only last 10 messages
                 if self.messages.count > 10 {
