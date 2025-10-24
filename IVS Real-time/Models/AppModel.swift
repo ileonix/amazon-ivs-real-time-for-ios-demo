@@ -13,6 +13,7 @@ class AppModel: NSObject, ObservableObject {
     @ObservedObject var server: ServerModel
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
+    @ObservedObject var viewModelAllProduct: ProductsViewModel
     @Published var user: User
     var userRole: UserRole? {
         get {
@@ -108,7 +109,7 @@ class AppModel: NSObject, ObservableObject {
         self.stageModel = StageModel()
         self.isSimulcastOn = UserDefaults.standard.bool(forKey: Constants.kIsSimulcastOn)
         self.isStatsOn = UserDefaults.standard.bool(forKey: Constants.kIsStatsOn)
-        
+        self.viewModelAllProduct = ProductsViewModel()
         super.init()
         
         self.dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
@@ -134,6 +135,26 @@ class AppModel: NSObject, ObservableObject {
             withAnimation {
                 self.isLoading = value
             }
+        }
+    }
+    
+    //MARK: Ecommerce call
+    func getProductList(onComplete: @escaping ([Product]) -> Void) {
+        server.getProductList() { [weak self] products in
+            guard let self = self else { return }
+            self.viewModelAllProduct.setProductsFromEcommerce(products)
+            let eProducts = products.map {
+                Product(id: $0.id,
+                        name: $0.title,
+                        imageUrl: $0.imageUrl,
+                        imageLargeUrl: $0.imageUrl,
+                        price: $0.price,
+                        discountedPrice: Int(Double($0.price) * 0.9),
+                        longDescription: $0.title,
+                        stock: $0.stock,
+                        isPinned: $0.isPinned)
+            }
+            onComplete(eProducts)
         }
     }
 
