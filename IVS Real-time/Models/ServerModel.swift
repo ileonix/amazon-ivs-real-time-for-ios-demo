@@ -38,6 +38,10 @@ class ServerModel: ObservableObject {
         case disconnect
     }
     
+    enum EcommerceEndpoint: String {
+        case products
+    }
+    
     enum HTTPMethod: String {
         case GET
         case POST
@@ -563,5 +567,100 @@ class ServerModel: ObservableObject {
             }
         }
         .resume()
+    }
+    
+    //MARK: Ecommerce Product API
+    //MARK: Ecommerce customer API
+    func getProductList(onComplete: @escaping ([ECommerceProduct]) -> Void) {
+        sendEcommerceAPI(.GET, endpoint: .products, body: nil, onComplete: { [weak self] success, data, error in
+            guard let self = self else { return }
+            if let error = error {
+                print("CPK: ℹ ❌ \(error)")
+                onComplete([])
+            }
+            guard let data = data else {
+                print("CPK: ℹ ❌ No data in response")
+                onComplete([])
+                return
+            }
+            do {
+                let productList = try JSONDecoder().decode([ECommerceProduct].self, from: data)
+                onComplete(productList)
+            } catch {
+                print("CPK: ❌ \(error)")
+                onComplete([])
+                return
+            }
+        })
+    }
+    
+    //MARK: Ecommerce merchant API
+    
+    
+    private func sendEcommerceAPI(_ method: HTTPMethod, endpoint: EcommerceEndpoint, body: String?, queryItems: [URLQueryItem]? = nil, onComplete: @escaping (Bool, Data?, String?) -> Void) {
+        let urlComponents = NSURLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = "\(Constants.ECOMMERECE_API_URL)"
+        urlComponents.queryItems = queryItems
+        urlComponents.path = "/api/\(endpoint.rawValue)"
+
+        guard let url = urlComponents.url else {
+            onComplete(false, nil, "Couldn't get url from URLComponents")
+            return
+        }
+
+        //let session = URLSession(configuration: .default) //For Prod
+        let session = URLSession(configuration: .default, delegate: UnsafeSessionDelegate(), delegateQueue: nil) //TODO: For prevent SSL from ngrok only not for Production
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 30
+        request.httpMethod = method.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let body = body {
+            request.httpBody = body.data(using: .utf8)
+        }
+
+        print("CPK: ℹ 🔗 sending \(method) '\(url.absoluteString)' \(body != nil ? "with body: \(body!)" : "")")
+
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("CPK: ℹ 🔗 ❌ Failed to send '\(method)' to '\(endpoint)': \(error)")
+                onComplete(false, nil, error.localizedDescription)
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse {
+                if ![200, 201, 204].contains(httpResponse.statusCode) {
+                    print("CPK: ℹ 🔗 Got status code \(httpResponse.statusCode) when sending \(request)")
+                    if let data = data, let response = String(data: data, encoding: .utf8) {
+                        print(response)
+                        onComplete(false, nil, "Got status code \(httpResponse.statusCode) with response: \(response)")
+                    } else {
+                        print("ℹ 🔗 ❌ Got status code \(httpResponse.statusCode) when sending \(method) to \(request)")
+                    }
+                    return
+                }
+
+                print("ℹ 🔗 sent \(method) to '\(endpoint)' successfully")
+                onComplete(true, data, nil)
+            }
+        }
+        .resume()
+    }
+}
+
+//TODO: For Testing only
+/*
+ ❌ Failed to send 'GET' to 'products': Error Domain=NSURLErrorDomain Code=-1200 "An SSL error has occurred and a secure connection to the server cannot be made." UserInfo={NSLocalizedRecoverySuggestion=Would you like to connect to the server anyway?, _kCFStreamErrorDomainKey=3, NSErrorPeerCertificateChainKey=(
+ CPK: ℹ ❌ An SSL error has occurred and a secure connection to the server cannot be made.
+ */
+class UnsafeSessionDelegate: NSObject, URLSessionDelegate {
+    func urlSession(_ session: URLSession,
+                    didReceive challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        
+        // Trust any certificate (for dev only!)
+        let credential = URLCredential(trust: challenge.protectionSpace.serverTrust!)
+        completionHandler(.useCredential, credential)
     }
 }

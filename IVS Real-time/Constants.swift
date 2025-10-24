@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Constants {
     static let API_URL = "cloudfront.net"
+    static let ECOMMERECE_API_URL = "implorable-tisa-intercondyloid.ngrok-free.dev"
 
     // App fonts
     static let fRobotoMonoBold = Font.custom("RobotoMono-Bold", size: 16)
