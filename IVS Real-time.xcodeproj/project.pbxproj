@@ -69,7 +69,6 @@
 		EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */; };
 		EC551E452E98C891004DBBC0 /* CustomerShopLanding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */; };
 		EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */; };
-		ECA3188D2EA74FC4002EB9B9 /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA3188C2EA74FC4002EB9B9 /* WebSocketManager.swift */; };
 		ECA318AC2EA78B14002EB9B9 /* flower_face.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189F2EA78B14002EB9B9 /* flower_face.deepar */; };
 		ECA318AD2EA78B14002EB9B9 /* Fire_Effect.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189E2EA78B14002EB9B9 /* Fire_Effect.deepar */; };
 		ECA318AE2EA78B14002EB9B9 /* Humanoid.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A22EA78B14002EB9B9 /* Humanoid.deepar */; };
@@ -170,7 +169,6 @@
 		EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecorder.swift; sourceTree = "<group>"; };
 		EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelection.swift; sourceTree = "<group>"; };
 		EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerShopLanding.swift; sourceTree = "<group>"; };
-		ECA3188C2EA74FC4002EB9B9 /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		ECA318982EA78B14002EB9B9 /* makeup_kim.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = makeup_kim.deepar; sourceTree = "<group>"; };
 		ECA318992EA78B14002EB9B9 /* Pixel_Hearts.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pixel_Hearts.deepar; sourceTree = "<group>"; };
 		ECA3189A2EA78B14002EB9B9 /* burning_effect.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = burning_effect.deepar; sourceTree = "<group>"; };
@@ -233,7 +231,6 @@
 		4B10633929D421D200242A05 /* Overlays */ = {
 			isa = PBXGroup;
 			children = (
-				ECA3188C2EA74FC4002EB9B9 /* WebSocketManager.swift */,
 				4B10632F29D321E100242A05 /* StageOverlayView.swift */,
 				4B10634E29D465E700242A05 /* StageButtonsOverlayView.swift */,
 			);
@@ -679,7 +676,6 @@
 				ECA318CB2EA7B78F002EB9B9 /* BroadcastModel.swift in Sources */,
 				4BCC451029D2C95F003F371E /* View.swift in Sources */,
 				4B10633829D41CC600242A05 /* VideoView.swift in Sources */,
-				ECA3188D2EA74FC4002EB9B9 /* WebSocketManager.swift in Sources */,
 				4B10636429D5610A00242A05 /* PermissionsManager.swift in Sources */,
 				4B92D07D29E8240700DD440D /* DeviceShake.swift in Sources */,
 				4BB7FD3529D2BB9400E2894D /* IVSRealTimeApp.swift in Sources */,
