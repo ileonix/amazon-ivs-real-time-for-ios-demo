@@ -456,6 +456,7 @@ class AppModel: NSObject, ObservableObject {
             }
 
             self.chatModel = ChatModel()
+            self.chatModel?.isHost = user.isHost
             chatModel?.eventDelegate = self
         }
 
@@ -942,5 +943,12 @@ extension AppModel: ChatEventDelegate {
         DispatchQueue.main.async {
             self.pinProductPosition = productPosition
         }
+    }
+    
+    func didHostReplyPriceOf(_ productId: String) -> String? {
+        let product = self.viewModelAllProduct.products.first(where: {
+            $0.id == productId
+        })
+        return "\(product?.name) จากราคา \(product?.price) เหลือเพียง \(product?.discountedPrice)"
     }
 }
