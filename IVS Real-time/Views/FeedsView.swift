@@ -15,7 +15,7 @@ struct FeedsView: View {
     @State private var isStagesListEmpty: Bool = false
     @State private var temporaryYOffset: CGFloat = 0
     @State private var isDebugViewVisible: Bool = false
-    @State var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    @State private var timer = Timer.publish(every: 300, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack(alignment: .top) {
