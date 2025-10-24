@@ -13,105 +13,62 @@ enum PlayerState {
 
 class ProductsViewModel: ObservableObject {
     @Published var products: [Product] = []
-
+//    @Published var serverModel: ServerModel
     init() {
-        loadProducts()
+//        self.serverModel = ServerModel()
+//        loadProducts()
     }
-
-    private func loadProducts() {
-        if let path = Bundle.main.path(forResource: "Products", ofType: "json") {
-            do {
-                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-                self.products = try JSONDecoder().decode(Products.self, from: data).items
-            } catch {
-                print("‼️ Error decoding products: \(error)")
-            }
+    
+    func setProductsFromEcommerce(_ products: [ECommerceProduct]) {
+        let eProducts = products.map {
+            Product(id: $0.id,
+                    name: $0.title,
+                    imageUrl: $0.imageUrl,
+                    imageLargeUrl: $0.imageUrl,
+                    price: $0.price,
+                    discountedPrice: Int(Double($0.price) * 0.9),
+                    longDescription: $0.title,
+                    stock: $0.stock,
+                    isPinned: $0.isPinned)
+        }
+        DispatchQueue.main.async {
+            self.products = eProducts
         }
     }
-}
+    
+    func setProducts(_ products: [Product]) {
+        DispatchQueue.main.async {
+            self.products = products
+        }
+    }
 
-//struct ProductsContainerView: View {
-//    @StateObject private var productsViewModel = ProductsViewModel()
-//    @StateObject private var playerViewModel = PlayerViewModel()
-//
-//    @State private var playerState: PlayerState = .expanded
-//    @State private var playerDragOffset: CGSize = .zero
-//    @State private var playerEndDragOffset: CGSize = .zero
-//    
-//    @State private var isProductListVisible: Bool = false
-//    // State for draggable product list
-//    @State private var productListOffset: CGFloat = 0
-//    @State private var productListDragOffset: CGFloat = 0
-//
-//    private let collapsedSize = CGSize(width: 120, height: 200)
-//
-//    var body: some View {
-//        GeometryReader { geometry in
-//            ZStack {
-//                // Expanded Player View (background)
-//                if playerState == .expanded {
-//                    PlayerSwiftUIView(viewModel: playerViewModel, isProductListVisible: $isProductListVisible)
-//                        .edgesIgnoringSafeArea(.all)
-//                        .onAppear {
-//                            if productListOffset == 0 {
-//                                productListOffset = geometry.size.height - 250
-//                            }
-//                            playerViewModel.products = productsViewModel.products
-//                        }
-//                } else {
-//                    Color.black.edgesIgnoringSafeArea(.all)
-//                }
-//
-//                // Product List
-//                if isProductListVisible {
-//                    ProductListView(products: productsViewModel.products, playerState: $playerState, homeButtonAction: {
-//                        withAnimation(.spring()) {
-//                            isProductListVisible = false
-//                        }
-//                    })
-//                    .background(Color.black.opacity(0.8))
-//                    .cornerRadius(30)
-//                    .animation(.spring(), value: playerState)
-//                    .transition(.asymmetric(
-//                        insertion: .identity,
-//                        removal: .move(edge: .bottom).combined(with: .opacity)
-//                    ))
-//                    .ignoresSafeArea(edges: .bottom)
-//                }
-//
-//                // Collapsed Player View
-//                if playerState == .collapsed {
-//                    PlayerSwiftUIView(viewModel: playerViewModel, isProductListVisible: .constant(false))
-//                        .frame(width: collapsedSize.width, height: collapsedSize.height)
-//                        .cornerRadius(10)
-//                        .shadow(radius: 5)
-//                        .offset(playerDragOffset)
-//                        .position(
-//                            x: geometry.size.width - (collapsedSize.width / 2) - 20 + playerEndDragOffset.width,
-//                            y: geometry.size.height - (collapsedSize.height / 2) - 50 - geometry.safeAreaInsets.bottom + playerEndDragOffset.height
-//                        )
-//                        .gesture(
-//                            DragGesture()
-//                                .onChanged { value in
-//                                    self.playerDragOffset = value.translation
-//                                }
-//                                .onEnded { value in
-//                                    self.playerEndDragOffset.width += value.translation.width
-//                                    self.playerEndDragOffset.height += value.translation.height
-//                                    self.playerDragOffset = .zero
-//                                }
-//                        )
-//                        .onTapGesture {
-//                            withAnimation {
-//                                playerState = .expanded
-//                            }
-//                        }
-//                        .transition(.asymmetric(insertion: .opacity.combined(with: .scale), removal: .opacity))
-//                }
+//    private func loadProducts() {
+//        if let path = Bundle.main.path(forResource: "Products", ofType: "json") {
+//            do {
+//                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+//                self.products = try JSONDecoder().decode(Products.self, from: data).items
+//            } catch {
+//                print("‼️ Error decoding products: \(error)")
+//            }
+//        }
+//        serverModel.getProductList { products in
+//            let eProducts = products.map {
+//                Product(id: $0.id,
+//                        name: $0.title,
+//                        imageUrl: $0.imageUrl,
+//                        imageLargeUrl: $0.imageUrl,
+//                        price: $0.price,
+//                        discountedPrice: Int(Double($0.price) * 0.9),
+//                        longDescription: $0.title,
+//                        stock: $0.stock,
+//                        isPinned: $0.isPinned)
+//            }
+//            DispatchQueue.main.async {
+//                self.products = eProducts
 //            }
 //        }
 //    }
-//}
+}
 
 struct ProductListView: View {
     let products: [Product]
