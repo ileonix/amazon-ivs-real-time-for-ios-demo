@@ -41,36 +41,29 @@ class ProductsViewModel: ObservableObject {
             self.products = products
         }
     }
+    
+    func decrementStock(productId: String) {
+        if let index = products.firstIndex(where: { $0.id == productId }) {
+            if products[index].stock > 0 {
+                products[index].stock -= 1
+            }
+        }
+    }
+    
+    func incrementStock(productId: String) {
+        if let index = products.firstIndex(where: { $0.id == productId }) {
+            products[index].stock += 1
+        }
+    }
 
-//    private func loadProducts() {
-//        if let path = Bundle.main.path(forResource: "Products", ofType: "json") {
-//            do {
-//                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-//                self.products = try JSONDecoder().decode(Products.self, from: data).items
-//            } catch {
-//                print("‼️ Error decoding products: \(error)")
-//            }
-//        }
-//        serverModel.getProductList { products in
-//            let eProducts = products.map {
-//                Product(id: $0.id,
-//                        name: $0.title,
-//                        imageUrl: $0.imageUrl,
-//                        imageLargeUrl: $0.imageUrl,
-//                        price: $0.price,
-//                        discountedPrice: Int(Double($0.price) * 0.9),
-//                        longDescription: $0.title,
-//                        stock: $0.stock,
-//                        isPinned: $0.isPinned)
-//            }
-//            DispatchQueue.main.async {
-//                self.products = eProducts
-//            }
-//        }
-//    }
+    func setPinProduct(productId: String) {
+        for (index, product) in products.enumerated() {
+            products[index].isPinned = product.id == productId
+        }
+    }
 }
 
-struct ProductListView: View {
+struct CustomerProductListView: View {
     let products: [Product]
     @Binding var playerState: PlayerState
     var homeButtonAction: () -> Void
@@ -168,6 +161,99 @@ struct ProductListView: View {
             UITableView.appearance().backgroundColor = .clear
             UITableViewCell.appearance().backgroundColor = .clear
         }
+    }
+}
+
+struct MerchantLiveProductListView: View {
+    let products: [Product]
+    @Binding var playerState: PlayerState
+    var homeButtonAction: () -> Void
+    @ObservedObject var productsViewModel: ProductsViewModel
+    @State private var headerAlpha: Double = 1.0
+    @State private var showingWarehouse = false
+
+    private var headerTitle: some View {
+        Text("รายการสินค้าขายในไลฟ์")
+            .font(.custom("AmazonEmber-Bold", size: 24))
+            .foregroundColor(.clear)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    private var headerButtons: some View {
+        HStack {
+            Text("รายการสินค้าขายในไลฟ์")
+                .font(.custom("AmazonEmber-Bold", size: 24))
+                .foregroundColor(.white)
+            Spacer()
+            Button("Warehouse") { showingWarehouse = true }
+                .foregroundColor(.white)
+            Button("✕", action: homeButtonAction)
+                .foregroundColor(.white)
+        }
+        .padding(.horizontal)
+        .opacity(playerState == .expanded ? 1 : 0)
+        .animation(.default, value: playerState)
+    }
+    
+    private var dragIndicator: some View {
+        Capsule()
+            .fill(Color.gray)
+            .frame(width: 40, height: 5)
+            .padding(.top, 8)
+    }
+    
+    private var scrollReader: some View {
+        GeometryReader { proxy in
+            Color.clear.preference(key: ScrollOffsetPreferenceKey.self, value: proxy.frame(in: .named("scroll")).minY)
+        }
+    }
+    
+    private var sectionHeader: some View {
+        headerTitle
+            .overlay(headerButtons)
+            .overlay(dragIndicator, alignment: .top)
+            .padding(.vertical)
+            .opacity(headerAlpha)
+            .background(scrollReader)
+    }
+    
+    private var productsList: some View {
+        List {
+            Section(header: sectionHeader) {
+                ForEach(products, id: \.id) { product in
+                    MerchantProductInLiveSwiftUIView(product: product,
+                                                     showBottomSeparator: product.id != products.last?.id,
+                                                     productsViewModel: productsViewModel)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
+                }
+            }
+        }
+    }
+
+    var body: some View {
+        productsList
+            .coordinateSpace(name: "scroll")
+            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                let offset = value
+                var alpha: CGFloat = 1
+                if offset < -20 {
+                    alpha = max(0, (100 + offset) / 100)
+                }
+                self.headerAlpha = alpha
+            }
+            .listStyle(.plain)
+            .background(Color.clear)
+            .navigationTitle("")
+            .navigationBarHidden(true)
+            .sheet(isPresented: $showingWarehouse) {
+                WarehouseStockView(productsViewModel: productsViewModel)
+            }
+            .onAppear {
+                UITableView.appearance().backgroundColor = .clear
+                UITableViewCell.appearance().backgroundColor = .clear
+            }
     }
 }
 

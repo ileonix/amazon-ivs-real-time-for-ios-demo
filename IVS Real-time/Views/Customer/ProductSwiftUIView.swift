@@ -105,6 +105,75 @@ struct ProductSwiftUIView: View {
     }
 }
 
+struct MerchantProductInLiveSwiftUIView: View {
+    let product: Product
+    let showBottomSeparator: Bool
+    var productsViewModel: ProductsViewModel?
+
+    @StateObject private var imageLoader = ImageLoader()
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Spacer(minLength: 0)
+            HStack(spacing: 16) {
+                if let image = imageLoader.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: ContentMode.fill)
+                        .frame(width: 80, height: 80)
+                        .cornerRadius(10)
+                        .clipped()
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 80, height: 80)
+                        .cornerRadius(10)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(product.name)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    HStack {
+                        Text("฿\(product.discountedPrice)")
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                        Text("stock \(product.price) units")
+                            .font(.caption)
+                            .strikethrough()
+                            .foregroundColor(.gray)
+                        if product.discountedPrice != product.price {
+                            Text("฿\(product.price)")
+                                .font(.caption)
+                                .strikethrough()
+                                .foregroundColor(.gray)
+                        }
+                        
+                    }
+                }
+                
+                Spacer()
+                
+                Button("Pin") {
+                    productsViewModel?.setPinProduct(productId: product.id)
+                }
+                .buttonStyle(CommerceButtonStyle(backgroundColor: (productsViewModel?.products.first(where: { $0.isPinned })?.isPinned ?? false) ? .green : .gray))
+                .frame(width: 100)
+            }
+            .padding()
+            .onAppear {
+                if let url = URL(string: product.imageUrl) {
+                    imageLoader.load(from: url)
+                }
+            }
+
+            if showBottomSeparator {
+                Divider().background(Color.gray)
+            }
+        }
+    }
+}
+
 struct VerticalProductSwiftUIView: View {
     let product: Product
     let showBottomSeparator: Bool
