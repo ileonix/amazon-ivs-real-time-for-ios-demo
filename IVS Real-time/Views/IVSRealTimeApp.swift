@@ -33,7 +33,19 @@ struct RootView: View {
                                         stageModel: appModel.stageModel)
                         .environmentObject(appModel)
                         .transition(.move(edge: .trailing))
-                } else if appModel.isSetupCompleted && (appModel.userRole == .merchant || appModel.userRole == .customer) {
+                } else if let selectedStage = appModel.selectedStage, appModel.userRole == .customer {
+                    VideoStageView(stage: selectedStage)
+                        .environmentObject(appModel)
+                        .transition(.move(edge: .trailing))
+                        .onAppear {
+                            appModel.shouldJoinActiveStage = true
+                            // Directly join the selected stage
+                            appModel.join(selectedStage)
+                        }
+                        .onDisappear {
+                            appModel.shouldJoinActiveStage = false
+                        }
+                } else if appModel.isSetupCompleted && appModel.userRole == .merchant {
                     FeedsView(stagesModel: appModel.stagesModel,
                               stageModel: appModel.stageModel)
                         .environmentObject(appModel)
@@ -52,6 +64,7 @@ struct RootView: View {
             .animation(.easeInOut, value: appModel.isConnected)
             .animation(.easeInOut, value: appModel.isSetupCompleted)
             .animation(.easeInOut, value: appModel.isReadyToGoCustomerLanding)
+            .animation(.easeInOut, value: appModel.selectedStage)
             .onFirstAppear {
                 checkAVPermissions { granted in
                     if !granted {

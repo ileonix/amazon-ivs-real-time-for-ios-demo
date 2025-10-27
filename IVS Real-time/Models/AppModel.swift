@@ -573,9 +573,9 @@ class AppModel: NSObject, ObservableObject {
         }
     }
 
-    private func join(_ stage: Stage) {
+    func join(_ stage: Stage) {
         guard !stageJoinInProgress else {
-            print("ℹ stage is already being joined")
+            print("ℹCPK: stage is already being joined")
             return
         }
         stageJoinInProgress = true

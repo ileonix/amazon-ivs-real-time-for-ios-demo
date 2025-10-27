@@ -374,7 +374,6 @@ struct ShopLivePreviewView: View {
                         .onTapGesture {
                             appModel.isReadyToGoCustomerLanding = false
                             appModel.selectedStage = stage
-                            appModel.isSetupCompleted = true
                         }
                     }
                 }
