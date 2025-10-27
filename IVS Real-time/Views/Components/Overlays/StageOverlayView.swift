@@ -284,6 +284,13 @@ struct OverlayHeaderView: View {
     var body: some View {
         HStack {
             Button {
+                // Clear selectedStage first if it exists
+                if appModel.selectedStage != nil {
+                    appModel.selectedStage = nil
+                    appModel.isReadyToGoCustomerLanding = appModel.user.userRole == .customer
+                    return
+                }
+                
                 withAnimation {
                     appModel.isSetupCompleted.toggle()
                 }

@@ -39,6 +39,7 @@ struct RootView: View {
                         .transition(.move(edge: .trailing))
                         .onAppear {
                             appModel.shouldJoinActiveStage = true
+                            appModel.isSetupCompleted = true
                             // Directly join the selected stage
                             appModel.join(selectedStage)
                         }
