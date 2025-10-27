@@ -47,23 +47,27 @@ struct CustomerShopLanding: View {
     ]
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 8) {
-                    ShopAvatarView(avatars: avatars)
-                    PromotionBannerSectionView(banners: banners, currentIndex: $currentBannerIndex)
-                    ShopLivePreviewView(stagesModel: stagesModel, stageModel: stageModel)
-                        .environmentObject(appModel)
-                        .task {
-                            isStagesListEmpty = stagesModel.logicalStages.isEmpty
-                        }
+        ScrollView {
+            VStack(spacing: 8) {
+                ShopAvatarView(avatars: avatars)
+                PromotionBannerSectionView(banners: banners, currentIndex: $currentBannerIndex)
+                ShopLivePreviewView(stagesModel: stagesModel, stageModel: stageModel)
+                    .environmentObject(appModel)
+                    .task {
+                        isStagesListEmpty = stagesModel.logicalStages.isEmpty
+                    }
+            }
+            .padding()
+        }
+        .navigationTitle("Shop Landing")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("Back") {
+                    appModel.isReadyToGoCustomerLanding = false
+                    appModel.isSetupCompleted = false
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Button("Back") {
-                appModel.isReadyToGoCustomerLanding = false
-                appModel.isSetupCompleted = false
-            })
         }
         .onAppear {
             startBannerTimer()

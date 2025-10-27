@@ -23,45 +23,47 @@ struct RootView: View {
     @EnvironmentObject var appModel: AppModel
 
     var body: some View {
-        ZStack {
-            if !appModel.isConnected {
-                WelcomeView()
-                    .transition(.move(edge: .leading))
-            } else if appModel.isReadyToGoCustomerLanding && appModel.userRole == .customer {
-                CustomerShopLanding(stagesModel: appModel.stagesModel,
-                                    stageModel: appModel.stageModel)
-                    .environmentObject(appModel)
-                    .transition(.move(edge: .trailing))
-            } else if appModel.isSetupCompleted && (appModel.userRole == .merchant || appModel.userRole == .customer) {
-                FeedsView(stagesModel: appModel.stagesModel,
-                          stageModel: appModel.stageModel)
-                    .environmentObject(appModel)
-                    .transition(.move(edge: .trailing))
-            } else if appModel.isConnected && !appModel.isSetupCompleted {
-                SetupView()
-                    .transition(.opacity)
-            }
-
-            if appModel.isLoading {
-                LoadingView()
-            }
-
-            ErrorView()
-        }
-        .animation(.easeInOut, value: appModel.isConnected)
-        .animation(.easeInOut, value: appModel.isSetupCompleted)
-        .animation(.easeInOut, value: appModel.isReadyToGoCustomerLanding)
-        .onFirstAppear {
-            checkAVPermissions { granted in
-                if !granted {
-                    appModel.appendErrorMessage("No camera/microphone permission granted")
+        NavigationView {
+            ZStack {
+                if !appModel.isConnected {
+                    WelcomeView()
+                        .transition(.move(edge: .leading))
+                } else if appModel.isReadyToGoCustomerLanding && appModel.userRole == .customer {
+                    CustomerShopLanding(stagesModel: appModel.stagesModel,
+                                        stageModel: appModel.stageModel)
+                        .environmentObject(appModel)
+                        .transition(.move(edge: .trailing))
+                } else if appModel.isSetupCompleted && (appModel.userRole == .merchant || appModel.userRole == .customer) {
+                    FeedsView(stagesModel: appModel.stagesModel,
+                              stageModel: appModel.stageModel)
+                        .environmentObject(appModel)
+                        .transition(.move(edge: .trailing))
+                } else if appModel.isConnected && !appModel.isSetupCompleted {
+                    SetupView()
+                        .transition(.opacity)
                 }
 
-                if UserDefaults.standard.string(forKey: Constants.kCustomerCode) != nil {
-                    appModel.verify(silent: true) { _ in }
+                if appModel.isLoading {
+                    LoadingView()
+                }
+
+                ErrorView()
+            }
+            .animation(.easeInOut, value: appModel.isConnected)
+            .animation(.easeInOut, value: appModel.isSetupCompleted)
+            .animation(.easeInOut, value: appModel.isReadyToGoCustomerLanding)
+            .onFirstAppear {
+                checkAVPermissions { granted in
+                    if !granted {
+                        appModel.appendErrorMessage("No camera/microphone permission granted")
+                    }
+
+                    if UserDefaults.standard.string(forKey: Constants.kCustomerCode) != nil {
+                        appModel.verify(silent: true) { _ in }
+                    }
                 }
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 //@main
