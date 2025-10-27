@@ -54,7 +54,7 @@ struct ChatView: View {
                         }
                         appModel.chatModel?.sendMessage(message, user: appModel.user, onComplete: { error in
                             if let error = error {
-                                print("ℹ ❌ Could not send chat message: \(error)")
+                                print("ℹCPK: ❌ Could not send chat message: \(error)")
                             } else {
                                 message = ""
                             }

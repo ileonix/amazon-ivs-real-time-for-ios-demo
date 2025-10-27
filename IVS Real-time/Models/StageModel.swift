@@ -124,15 +124,15 @@ class StageModel: NSObject, ObservableObject {
                 .first(where: { position == .back ? $0.position == position && $0.isDefault : $0.position == position }) {
                 camera.delegate = self
                 print("CPK: FILTER Camera delegate set to StageModel")
-                print("ℹ local camera source: \(cameraSource)")
+                print("ℹCPK: local camera source: \(cameraSource)")
                 camera.setPreferredInputSource(cameraSource) { [weak self] in
                     if let error = $0 {
-                        print("ℹ ❌ Error on setting preferred input source: \(error)")
+                        print("ℹCPK: ❌ Error on setting preferred input source: \(error)")
                     } else {
                         self?.selectedCamera = cameraSource
                         print("CPK: FILTER Camera source set successfully")
                     }
-                    print("ℹ localy selected camera: \(String(describing: self?.selectedCamera))")
+                    print("ℹCPK: localy selected camera: \(String(describing: self?.selectedCamera))")
                 }
             }
             let ivsLocalStageStream = IVSLocalStageStream(device: camera, configuration: videoConfig)
@@ -185,29 +185,29 @@ class StageModel: NSObject, ObservableObject {
     }
 
     @objc private func mediaServicesLost() {
-        print("ℹ ❌ media services were lost")
+        print("ℹCPK: ❌ media services were lost")
     }
 
     @objc private func mediaServicesReset() {
-        print("ℹ media services were reset")
+        print("ℹCPK: media services were reset")
     }
 
     func joinAsParticipant(_ token: String, onComplete: (Bool) -> Void) {
-        print("ℹ Joining stage as participant...")
+        print("ℹCPK: Joining stage as participant...")
         joinStage(token, onComplete: onComplete)
     }
 
     func joinAsHost(onComplete: @escaping (Bool) -> Void) {
-        print("ℹ Joining stage as host...")
+        print("ℹCPK: Joining stage as host...")
 
         guard let hostToken = localUser.hostParticipantToken else {
-            print("❌ Can't join - no auth token in host stage details")
+            print("iCPK:❌ Can't join - no auth token in host stage details")
             onComplete(false)
             return
         }
 
         joinStage(hostToken.tokenData.token) { success in
-            print("ℹ Stage joined as host")
+            print("ℹCPK: Stage joined as host")
             onComplete(success)
         }
     }
@@ -313,7 +313,7 @@ class StageModel: NSObject, ObservableObject {
     }
 
     private func joinStage(_ token: String, onComplete: (Bool) -> Void) {
-        print("ℹ Joining stage")
+        print("ℹCPK: Joining stage")
         do {
             self.stage = nil
             let stage = try IVSStage(token: token, strategy: self)
@@ -325,7 +325,7 @@ class StageModel: NSObject, ObservableObject {
             try stage.join()
             self.stage = stage
 
-            print("ℹ ✅ stage joined")
+            print("ℹCPK: ✅ stage joined")
 
             DispatchQueue.main.async {
                 self.sessionRunning = true
@@ -333,13 +333,13 @@ class StageModel: NSObject, ObservableObject {
             onComplete(true)
 
         } catch {
-            print("ℹ ❌ Error joining stage: \(error)")
+            print("ℹCPK: ❌ Error joining stage: \(error)")
             onComplete(false)
         }
     }
 
     func publish(_ user: User) {
-        print("ℹ 📢 publishing to stage")
+        print("ℹCPK: 📢 publishing to stage")
         DispatchQueue.main.async {
             self.localUserWantsPublish = true
         }
@@ -362,7 +362,7 @@ class StageModel: NSObject, ObservableObject {
     }
 
     func unpublish(_ user: User) {
-        print("ℹ ending publishing to stage")
+        print("ℹCPK: ending publishing to stage")
         DispatchQueue.main.async {
             self.localUserWantsPublish = false
         }
@@ -382,7 +382,7 @@ class StageModel: NSObject, ObservableObject {
     }
     
     func leaveStage() {
-        print("ℹ Leaving stage")
+        print("ℹCPK: Leaving stage")
         localUser.captureSession?.stopRunning()
         stage?.leave()
         DispatchQueue.main.async {
@@ -412,7 +412,7 @@ class StageModel: NSObject, ObservableObject {
             }
         localUser.audioOn = !localUserAudioMuted
         localUser.audioMuted = localUserAudioMuted
-        print("ℹ Toggled audio, is muted: \(localUserAudioMuted)")
+        print("ℹCPK: Toggled audio, is muted: \(localUserAudioMuted)")
     }
 
     func toggleLocalVideoMute() {
@@ -425,7 +425,7 @@ class StageModel: NSObject, ObservableObject {
                 localUserVideoMuted = $0.isMuted
             }
         localUser.videoOn = !localUserVideoMuted
-        print("ℹ Toggled video, is muted: \(localUserVideoMuted)")
+        print("ℹCPK: Toggled video, is muted: \(localUserVideoMuted)")
     }
 
     func toggleRemoteAudioMute() {
@@ -436,11 +436,11 @@ class StageModel: NSObject, ObservableObject {
             }
         }
         remoteAudioMuted.toggle()
-        print("ℹ Toggled remote audio, is muted: \(remoteAudioMuted)")
+        print("ℹCPK: Toggled remote audio, is muted: \(remoteAudioMuted)")
     }
 
     func swapCamera() {
-        print("ℹ swapping camera to \(selectedCamera?.position == .front ? "back" : "front")")
+        print("ℹCPK: swapping camera to \(selectedCamera?.position == .front ? "back" : "front")")
         setupLocalCamera(to: selectedCamera?.position == .front ? .back : .front)
     }
 
@@ -480,7 +480,7 @@ class StageModel: NSObject, ObservableObject {
         if let inputSource = inDevice {
             localDevice.setPreferredInputSource(inputSource) { [weak self] in
                 if let error = $0 {
-                    print("ℹ ❌ error setting device: \(error)")
+                    print("ℹCPK: ❌ error setting device: \(error)")
                 } else {
                     self?[keyPath: outDevice] = inputSource
                 }
@@ -525,7 +525,7 @@ class StageModel: NSObject, ObservableObject {
     func dataForParticipant(_ participantId: String) -> User? {
         if participantId.isEmpty { return nil }
         guard let participant = participantUsers.first(where: { $0.participantId == participantId }) else {
-            print("ℹ ❌ StageModel: could not find user for participant with id \(participantId)")
+            print("ℹCPK: ❌ StageModel: could not find user for participant with id \(participantId)")
             return nil
         }
         return participant
@@ -533,7 +533,7 @@ class StageModel: NSObject, ObservableObject {
 
     func mutatingParticipant(_ participantId: String?, modifier: (inout User) -> Void) {
         guard let index = participantUsers.firstIndex(where: { $0.participantId == participantId }) else {
-            print("ℹ ❌ Something is out of sync, investigate")
+            print("ℹCPK: ❌ Something is out of sync, investigate")
             return
         }
 
@@ -563,14 +563,14 @@ class StageModel: NSObject, ObservableObject {
     func createRTCStats(for stream: IVSStageStream, username: String?) {
         if debugData.participantStats[stream.device.tag()] == nil {
             debugData.participantStats[stream.device.tag()] = DebugStats(username: username ?? "")
-            print("ℹ created participant stats slot for \(stream.device.tag())")
+            print("ℹCPK: created participant stats slot for \(stream.device.tag())")
         }
     }
 
     func removeRTCStats(for stream: IVSStageStream) {
         if let index = debugData.participantStats.index(forKey: stream.device.tag()) {
             debugData.participantStats.remove(at: index)
-            print("ℹ removed participant stats slot for \(stream.device.tag())")
+            print("ℹCPK: removed participant stats slot for \(stream.device.tag())")
         }
     }
 
@@ -580,20 +580,20 @@ class StageModel: NSObject, ObservableObject {
                 do {
                     try stream.requestRTCStats()
                 } catch {
-                    print("ℹ ❌ failed to request RTC stats: \(error)")
+                    print("ℹCPK: ❌ failed to request RTC stats: \(error)")
                 }
             }
         }
     }
 
     func parseRTCStats(for stream: IVSStageStream, stats: [String: [String: String]]) {
-        print("ℹ \(stream.description) didGenerate stats for device with tag \(stream.device.tag())")
+        print("ℹCPK: \(stream.description) didGenerate stats for device with tag \(stream.device.tag())")
         if stream.device is IVSAudioDevice {
             parseAudio(for: stream, stats)
         } else if stream.device is IVSImageDevice {
             parseVideo(for: stream, stats)
         } else {
-            print("ℹ will not parse: \(stats)")
+            print("ℹCPK: will not parse: \(stats)")
         }
     }
 
@@ -614,7 +614,7 @@ class StageModel: NSObject, ObservableObject {
             if let roundTripTime = Float(candidatePair?["currentRoundTripTime"] ?? "") {
                 self.debugData.participantStats[stream.device.tag()]?.medianLatency = String(format: "%.0fms", roundTripTime * 1000)
             } else {
-                print("ℹ ❌ Could not parse currentRoundTripTime to float from '\(candidatePair?["currentRoundTripTime"] ?? "")'")
+                print("ℹCPK: ❌ Could not parse currentRoundTripTime to float from '\(candidatePair?["currentRoundTripTime"] ?? "")'")
                 self.debugData.participantStats[stream.device.tag()]?.medianLatency = "-"
             }
             self.debugData.participantStats[stream.device.tag()]?.packetLossDown = remoteInbound?["packetsLost"] ?? inbound?["packetsLost"]
@@ -628,7 +628,7 @@ class StageModel: NSObject, ObservableObject {
     }
 
     private func parseVideo(for stream: IVSStageStream, _ stats: [String: [String: String]]) {
-        print("ℹ VIDEO didGenerateRTCStats: \(stats)")
+        print("ℹCPK: VIDEO didGenerateRTCStats: \(stats)")
         parseBaseData(for: stream, from: stats)
 
         var outbound = stats["outbound-rtp"]
@@ -653,7 +653,7 @@ class StageModel: NSObject, ObservableObject {
     }
 
     private func parseAudio(for stream: IVSStageStream, _ stats: [String: [String: String]]) {
-        print("ℹ AUDIO didGenerateRTCStats: \(stats)")
+        print("ℹCPK: AUDIO didGenerateRTCStats: \(stats)")
         parseBaseData(for: stream, from: stats)
 
         DispatchQueue.main.async {

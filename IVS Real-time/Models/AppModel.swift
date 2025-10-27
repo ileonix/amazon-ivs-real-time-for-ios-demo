@@ -176,7 +176,7 @@ class AppModel: NSObject, ObservableObject {
     }
 
     func getStages(completion: @escaping (Bool) -> Void) {
-        print("ℹ getting stages...")
+        print("ℹCPK: getting stages...")
 
         server.getStages(onlyActive: !user.isHost) { [weak self] success, stageDetails in
             DispatchQueue.main.async {
@@ -189,7 +189,7 @@ class AppModel: NSObject, ObservableObject {
     }
 
     func disconnect() {
-        print("ℹ disconnecting...")
+        print("ℹCPK: disconnecting...")
         toggleLoading(true)
 
         stageModel.leaveStage()
@@ -208,7 +208,7 @@ class AppModel: NSObject, ObservableObject {
             // Remove other participant by updating stage mode no NONE
             // because other participant should still remain in stage but stop publishing
             server.updateMode(activeStage.hostId, toStageMode: .none, user: user) { [weak self] success in
-                print("ℹ removed second participant by updating stage mode: \(success ? "✅" : "❌")")
+                print("ℹCPK: removed second participant by updating stage mode: \(success ? "✅" : "❌")")
                 DispatchQueue.main.async {
                     self?.hostWantsToRemoveParticipant = false
                 }
@@ -216,7 +216,7 @@ class AppModel: NSObject, ObservableObject {
             }
 
         } else {
-            print("ℹ ❌ Can't remove second participant - some details missing")
+            print("ℹCPK: ❌ Can't remove second participant - some details missing")
             toggleLoading(false)
         }
     }
@@ -226,7 +226,7 @@ class AppModel: NSObject, ObservableObject {
 
         server.createStage(type: type, user: user) { [weak self] success, hostToken in
             if success {
-                print("ℹ ✅ stage created")
+                print("ℹCPK: ✅ stage created")
                 self?.stageModel.stageType = type
                 self?.user.participantToken = nil
                 self?.user.hostParticipantToken = hostToken
@@ -240,7 +240,7 @@ class AppModel: NSObject, ObservableObject {
                 }
 
                 self?.stageModel.joinAsHost(onComplete: { [weak self] success in
-                    print("ℹ stage joined as host: \(success ? "✅" : "❌")")
+                    print("ℹCPK: stage joined as host: \(success ? "✅" : "❌")")
                     
 
                     self?.getCreatedStage({ stage in
@@ -256,14 +256,14 @@ class AppModel: NSObject, ObservableObject {
             if let createdStage = self?.stagesModel.stages.first(where: { $0.hostId == self?.user.hostId }) {
                 completion(createdStage)
             } else {
-                print("ℹ retrying to get created stage")
+                print("ℹCPK: retrying to get created stage")
                 self?.getCreatedStage(completion)
             }
         })
     }
 
     private func finishStageCreation(_ createdStage: Stage) {
-        print("ℹ found created stage (arn: \(createdStage.stageArn))")
+        print("ℹCPK: found created stage (arn: \(createdStage.stageArn))")
 
         DispatchQueue.main.async {
             self.stagesModel.scrollTo(createdStage)
@@ -271,7 +271,7 @@ class AppModel: NSObject, ObservableObject {
             self.isSetupCompleted = true
         }
 
-        print("ℹ host will connect to chat now")
+        print("ℹCPK: host will connect to chat now")
         connectToChat(createdStage.hostId)
 
         if createdStage.type == .video {
@@ -290,7 +290,7 @@ class AppModel: NSObject, ObservableObject {
         // Now that the stage is created, you have the pre-signed URLs.
         // You can trigger the capture and upload process here.
         // For this example, we will assume the user triggers it via a button.
-        print("ℹ Stage creation complete. Ready to capture previews.")
+        print("ℹCPK: Stage creation complete. Ready to capture previews.")
     }
 
     // MARK: - Image and Video Capture
@@ -358,7 +358,7 @@ class AppModel: NSObject, ObservableObject {
             self?.server.updateSeats(activeStage.hostId, seats: seats, user: user) { [weak self] success in
                 if success {
                     self?.user.seatIndex = seatIndex
-                    print("ℹ ✅ audio seats updated")
+                    print("ℹCPK: ✅ audio seats updated")
                 }
 
                 self?.getStages(completion: { [weak self] _ in
@@ -379,7 +379,7 @@ class AppModel: NSObject, ObservableObject {
                 try stageModel.videoConfig.setMaxBitrate(maxBitrate * 1000)
                 stageModel.videoConfig.simulcast.enabled = false
             } catch {
-                print("ℹ ❌ Failed to update maxBitrate: \(error)")
+                print("ℹCPK: ❌ Failed to update maxBitrate: \(error)")
             }
         }
 
@@ -397,13 +397,13 @@ class AppModel: NSObject, ObservableObject {
             case .spot:
                 server.updateMode(activeStage.hostId, toStageMode: .spot, user: user) { success in
                     if success {
-                        print("ℹ ✅ stage mode updated to SPOT")
+                        print("ℹCPK: ✅ stage mode updated to SPOT")
                     }
                 }
             case .pk:
                 server.updateMode(activeStage.hostId, toStageMode: .pk, user: user) { success in
                     if success {
-                        print("ℹ ✅ stage mode updated to PK/VS")
+                        print("ℹCPK: ✅ stage mode updated to PK/VS")
                     }
                 }
         }
@@ -447,11 +447,11 @@ class AppModel: NSObject, ObservableObject {
     }
 
     func connectToChat(_ hostId: String, reconnect: Bool = false) {
-        print("ℹ connecting to \(reconnect ? "previous" : "new") stage chat...")
+        print("ℹCPK: connecting to \(reconnect ? "previous" : "new") stage chat...")
 
         if !reconnect {
             if let oldChatModel = chatModel {
-                print("ℹ disconnecting previous stage chat...")
+                print("ℹCPK: disconnecting previous stage chat...")
                 oldChatModel.disconnect()
                 chatModel = nil
             }
@@ -469,7 +469,7 @@ class AppModel: NSObject, ObservableObject {
                                                 awsRegion: region ?? "us-west-2",
                                                 chatRoomToken: chatAuthToken)
             self?.chatModel?.connectChatRoom(tokenRequest) { error in
-                print("ℹ ❌ Couldn't connect to chat: \(String(describing: error))")
+                print("ℹCPK: ❌ Couldn't connect to chat: \(String(describing: error))")
             }
             self?.stageJoinInProgress = reconnect ? false : self?.stageJoinInProgress ?? false
         }
@@ -477,12 +477,12 @@ class AppModel: NSObject, ObservableObject {
 
     func leaveActiveStage(_ onComplete: @escaping () -> Void) {
         guard let stage = activeStage else {
-            print("ℹ ❌ Can't leave - no active stage")
+            print("ℹCPK: ❌ Can't leave - no active stage")
             onComplete()
             return
         }
 
-        print("ℹ 🏁 leaving active stage (arn: \(stage.stageArn))...")
+        print("ℹCPK: 🏁 leaving active stage (arn: \(stage.stageArn))...")
         toggleLoading(true)
 
         DispatchQueue.main.async {
@@ -496,7 +496,7 @@ class AppModel: NSObject, ObservableObject {
             // Delete created stage
             server.deleteStage(stageHostId: user.hostId) { [weak self] success in
                 if success {
-                    print("ℹ ✅ stage deleted")
+                    print("ℹCPK: ✅ stage deleted")
 
                     DispatchQueue.main.async {
                         withAnimation {
@@ -596,12 +596,12 @@ class AppModel: NSObject, ObservableObject {
 
         toggleLoading(true)
         stageModel.stageType = stage.type
-        print("ℹ \(stage.type == .video ? "📺" : "📻") joining \(stage.hostId) stage (arn: \(stage.stageArn))...")
+        print("ℹCPK: \(stage.type == .video ? "📺" : "📻") joining \(stage.hostId) stage (arn: \(stage.stageArn))...")
 
         server.join(stage, user: user) { [weak self] success, participantToken in
             if success {
                 guard let token = participantToken?.token else {
-                    print("ℹ ❌ can't join - no participantToken")
+                    print("ℹCPK: ❌ can't join - no participantToken")
                     self?.stageJoinInProgress = false
                     return
                 }
@@ -634,12 +634,12 @@ class AppModel: NSObject, ObservableObject {
     func castVote(for user: User?) {
         guard let user = user,
               let stageId = activeStage?.hostId else {
-            print("ℹ ❌ Could't cast vote: active stage or user missing")
+            print("ℹCPK: ❌ Could't cast vote: active stage or user missing")
             return
         }
 
         server.castVote(in: stageId, for: user) { success in
-            print("ℹ vote casted for \(user.username): \(success ? "✅" : "❌")")
+            print("ℹCPK: vote casted for \(user.username): \(success ? "✅" : "❌")")
         }
     }
 
@@ -701,7 +701,7 @@ class AppModel: NSObject, ObservableObject {
     }
 
     private func onNetworkRestore() {
-        print("ℹ ✅ Network restored")
+        print("ℹCPK: ✅ Network restored")
         if activeStage != nil, !stageJoinInProgress {
             reconnectToStage()
             errorMessages = []
@@ -709,7 +709,7 @@ class AppModel: NSObject, ObservableObject {
     }
 
     private func onNetworkLoose() {
-        print("ℹ ⚠️ Network lost")
+        print("ℹCPK: ⚠️ Network lost")
         appendErrorMessage("Network was lost")
         toggleLoading(true)
         stageJoinInProgress = false
@@ -717,7 +717,7 @@ class AppModel: NSObject, ObservableObject {
 
     private func reconnectToStage() {
         guard let stage = activeStage else {
-            print("ℹ ❌ Can't reconnect - no active stage set")
+            print("ℹCPK: ❌ Can't reconnect - no active stage set")
             toggleLoading(false)
             return
         }
@@ -750,7 +750,7 @@ extension AppModel: ServerDelegate {
     }
 
     func activeVotingSessionInProgress(_ session: VotingSession) {
-        print("ℹ voting session is active: \(session)")
+        print("ℹCPK: voting session is active: \(session)")
         activeVotingSessionTally = session.tally
         DispatchQueue.main.async {
             self.votingSessionStartedAt = self.dateFormatter.date(from: session.startedAt)
@@ -771,16 +771,16 @@ extension AppModel: StageModelDelegate {
     }
 
     func participantJoined(_ participant: IVSParticipantInfo?) {
-        print("ℹ participant joined \(participant?.participantId ?? "nil")")
+        print("ℹCPK: participant joined \(participant?.participantId ?? "nil")")
         guard let participantId = participant?.participantId,
               let newUser = stageModel.dataForParticipant(participantId) else {
-            print("ℹ ❌ could not get user for participantId \(String(describing: participant?.participantId))")
+            print("ℹCPK: ❌ could not get user for participantId \(String(describing: participant?.participantId))")
             return
         }
 
         if participant?.isLocal ?? false {
             guard user.isOnStage else {
-                print("ℹ will not set local user as active participant - user is not on stage")
+                print("ℹCPK: will not set local user as active participant - user is not on stage")
                 return
             }
 
@@ -788,22 +788,22 @@ extension AppModel: StageModelDelegate {
                 withAnimation {
                     if self.user.isHost {
                         self.activeStageHostParticipant = self.user
-                        print("ℹ active stage host set to local user")
+                        print("ℹCPK: active stage host set to local user")
                     } else {
                         self.activeStageSecondParticipant = self.user
-                        print("ℹ active 2nd participant set to local user")
+                        print("ℹCPK: active 2nd participant set to local user")
                     }
                 }
             }
 
         } else {
             guard newUser.streams.count == 0 else {
-                print("ℹ will not set new user as active participant - new user has 0 streams")
+                print("ℹCPK: will not set new user as active participant - new user has 0 streams")
                 return
             }
 
             guard let username = participant?.attributes["username"] else {
-                print("ℹ ❌ participant joined with no attributes - username missing")
+                print("ℹCPK: ❌ participant joined with no attributes - username missing")
                 return
             }
 
@@ -816,11 +816,11 @@ extension AppModel: StageModelDelegate {
                 withAnimation {
                     if username == self.activeStageHostUsername {
                         self.activeStageHostParticipant = newUser
-                        print("ℹ active stage host set to new user")
+                        print("ℹCPK: active stage host set to new user")
                         self.applyActiveVotingTally()
                     } else {
                         self.activeStageSecondParticipant = newUser
-                        print("ℹ active 2nd participant set to new user")
+                        print("ℹCPK: active 2nd participant set to new user")
                         self.applyActiveVotingTally()
                     }
                 }
@@ -829,14 +829,14 @@ extension AppModel: StageModelDelegate {
     }
 
     func participantLeftOrStoppedPublishing(_ participant: IVSParticipantInfo?) {
-        print("ℹ participant \(participant?.participantId ?? "nil") left or stopped publishing")
+        print("ℹCPK: participant \(participant?.participantId ?? "nil") left or stopped publishing")
         if activeStageHostParticipant?.participantId == participant?.participantId {
             DispatchQueue.main.async {
                 withAnimation {
                     self.activeStageHostParticipant = nil
                 }
             }
-            print("ℹ leaving stage because host participant left the stage")
+            print("ℹCPK: leaving stage because host participant left the stage")
             leaveActiveStage { [weak self] in
                 self?.stagesModel.scroll(.down)
             }
@@ -904,9 +904,9 @@ extension AppModel: ChatEventDelegate {
     }
 
     func votesChanged(_ attributes: [String: String]?) {
-        print("ℹ votes changed: \(String(describing: attributes))")
+        print("ℹCPK: votes changed: \(String(describing: attributes))")
         guard let attributes = attributes else {
-            print("ℹ ❌ could not process vote attributes: no attributes")
+            print("ℹCPK: ❌ could not process vote attributes: no attributes")
             return
         }
 

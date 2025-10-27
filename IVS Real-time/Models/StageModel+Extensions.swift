@@ -16,7 +16,7 @@ extension StageModel: IVSMicrophoneDelegate {
 
 extension StageModel: IVSErrorDelegate {
     func source(_ source: IVSErrorSource, didEmitError error: Error) {
-        print("ℹ ❌ IVSError \(error)")
+        print("ℹCPK: ❌ IVSError \(error)")
     }
 }
 
@@ -52,7 +52,7 @@ extension StageModel: IVSStageStrategy {
 
 extension StageModel: IVSStageRenderer {
     func stage(_ stage: IVSStage, participantDidJoin participant: IVSParticipantInfo) {
-        print("ℹ participant \(participant.participantId) did join")
+        print("ℹCPK: participant \(participant.participantId) did join")
 
         if participant.isLocal {
             // Update local participant
@@ -60,7 +60,7 @@ extension StageModel: IVSStageRenderer {
             self.participantUsers[0].participant = participant
         } else {
             if self.participantUsers.contains(where: { $0.participantId == participant.participantId }) {
-                print("ℹ not adding \(participant.participantId) to participants list - already exists there")
+                print("ℹCPK: not adding \(participant.participantId) to participants list - already exists there")
                 return
             }
 
@@ -79,7 +79,7 @@ extension StageModel: IVSStageRenderer {
     }
 
     func stage(_ stage: IVSStage, participantDidLeave participant: IVSParticipantInfo) {
-        print("ℹ participant \(participant.participantId) did leave")
+        print("ℹCPK: participant \(participant.participantId) did leave")
 
         if participant.isLocal {
             // Reset local participant ID
@@ -93,7 +93,7 @@ extension StageModel: IVSStageRenderer {
     }
 
     func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didChange publishState: IVSParticipantPublishState) {
-        print("ℹ participant \(participant.participantId) didChangePublishState to '\(publishState.text)'")
+        print("ℹCPK: participant \(participant.participantId) didChangePublishState to '\(publishState.text)'")
         mutatingParticipant(participant.participantId) { data in
             data.publishState = publishState
             data.videoRequestedAt = publishState == .published ? Date() : nil
@@ -102,16 +102,16 @@ extension StageModel: IVSStageRenderer {
     }
 
     func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didChange subscribeState: IVSParticipantSubscribeState) {
-        print("ℹ participant \(participant.participantId) didChangeSubscribeState to '\(subscribeState.text)'")
+        print("ℹCPK: participant \(participant.participantId) didChangeSubscribeState to '\(subscribeState.text)'")
     }
 
     func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didAdd streams: [IVSStageStream]) {
-        print("ℹ participant \(participant.participantId) didAdd \(streams.count) streams")
+        print("ℹCPK: participant \(participant.participantId) didAdd \(streams.count) streams")
 
         for stream in streams {
             if let imageDevice = stream.device as? IVSImageDevice {
                 imageDevice.setOnFrameCallback { [weak self] frame in
-                    NSLog("ℹ \(Date()) received onFrameCallback, frame size: \(frame.size)")
+                    NSLog("ℹCPK: \(Date()) received onFrameCallback, frame size: \(frame.size)")
                     self?.onFrame(for: participant.participantId, date: Date())
                     imageDevice.setOnFrameCallback(nil)
                 }
@@ -137,7 +137,7 @@ extension StageModel: IVSStageRenderer {
     }
 
     func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didRemove streams: [IVSStageStream]) {
-        print("ℹ participant \(participant.participantId) didRemove \(streams.count) streams")
+        print("ℹCPK: participant \(participant.participantId) didRemove \(streams.count) streams")
 
         for stream in streams {
             removeRTCStats(for: stream)
@@ -155,9 +155,9 @@ extension StageModel: IVSStageRenderer {
     }
 
     func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didChangeMutedStreams streams: [IVSStageStream]) {
-        print("ℹ participant \(participant.participantId) didChangeMutedStreams")
+        print("ℹCPK: participant \(participant.participantId) didChangeMutedStreams")
         for stream in streams {
-            print("ℹ is muted: \(stream.isMuted)")
+            print("ℹCPK: is muted: \(stream.isMuted)")
             mutatingParticipant(participant.participantId) { data in
                 if [.microphone, .userAudio].contains(stream.device.descriptor().type) {
                     data.audioMuted = stream.isMuted
@@ -175,7 +175,7 @@ extension StageModel: IVSStageRenderer {
     }
 
     func stage(_ stage: IVSStage, didChange connectionState: IVSStageConnectionState, withError error: Error?) {
-        print("ℹ didChangeConnectionStateWithError state '\(connectionState.text)', error: \(String(describing: error))")
+        print("ℹCPK: didChangeConnectionStateWithError state '\(connectionState.text)', error: \(String(describing: error))")
         stageConnectionState = connectionState
         delegate?.connectionStateChanged()
     }
@@ -183,7 +183,7 @@ extension StageModel: IVSStageRenderer {
 
 extension StageModel: IVSStageStreamDelegate {
     func streamDidChangeIsMuted(_ stream: IVSStageStream) {
-        print("ℹ \(stream.description) didChangeIsMuted \(stream.isMuted)")
+        print("ℹCPK: \(stream.description) didChangeIsMuted \(stream.isMuted)")
     }
 
     func stream(_ stream: IVSStageStream, didGenerateRTCStats stats: [String: [String: String]]) {

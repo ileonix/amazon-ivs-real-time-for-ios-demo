@@ -213,7 +213,7 @@ struct FeedsView: View {
             if appModel.activeStage != nil {
                 isDebugViewVisible.toggle()
             } else {
-                print("ℹ no active stage - will not show debug stats")
+                print("ℹCPK: no active stage - will not show debug stats")
             }
         }
         .overlay {
