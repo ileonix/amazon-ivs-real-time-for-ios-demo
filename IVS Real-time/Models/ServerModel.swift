@@ -39,7 +39,26 @@ class ServerModel: ObservableObject {
     }
     
     enum EcommerceEndpoint: String {
+        //product
         case products
+        case productsStream = "products/stream/{{stream_key}}"
+        case addProductToLive = "products/stream/{{stream_key}}/attach/{{product_id}}"
+        case removeProductToLive = "products/stream/{{stream_key}}/detach/{{product_id}}"
+        case reOrderProductInLive = "products/stream/{{stream_key}}/reorder/{{product_id}}"
+        //stream
+        case streams //GET to get list and POST to create stream
+        case endStream = "streams/{{stream_key}}/end"
+        case getStreamByKey = "streams/{{stream_key}}"
+        // Replaces placeholders (e.g. `{{key}}`) in the path with actual values.
+        func path(replacing params: [String: String]? = nil) -> String {
+            var path = self.rawValue
+            if let params = params {
+                for (key, value) in params {
+                    path = path.replacingOccurrences(of: "{{\(key)}}", with: value)
+                }
+            }
+            return path
+        }
     }
     
     enum HTTPMethod: String {
@@ -47,6 +66,7 @@ class ServerModel: ObservableObject {
         case POST
         case PUT
         case DELETE
+        case PATCH
     }
     
     // Verify authentication code
@@ -571,9 +591,37 @@ class ServerModel: ObservableObject {
     
     //MARK: Ecommerce Product API
     //MARK: Ecommerce customer API
+    //MARK: Get live product
+    func getProductListInLive(hostId: String, onComplete: @escaping ([AddProductToLiveResponse]) -> Void) {
+        sendEcommerceAPI(.GET,
+                         endpoint: .productsStream,
+                         params: ["stream_key": hostId],
+                         body: nil,
+                         onComplete: { success, data, error in
+            if let error = error {
+                print("CPK: ℹ ❌ \(error)")
+                onComplete([])
+            }
+            guard let data = data else {
+                print("CPK: ℹ ❌ No data in response")
+                onComplete([])
+                return
+            }
+            do {
+                let productList = try JSONDecoder().decode([AddProductToLiveResponse].self, from: data)
+                onComplete(productList)
+            } catch {
+                print("CPK: ❌ \(error)")
+                onComplete([])
+                return
+            }
+        })
+    }
+    
+    //MARK: Ecommerce merchant API
+    //MARK: All product for add by other API
     func getProductList(onComplete: @escaping ([ECommerceProduct]) -> Void) {
-        sendEcommerceAPI(.GET, endpoint: .products, body: nil, onComplete: { [weak self] success, data, error in
-            guard let self = self else { return }
+        sendEcommerceAPI(.GET, endpoint: .products, body: nil, onComplete: { success, data, error in
             if let error = error {
                 print("CPK: ℹ ❌ \(error)")
                 onComplete([])
@@ -594,15 +642,136 @@ class ServerModel: ObservableObject {
         })
     }
     
-    //MARK: Ecommerce merchant API
+    //MARK: add product from /products to live
+    func addProductInLive(hostId: String, productId: String, onComplete: @escaping (AddProductToLiveResponse?) -> Void) {
+        sendEcommerceAPI(.POST,
+                         endpoint: .addProductToLive,
+                         params: ["stream_key": hostId, "product_id": productId],
+                         body: nil,
+                         onComplete: { success, data, error in
+            if let error = error {
+                print("CPK: ℹ ❌ \(error)")
+                onComplete(nil)
+            }
+            guard let data = data else {
+                print("CPK: ℹ ❌ No data in response")
+                onComplete(nil)
+                return
+            }
+            do {
+                let product = try JSONDecoder().decode(AddProductToLiveResponse.self, from: data)
+                onComplete(product)
+            } catch {
+                print("CPK: ❌ \(error)")
+                onComplete(nil)
+                return
+            }
+        })
+    }
     
+    func removeProductFromLive(hostId: String, productId: String, onComplete: @escaping (Bool) -> Void) {
+        sendEcommerceAPI(.DELETE,
+                         endpoint: .removeProductToLive,
+                         params: ["stream_key": hostId, "product_id": productId],
+                         body: nil,
+                         onComplete: { success, data, error in
+            if let error = error {
+                print("CPK: ℹ ❌ \(error)")
+                onComplete(false)
+            }
+            guard let data = data else {
+                print("CPK: ℹ ❌ No data in response")
+                onComplete(false)
+                return
+            }
+            do {
+                if let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let success = jsonObject["success"] as? Bool {
+                    print("✅ Success:", success)
+                    onComplete(success)
+                }
+                
+            } catch {
+                print("CPK: ❌ \(error)")
+                onComplete(false)
+                return
+            }
+        })
+    }
     
-    private func sendEcommerceAPI(_ method: HTTPMethod, endpoint: EcommerceEndpoint, body: String?, queryItems: [URLQueryItem]? = nil, onComplete: @escaping (Bool, Data?, String?) -> Void) {
+    func reorderProductInLive(hostId: String, productId: String, onComplete: @escaping (Bool) -> Void) {
+        sendEcommerceAPI(.PATCH,
+                         endpoint: .reOrderProductInLive,
+                         params: ["stream_key": hostId, "product_id": productId],
+                         body: nil,
+                         onComplete: { success, data, error in
+            if let error = error {
+                print("CPK: ℹ ❌ \(error)")
+                onComplete(false)
+            }
+            guard let data = data else {
+                print("CPK: ℹ ❌ No data in response")
+                onComplete(false)
+                return
+            }
+            do {
+                if let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let success = jsonObject["ok"] as? Bool {
+                    print("✅ Success:", success)
+                    onComplete(success)
+                }
+                
+            } catch {
+                print("CPK: ❌ \(error)")
+                onComplete(false)
+                return
+            }
+        })
+    }
+    
+    func createStream(hostId: String, onComplete: @escaping (EcommerceStreamInfo?) -> Void) {
+        let body = """
+            {
+                "key": "\(hostId)",
+                "title": "\(hostId)",
+                "ivsChannelArn": "arn:aws:ivs:ap-southeast-1:123456789012:channel/AbCdEfGhIj"
+            }
+        """
+        //EcommerceStreamInfo
+        sendEcommerceAPI(.POST, endpoint: .streams, body: body, onComplete: { success, data, error in
+            if let error = error {
+                print("CPK: ℹ ❌ \(error)")
+                onComplete(nil)
+            }
+            guard let data = data else {
+                print("CPK: ℹ ❌ No data in response")
+                onComplete(nil)
+                return
+            }
+            do {
+                let stream = try JSONDecoder().decode(EcommerceStreamInfo.self, from: data)
+                print("✅ Stream title:", stream.title)
+                print("📅 Created at:", stream.createdAt)
+                onComplete(stream)
+            } catch {
+                print("CPK: ❌ \(error)")
+                onComplete(nil)
+                return
+            }
+        })
+    }
+    
+    private func sendEcommerceAPI(_ method: HTTPMethod,
+                                  endpoint: EcommerceEndpoint,
+                                  params: [String: String]? = nil,
+                                  body: String?,
+                                  queryItems: [URLQueryItem]? = nil,
+                                  onComplete: @escaping (Bool, Data?, String?) -> Void) {
         let urlComponents = NSURLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "\(Constants.ECOMMERECE_API_URL)"
         urlComponents.queryItems = queryItems
-        urlComponents.path = "/api/\(endpoint.rawValue)"
+        urlComponents.path = "/api/\(endpoint.path(replacing: params))"
 
         guard let url = urlComponents.url else {
             onComplete(false, nil, "Couldn't get url from URLComponents")

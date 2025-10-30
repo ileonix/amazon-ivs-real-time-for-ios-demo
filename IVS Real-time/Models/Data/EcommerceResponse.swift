@@ -25,3 +25,20 @@ struct ECommerceProduct: Decodable, Equatable {
         }
     }
 }
+
+struct AddProductToLiveResponse: Decodable {
+    let productId: String
+    let position: Int
+    let isPinned: Bool
+    let product: ECommerceProduct
+}
+
+struct EcommerceStreamInfo: Decodable {
+    let id: String
+    let key: String
+    let title: String
+    let ivsChannelArn: String
+    let isLive: Bool
+    let createdAt: String
+    let updatedAt: String
+}

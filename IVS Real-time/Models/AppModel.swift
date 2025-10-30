@@ -143,6 +143,7 @@ class AppModel: NSObject, ObservableObject {
     }
     
     //MARK: Ecommerce call
+    //TODO: for host only
     func getProductList(onComplete: @escaping ([Product]) -> Void) {
         server.getProductList() { [weak self] products in
             guard let self = self else { return }
@@ -160,6 +161,57 @@ class AppModel: NSObject, ObservableObject {
             }
             onComplete(eProducts)
         }
+    }
+    
+    //TODO: For host and participant
+    func getProductListInLive(hostId: String, onComplete: @escaping ([Product]) -> Void) {
+        server.getProductListInLive(hostId: hostId) { [weak self] products in
+            guard let self = self else { return }
+            self.viewModelAllProduct.setProductsFromEcommerce(products)
+            let eProducts = products.map {
+                Product(id: $0.productId,
+                        name: $0.product.title,
+                        imageUrl: $0.product.imageUrl,
+                        imageLargeUrl: $0.product.imageUrl,
+                        price: $0.product.price,
+                        discountedPrice: Int(Double($0.product.price) * 0.9),
+                        longDescription: $0.product.title,
+                        stock: $0.product.stock,
+                        isPinned: $0.isPinned)
+            }
+            onComplete(eProducts)
+        }
+    }
+    
+    func addProductToLive(hostId: String,
+                          productId: String,
+                          onComplete: @escaping (AddProductToLiveResponse?) -> Void) {
+        server.addProductInLive(hostId: hostId, productId: productId, onComplete: { [weak self] response in
+            guard let self = self else { return }
+            onComplete(response)
+        })
+    }
+    
+    func removeProductFromLive(hostId: String,
+                               productId: String,
+                               onComplete: @escaping (Bool) -> Void) {
+        server.removeProductFromLive(hostId: hostId, productId: productId, onComplete: { success in
+            onComplete(success)
+        })
+    }
+    
+    func reorderProductInLive(hostId: String,
+                              productId: String,
+                              onComplete: @escaping (Bool) -> Void) {
+        server.reorderProductInLive(hostId: hostId, productId: productId, onComplete: { success in
+            onComplete(success)
+        })
+    }
+    
+    func createStream(hostId: String, onComplete: @escaping (EcommerceStreamInfo?) -> Void) {
+        server.createStream(hostId: hostId, onComplete: { ecommerceStreamInfo in
+            onComplete(ecommerceStreamInfo)
+        })
     }
 
     // Verify authentication code is valid

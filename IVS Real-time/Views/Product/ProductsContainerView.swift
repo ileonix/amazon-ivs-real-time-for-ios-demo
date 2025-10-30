@@ -36,6 +36,24 @@ class ProductsViewModel: ObservableObject {
         }
     }
     
+    //MARK: Overload function
+    func setProductsFromEcommerce(_ products: [AddProductToLiveResponse]) {
+        let eProducts = products.map {
+            Product(id: $0.productId,
+                    name: $0.product.title,
+                    imageUrl: $0.product.imageUrl,
+                    imageLargeUrl: $0.product.imageUrl,
+                    price: $0.product.price,
+                    discountedPrice: Int(Double($0.product.price) * 0.9),
+                    longDescription: $0.product.title,
+                    stock: $0.product.stock,
+                    isPinned: $0.isPinned)
+        }
+        DispatchQueue.main.async {
+            self.products = eProducts
+        }
+    }
+    
     func setProducts(_ products: [Product]) {
         DispatchQueue.main.async {
             self.products = products
@@ -60,6 +78,14 @@ class ProductsViewModel: ObservableObject {
         for (index, product) in products.enumerated() {
             products[index].isPinned = product.id == productId
         }
+    }
+    
+    func getPinProduct() -> Product? {
+        products.first(where: { $0.isPinned })
+    }
+    
+    func removeProduct(productId: String) {
+        products.removeAll(where: { $0.id == productId })
     }
 }
 
@@ -165,6 +191,7 @@ struct CustomerProductListView: View {
 }
 
 struct MerchantLiveProductListView: View {
+    @EnvironmentObject var appModel: AppModel
     let products: [Product]
     @Binding var playerState: PlayerState
     var homeButtonAction: () -> Void
@@ -224,9 +251,10 @@ struct MerchantLiveProductListView: View {
                     MerchantProductInLiveSwiftUIView(product: product,
                                                      showBottomSeparator: product.id != products.last?.id,
                                                      productsViewModel: productsViewModel)
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets())
+                    .environmentObject(appModel)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets())
                 }
             }
         }
@@ -249,6 +277,7 @@ struct MerchantLiveProductListView: View {
             .navigationBarHidden(true)
             .sheet(isPresented: $showingWarehouse) {
                 WarehouseStockView(productsViewModel: productsViewModel)
+                    .environmentObject(appModel)
             }
             .onAppear {
                 UITableView.appearance().backgroundColor = .clear

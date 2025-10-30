@@ -24,7 +24,8 @@ struct StageOverlayView: View {
     //Products
     @State private var playerState: PlayerState = .expanded
 //    @StateObject private var productsViewModel = ProductsViewModel()
-    @StateObject private var allProducts: ProductsViewModel = ProductsViewModel()
+    @StateObject private var allCustomerProducts: ProductsViewModel = ProductsViewModel()
+    @StateObject private var allHostProducts: ProductsViewModel = ProductsViewModel()
     @StateObject private var cartViewModel = CartViewModel()
     @State private var isCustomerProductListVisible: Bool = false
     @State private var isMerchantProductListVisible: Bool = false
@@ -64,13 +65,19 @@ struct StageOverlayView: View {
             
             if appModel.user.isHost, stage.isJoined {
                 ZStack {
-                    Spacer().frame(height: 50)
+                    //Spacer().frame(height: 50)
                     //Button for trigger Product List
                     if productControlsVisible {
                         HStack {
                             Spacer()
                             Button(action: {
                                 withAnimation {
+                                    //TODO: fetch product
+                                    appModel.getProductListInLive(hostId: appModel.user.hostId,
+                                                                  onComplete: { products in
+                                        self.allHostProducts.setProducts(products)
+                                        self.currentPinProduct = products.first(where: { $0.isPinned })
+                                    })
                                     isMerchantProductListVisible.toggle()
                                 }
                             }) {
@@ -81,15 +88,16 @@ struct StageOverlayView: View {
                                     .clipShape(Circle())
                             }
                         }
-                        .padding([.top, .trailing], 8)
+                        .padding(.top, 32)
+                        .padding(.trailing, 8)
                     }
                     
                     if isMerchantProductListVisible {
-                        MerchantLiveProductListView(products: allProducts.products, playerState: $playerState, homeButtonAction: {
+                        MerchantLiveProductListView(products: allHostProducts.products, playerState: $playerState, homeButtonAction: {
                             withAnimation(.spring()) {
                                 isMerchantProductListVisible = false
                             }
-                        }, productsViewModel: allProducts)
+                        }, productsViewModel: allHostProducts)
                         .offset(y: dragOffset > 0 ? dragOffset : 0) // Only drag downward
                         .gesture(
                             DragGesture()
@@ -112,6 +120,7 @@ struct StageOverlayView: View {
                                     dragOffset = 0
                                 }
                         )
+                        .environmentObject(appModel)
                         .background(Color.black.opacity(0.8))
                         .cornerRadius(30)
                         .animation(.spring(), value: playerState)
@@ -122,7 +131,7 @@ struct StageOverlayView: View {
                         .ignoresSafeArea(edges: .bottom)
                     } else {
                         //Single Product
-                        if let product = allProducts.products.first(where: {$0.isPinned}),
+                        if let product = allHostProducts.products.first(where: {$0.isPinned}),
                             appModel.isConnected {
                             VStack(spacing: 12) {
                                 VerticalProductSwiftUIView(product: product,
@@ -166,13 +175,16 @@ struct StageOverlayView: View {
                     }
                 }.onAppear {
                     print("CPK: HOST onAppear - isHost: \(appModel.user.isHost), isConnected: \(appModel.isConnected)")
-                    appModel.getProductList { products in
-                        print("CPK: HOST products fetched \(products.count)")
-                        self.allProducts.setProducts(products)
-                        //self.viewModelForPin.setCurrentPin(products.first)
-                        //products.first(where: { $0.isPinned })
-                        self.currentPinProduct = products.first
-                        print("CPK: HOST after setCurrentPin \(self.currentPinProduct?.name ?? "nil")")
+                    appModel.getProductListInLive(hostId: appModel.user.hostId) { products in
+//                        if appModel.user.isHost {
+                            self.allHostProducts.setProducts(products)
+                            self.currentPinProduct = products.first(where: { $0.isPinned })
+                            print("CPK: HOST products fetched \(products.count)")
+                            print("CPK: HOST after setCurrentPin \(self.currentPinProduct?.name ?? "nil")")
+//                        } else {
+//                            self.allCustomerProducts.setProducts(products)
+//                            self.currentPinProduct = products.first(where: { $0.isPinned })
+//                        }
                     }
                 }
             } else {
@@ -184,6 +196,12 @@ struct StageOverlayView: View {
                             Spacer()
                             Button(action: {
                                 withAnimation {
+                                    //TODO: fetch product
+                                    appModel.getProductListInLive(hostId: appModel.user.hostId,
+                                                                  onComplete: { products in
+                                        self.allCustomerProducts.setProducts(products)
+                                        self.currentPinProduct = products.first(where: { $0.isPinned })
+                                    })
                                     isCustomerProductListVisible.toggle()
                                 }
                             }) {
@@ -201,7 +219,7 @@ struct StageOverlayView: View {
                     
                     // Product List
                     if isCustomerProductListVisible {
-                        CustomerProductListView(products: allProducts.products, playerState: $playerState, homeButtonAction: {
+                        CustomerProductListView(products: allCustomerProducts.products, playerState: $playerState, homeButtonAction: {
                             withAnimation(.spring()) {
                                 isCustomerProductListVisible = false
                             }
