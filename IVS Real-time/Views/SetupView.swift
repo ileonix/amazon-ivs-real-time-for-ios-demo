@@ -69,6 +69,9 @@ struct SetupView: View {
                         Button {
                             withAnimation {
                                 appModel.createStage(.video)
+                                appModel.createStream(hostId: appModel.user.hostId, onComplete: { response in
+                                    print("CPK: create stream response: \(response)")
+                                })
                             }
                         } label: {
                             VStack(alignment: .leading) {
