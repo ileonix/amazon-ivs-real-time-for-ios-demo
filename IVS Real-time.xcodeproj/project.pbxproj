@@ -96,6 +96,9 @@
 		ECA318CB2EA7B78F002EB9B9 /* BroadcastModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318C62EA7B78F002EB9B9 /* BroadcastModel.swift */; };
 		ECA318CD2EA89B9F002EB9B9 /* EcommerceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318CC2EA89B8D002EB9B9 /* EcommerceResponse.swift */; };
 		ECA318D12EAB9BEC002EB9B9 /* WarehouseStockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318CF2EAB9BEC002EB9B9 /* WarehouseStockView.swift */; };
+		ECA318D42EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318D32EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift */; };
+		ECA318D52EAFA0AB002EB9B9 /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318D22EAFA0AB002EB9B9 /* WebSocketManager.swift */; };
+		ECA318D72EB0744E002EB9B9 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA318D62EB0744E002EB9B9 /* Toast.swift */; };
 		ECBAA4B52EA1E81E0056E526 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */; };
 		ECBAA4BF2EA5DC660056E526 /* ProductSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4BE2EA5DC630056E526 /* ProductSwiftUIView.swift */; };
 		ECBAA4C22EA5DCB90056E526 /* ProductsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBAA4C12EA5DCB90056E526 /* ProductsContainerView.swift */; };
@@ -197,6 +200,9 @@
 		ECA318C82EA7B78F002EB9B9 /* StreamingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingModel.swift; sourceTree = "<group>"; };
 		ECA318CC2EA89B8D002EB9B9 /* EcommerceResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EcommerceResponse.swift; sourceTree = "<group>"; };
 		ECA318CF2EAB9BEC002EB9B9 /* WarehouseStockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarehouseStockView.swift; sourceTree = "<group>"; };
+		ECA318D22EAFA0AB002EB9B9 /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
+		ECA318D32EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManagerDelegate.swift; sourceTree = "<group>"; };
+		ECA318D62EB0744E002EB9B9 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		ECBAA4B42EA1E8190056E526 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
 		ECBAA4BE2EA5DC630056E526 /* ProductSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSwiftUIView.swift; sourceTree = "<group>"; };
 		ECBAA4C12EA5DCB90056E526 /* ProductsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsContainerView.swift; sourceTree = "<group>"; };
@@ -325,6 +331,8 @@
 		4BCC450129D2BD43003F371E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				ECA318D22EAFA0AB002EB9B9 /* WebSocketManager.swift */,
+				ECA318D32EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift */,
 				ECA318C62EA7B78F002EB9B9 /* BroadcastModel.swift */,
 				ECA318C72EA7B78F002EB9B9 /* BroadcastModels.swift */,
 				ECA318C82EA7B78F002EB9B9 /* StreamingModel.swift */,
@@ -378,6 +386,7 @@
 		4BCC450C29D2C776003F371E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				ECA318D62EB0744E002EB9B9 /* Toast.swift */,
 				EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */,
 				4B92D07C29E8240700DD440D /* DeviceShake.swift */,
 				4BCC450D29D2C787003F371E /* Modifiers.swift */,
@@ -499,6 +508,7 @@
 				4BB7FD2E29D2BB9400E2894D /* Frameworks */,
 				4BB7FD2F29D2BB9400E2894D /* Resources */,
 				11F2356776A723AC5BB8E9CE /* [CP] Embed Pods Frameworks */,
+				D3D5B928DB457B3B5CE5D0AF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -635,6 +645,27 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D3D5B928DB457B3B5CE5D0AF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -651,6 +682,8 @@
 				ECBAA4B52EA1E81E0056E526 /* VideoPreviewView.swift in Sources */,
 				EC3334FE2EA120DB00C111AD /* ScreenRecorder.swift in Sources */,
 				4B92D07B29E8174700DD440D /* MultiTapView.swift in Sources */,
+				ECA318D42EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift in Sources */,
+				ECA318D52EAFA0AB002EB9B9 /* WebSocketManager.swift in Sources */,
 				EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */,
 				ECBAA4BF2EA5DC660056E526 /* ProductSwiftUIView.swift in Sources */,
 				4BB7960C29D6EE7A005A4521 /* AvatarView.swift in Sources */,
@@ -659,6 +692,7 @@
 				4B10635D29D47FD800242A05 /* User.swift in Sources */,
 				4BB7961429D6FBFF005A4521 /* IVSImagePreviewViewWrapper.swift in Sources */,
 				4BE1A2F429E5564F0017BCC2 /* ReactionView.swift in Sources */,
+				ECA318D72EB0744E002EB9B9 /* Toast.swift in Sources */,
 				4BB7960E29D6F015005A4521 /* UIColor.swift in Sources */,
 				4B10635129D46AB000242A05 /* ChatView.swift in Sources */,
 				4B10633029D321E100242A05 /* StageOverlayView.swift in Sources */,

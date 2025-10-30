@@ -14,6 +14,7 @@ class AppModel: NSObject, ObservableObject {
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
     @ObservedObject var viewModelAllProduct: ProductsViewModel
+    @ObservedObject var webSocketManager: WebSocketManager
     @Published var user: User
     var userRole: UserRole? {
         get {
@@ -111,6 +112,7 @@ class AppModel: NSObject, ObservableObject {
         self.isSimulcastOn = UserDefaults.standard.bool(forKey: Constants.kIsSimulcastOn)
         self.isStatsOn = UserDefaults.standard.bool(forKey: Constants.kIsStatsOn)
         self.viewModelAllProduct = ProductsViewModel()
+        self.webSocketManager = WebSocketManager()
         super.init()
         
         self.dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
@@ -122,6 +124,7 @@ class AppModel: NSObject, ObservableObject {
         server.delegate = self
         stagesModel.delegate = self
         stageModel.delegate = self
+        webSocketManager.delegate = self
 
         checkNetworkConnection()
     }

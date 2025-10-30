@@ -130,11 +130,12 @@ struct StageOverlayView: View {
                                                            isCompact: true)
                                 VStack {
                                     Button("Unpin") {
-                                        for (index, _product) in allProducts.products.enumerated() {
+                                        for (index, _product) in allHostProducts.products.enumerated() {
                                             if _product.id == product.id {
-                                                allProducts.products[index].isPinned = false
+                                                allHostProducts.products[index].isPinned = false
                                             }
                                         }
+                                        appModel.webSocketManager.clientToServerUnpinAll(hostId: appModel.user.hostId)
                                     }.buttonStyle(CommerceButtonStyle(backgroundColor: .red))
                                 }
                             }
@@ -264,11 +265,20 @@ struct StageOverlayView: View {
                     }
                 }.onAppear {
                     print("CPK: VIEWER onAppear - isHost: \(appModel.user.isHost), isConnected: \(appModel.isConnected)")
-                    appModel.getProductList { products in
+                    appModel.getProductListInLive(hostId: appModel.user.hostId) { products in
+                        self.allCustomerProducts.setProducts(products)
+                        self.currentPinProduct = products.first(where: { $0.isPinned })
                         print("CPK: VIEWER products fetched \(products.count)")
-                        self.allProducts.setProducts(products)
-                        self.currentPinProduct = products.first
                         print("CPK: VIEWER after setCurrentPin \(self.currentPinProduct?.name ?? "nil")")
+                    }
+                    
+                    appModel.webSocketManager.serverToClientTopicPinProduct(callback: { productId in
+                        print("CPK: websocket to client pin product: \(productId)")
+                        currentPinProduct = allCustomerProducts.products.first(where: { $0.id == productId })
+                    })
+                    
+                    appModel.webSocketManager.serverToClientTopicUnpinAll {
+                        currentPinProduct = nil
                     }
                 }
             }

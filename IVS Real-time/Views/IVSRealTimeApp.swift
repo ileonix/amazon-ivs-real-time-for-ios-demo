@@ -42,6 +42,10 @@ struct RootView: View {
                             appModel.isSetupCompleted = true
                             // Directly join the selected stage
                             appModel.join(selectedStage)
+                            appModel.user.hostId = selectedStage.hostId
+                            if appModel.webSocketManager.isConnected {
+                                appModel.webSocketManager.clientToServerJoin(hostId: selectedStage.hostId)
+                            }
                         }
                         .onDisappear {
                             appModel.shouldJoinActiveStage = false
@@ -51,6 +55,11 @@ struct RootView: View {
                               stageModel: appModel.stageModel)
                         .environmentObject(appModel)
                         .transition(.move(edge: .trailing))
+                        .onAppear {
+                            if appModel.webSocketManager.isConnected {
+                                appModel.webSocketManager.clientToServerJoin(hostId: appModel.user.hostId)
+                            }
+                        }
                 } else if appModel.isConnected && !appModel.isSetupCompleted {
                     SetupView()
                         .transition(.opacity)
@@ -76,6 +85,8 @@ struct RootView: View {
                         appModel.verify(silent: true) { _ in }
                     }
                 }
+                
+                appModel.webSocketManager.connect()
             }
         }.navigationViewStyle(StackNavigationViewStyle())
     }

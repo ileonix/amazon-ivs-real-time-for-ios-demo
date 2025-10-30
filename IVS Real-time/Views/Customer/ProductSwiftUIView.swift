@@ -106,11 +106,13 @@ struct ProductSwiftUIView: View {
 }
 
 struct MerchantProductInLiveSwiftUIView: View {
+    @EnvironmentObject var appModel: AppModel
     let product: Product
     let showBottomSeparator: Bool
     var productsViewModel: ProductsViewModel?
 
     @StateObject private var imageLoader = ImageLoader()
+    @State private var isShowDeleteToast = false
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -156,8 +158,30 @@ struct MerchantProductInLiveSwiftUIView: View {
                 
                 Button("Pin") {
                     productsViewModel?.setPinProduct(productId: product.id)
+                    appModel.webSocketManager.clientToServerPinProduct(hostId: appModel.user.hostId, productId: product.id)
                 }
-                .buttonStyle(CommerceButtonStyle(backgroundColor: (productsViewModel?.products.first(where: { $0.isPinned })?.isPinned ?? false) ? .green : .gray))
+                .buttonStyle(CommerceButtonStyle(backgroundColor: {
+                    if let pinProduct = productsViewModel?.getPinProduct() {
+                        return pinProduct.id == product.id ? .green : .gray
+                    } else {
+                        return .gray
+                    }
+                }()))
+                .frame(width: 100)
+                
+                Button("Remove") {
+                    productsViewModel?.setPinProduct(productId: product.id)
+                    //TODO: call DELETE product and tel remove socket
+                    appModel.removeProductFromLive(hostId: appModel.user.hostId,
+                                                   productId: product.id, onComplete: { success in
+//                        isShowDeleteToast = success
+                    })
+                    appModel.webSocketManager.clientToServerRemoveProduct(hostId: appModel.user.hostId, productId: product.id)
+                    productsViewModel?.removeProduct(productId: product.id)
+                    //isShowDeleteToast = false
+                }
+                //.toast(isShowing: $isShowDeleteToast, text: "Delete \(product.id) success")
+                .buttonStyle(CommerceButtonStyle(backgroundColor: .gray))
                 .frame(width: 100)
             }
             .padding()
