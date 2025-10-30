@@ -86,9 +86,15 @@ struct ControlButtonsView: View {
              */
             //TODO: remove when no need
             if stage.type != .audio, !appModel.user.isHost {
-                ControlButton(textTitle: "ราคากี่บาท",
+                ControlButton(textTitle: "ถามราคา",
                               backColor: Color("ButtonBackgroundGray").opacity(0.8)) {
                     appModel.chatModel?.askForPrice(participantId: appModel.user.participantId ?? "-", productId: appModel.viewModelAllProduct.products.first?.id ?? "-")
+                }
+                
+                ControlButton(textTitle: "เหลือกี่ชิ้น",
+                              backColor: Color("ButtonBackgroundGray").opacity(0.8)) {
+                    appModel.chatModel?.askForPrice(participantId: appModel.user.participantId ?? "-", productId: appModel.viewModelAllProduct.products.first?.id ?? "-")
+                    appModel.chatModel?.askForRemaining(participantId: appModel.user.participantId ?? "-", productId: appModel.viewModelAllProduct.products.first?.id ?? "-")
                 }
             }
 

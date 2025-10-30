@@ -955,4 +955,11 @@ extension AppModel: ChatEventDelegate {
         })
         return "\(product?.name) จากราคา \(product?.price) เหลือเพียง \(product?.discountedPrice)"
     }
+    
+    func didHostReplyRemainingOf(_ productId: String) -> String? {
+        let product = self.viewModelAllProduct.products.first(where: {
+            $0.id == productId
+        })
+        return "\(product?.name) เหลืออยู่ \(product?.stock) ชิ้นครับ"
+    }
 }

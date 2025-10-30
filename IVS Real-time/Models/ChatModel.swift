@@ -17,6 +17,7 @@ protocol ChatEventDelegate: AnyObject {
     func votingStarted()
     func didHostUpdatePinProductPosition(_ productPosition: CGPoint)
     func didHostReplyPriceOf(_ productId: String) -> String?
+    func didHostReplyRemainingOf(_ productId: String) -> String?
 }
 
 class ChatModel: ObservableObject, Equatable, Hashable {
@@ -83,6 +84,7 @@ class ChatModel: ObservableObject, Equatable, Hashable {
                           onFailure: { chatError in print("ℹ ❌ Error sending reaction: \(chatError)") })
     }
     
+    //TODO: Ask price
     func askForPrice(participantId: String, productId: String) {
         let request = SendMessageRequest(content: "askPrice",
                                          attributes: ["type": MessageType.event.rawValue,
@@ -91,6 +93,18 @@ class ChatModel: ObservableObject, Equatable, Hashable {
                                                       "participantId": participantId])
         room?.sendMessage(with: request,
                           onSuccess: { _ in print("CPK: ask price of \(productId) by \(participantId) sent ✅") },
+                          onFailure: { chatError in print("ℹ ❌ Error sending reaction: \(chatError)") })
+    }
+    
+    //TODO: Ask remaining
+    func askForRemaining(participantId: String, productId: String) {
+        let request = SendMessageRequest(content: "askRemaining",
+                                         attributes: ["type": MessageType.event.rawValue,
+                                                      "action": "askRemaining",
+                                                      "productId": productId,
+                                                      "participantId": participantId])
+        room?.sendMessage(with: request,
+                          onSuccess: { _ in print("CPK: ask remaining of \(productId) by \(participantId) sent ✅") },
                           onFailure: { chatError in print("ℹ ❌ Error sending reaction: \(chatError)") })
     }
     
@@ -148,12 +162,12 @@ extension ChatModel: ChatRoomDelegate {
             //MARK: host action
             if isHost {
                 if let action = message.attributes?["action"] {
+                    //TODO: Ask price
                     if action == "askPrice" {
                         if let productId = message.attributes?["productId"], let participantId = message.attributes?["participantId"] {
                             print("CPK: ask price of \(productId) by \(participantId) received 👀")
                             if let priceReplyAnswer = eventDelegate?.didHostReplyPriceOf(productId) {
-                                let botReplyMessage = priceReplyAnswer
-                                let sendRequest = SendMessageRequest(content: botReplyMessage)
+                                let sendRequest = SendMessageRequest(content: priceReplyAnswer)
                                 room.sendMessage(with: sendRequest,
                                                   onSuccess: { _ in
                                     print("CPK: reply price success")
@@ -163,8 +177,26 @@ extension ChatModel: ChatRoomDelegate {
                             }
                         }
                     }
+                    
+                    //TODO: Ask remaining
+                    if action == "askRemaining" {
+                        if let productId = message.attributes?["productId"], let participantId = message.attributes?["participantId"] {
+                            print("CPK: ask remaining of \(productId) by \(participantId) received 👀")
+                            if let remainingReplyAnswer = eventDelegate?.didHostReplyRemainingOf(productId) {
+                                let sendRequest = SendMessageRequest(content: remainingReplyAnswer)
+                                room.sendMessage(with: sendRequest,
+                                                  onSuccess: { _ in
+                                    print("CPK: reply remaining success")
+                                }, onFailure: { chatError in
+                                    print("CPK: reply remaining ℹ ❌ Error sending message: \(chatError)")
+                                })
+                            }
+                        }
+                    }
                 }
             }
+            
+            
         } else {
             DispatchQueue.main.async {
                 if self.isHost {
