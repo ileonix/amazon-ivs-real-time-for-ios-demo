@@ -30,7 +30,7 @@ struct CustomTextField: UIViewRepresentable {
     }
 
     public func makeUIView(context: Context) -> UITextField {
-        let view = TextField()
+        let view = UIKitTextField()
         view.returnKeyType = .send
         view.textColor = textColor
         view.backgroundColor = background ?? .clear
@@ -62,7 +62,8 @@ struct CustomTextField: UIViewRepresentable {
 
         public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             onCommit()
-            return false
+            textField.resignFirstResponder()
+            return true
         }
 
         @objc public func textViewDidChange(_ textField: UITextField) {
@@ -71,7 +72,7 @@ struct CustomTextField: UIViewRepresentable {
     }
 }
 
-class TextField: UITextField {
+class UIKitTextField: UITextField {
     let padding = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
 
     override open func textRect(forBounds bounds: CGRect) -> CGRect {

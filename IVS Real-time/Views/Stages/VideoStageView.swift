@@ -38,7 +38,7 @@ struct VideoStageView: View {
 //                )
 //            }
         }
-        .frame(height: UIScreen.main.bounds.height - appModel.activeStageBottomSpace)
+        .frame(height: UIScreen.main.bounds.height - (appModel.user.isHost ? appModel.activeStageBottomSpace : 8))
         .edgesIgnoringSafeArea(.top)
         .frame(width: UIScreen.main.bounds.width)
         .cornerRadius(30)
@@ -75,6 +75,9 @@ struct VideoStageView: View {
                     }
                 }
             }
+        }
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
     }
 }
