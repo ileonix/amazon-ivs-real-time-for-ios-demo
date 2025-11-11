@@ -220,16 +220,16 @@ extension ChatModel: ChatRoomDelegate {
                             print("CPK: reply size ℹ ❌ Error sending message: \(chatError)")
                         })
                     }
-                    if message.content.contains("เหลือ") {
-                        let botReplyMessage = "25 ชิ้นครับคุณลูกค้า"
-                        let sendRequest = SendMessageRequest(content: botReplyMessage)
-                        room.sendMessage(with: sendRequest,
-                                          onSuccess: { _ in
-                            print("CPK: reply remain success")
-                        }, onFailure: { chatError in
-                            print("CPK: reply remain ℹ ❌ Error sending message: \(chatError)")
-                        })
-                    }
+//                    if message.content.contains("เหลือ") {
+//                        let botReplyMessage = "25 ชิ้นครับคุณลูกค้า"
+//                        let sendRequest = SendMessageRequest(content: botReplyMessage)
+//                        room.sendMessage(with: sendRequest,
+//                                          onSuccess: { _ in
+//                            print("CPK: reply remain success")
+//                        }, onFailure: { chatError in
+//                            print("CPK: reply remain ℹ ❌ Error sending message: \(chatError)")
+//                        })
+//                    }
                 }
                 self.messages.append(Message(type: .message, message: message))
                 // Store only last 10 messages

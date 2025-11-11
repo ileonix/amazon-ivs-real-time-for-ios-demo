@@ -11,10 +11,18 @@ import AmazonIVSBroadcast
 
 class AppModel: NSObject, ObservableObject {
     @ObservedObject var server: ServerModel
+    
+    //IVS Real-time streaming
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
+    
+    //IVS Ultra low latency streaming
+    @ObservedObject var channelsModel: ChannelsModel
+    @ObservedObject var broadcastViewModel: BroadcastViewModel
+    
     @ObservedObject var viewModelAllProduct: ProductsViewModel
     @ObservedObject var webSocketManager: WebSocketManager
+    
     @Published var user: User
     var userRole: UserRole? {
         get {
@@ -30,6 +38,21 @@ class AppModel: NSObject, ObservableObject {
     @Published var isSetupCompleted: Bool = false
     @Published var isReadyToGoCustomerLanding: Bool = false
     @Published var selectedStage: Stage? = nil
+    @Published var selectedChannel: ChannelDetails? = nil
+    @Published var streamType: StreamType = .realtime
+    
+    enum StreamType {
+        case realtime    // IVS Real-time (Stages)
+        case ultraLowLatency  // IVS Ultra Low Latency (Broadcast)
+    }
+    
+    @Published var isRealtimeNotUltraLowLantency: Bool = true {
+        didSet {
+            UserDefaults.standard.set(isRealtimeNotUltraLowLantency, forKey: Constants.kIVSRealtimeMode)
+            streamType = isRealtimeNotUltraLowLantency ? StreamType.realtime : StreamType.ultraLowLatency
+        }
+    }
+    
     @Published var isSimulcastOn: Bool = false {
         didSet {
             UserDefaults.standard.set(isSimulcastOn, forKey: Constants.kIsSimulcastOn)
@@ -109,14 +132,23 @@ class AppModel: NSObject, ObservableObject {
         self.user = User(isLocal: true, username: UsernameProvider.getRandomUsername(), avatar: Avatar())
         self.stagesModel = StagesModel()
         self.stageModel = StageModel()
+        self.channelsModel = ChannelsModel()
         self.isSimulcastOn = UserDefaults.standard.bool(forKey: Constants.kIsSimulcastOn)
         self.isStatsOn = UserDefaults.standard.bool(forKey: Constants.kIsStatsOn)
+        self.isRealtimeNotUltraLowLantency = UserDefaults.standard.bool(forKey: Constants.kIVSRealtimeMode)
         self.viewModelAllProduct = ProductsViewModel()
         self.webSocketManager = WebSocketManager()
+        self.broadcastViewModel = BroadcastViewModel()
         super.init()
         
+        // Set initial stream type based on loaded preference
+        self.streamType = isRealtimeNotUltraLowLantency ? .realtime : .ultraLowLatency
+        
         self.dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        UserDefaults.standard.register(defaults: [Constants.kIsStatsOn: true])
+        UserDefaults.standard.register(defaults: [
+            Constants.kIsStatsOn: true,
+            Constants.kIVSRealtimeMode: true
+        ])
         
         username = user.username
         stageModel.localUser = user
@@ -125,6 +157,7 @@ class AppModel: NSObject, ObservableObject {
         stagesModel.delegate = self
         stageModel.delegate = self
         webSocketManager.delegate = self
+        broadcastViewModel.appModel = self
 
         checkNetworkConnection()
     }
@@ -242,12 +275,53 @@ class AppModel: NSObject, ObservableObject {
             completion(success)
         }
     }
+    
+    func getChannels(completion: @escaping (Bool) -> Void) {
+        print("ℹCPK: getting channels...")
+        
+        server.getChannels(onlyActive: true) { [weak self] success, channelDetails in
+            DispatchQueue.main.async {
+                if success {
+                    self?.channelsModel.setNewChannels(channelDetails)
+                }
+            }
+            completion(success)
+        }
+    }
+    
+    //For consumer side, live from merchant can be Real-time (stages) or Ultra low latency (channels)
+    func getAllStreams(completion: @escaping (Bool) -> Void) {
+        let group = DispatchGroup()
+        var overallSuccess = true
+        
+        group.enter()
+        getStages { success in
+            if !success { overallSuccess = false }
+            group.leave()
+        }
+        
+        group.enter()
+        getChannels { success in
+            if !success { overallSuccess = false }
+            group.leave()
+        }
+        
+        group.notify(queue: .main) {
+            completion(overallSuccess)
+        }
+    }
 
     func disconnect() {
         print("ℹCPK: disconnecting...")
         toggleLoading(true)
 
-        stageModel.leaveStage()
+        if streamType == .ultraLowLatency {
+            if broadcastViewModel.isRunning {
+                broadcastViewModel.stopBroadcast()
+            }
+        } else {
+            stageModel.leaveStage()
+        }
 
         withAnimation {
             isConnected = false
@@ -274,6 +348,35 @@ class AppModel: NSObject, ObservableObject {
             print("ℹCPK: ❌ Can't remove second participant - some details missing")
             toggleLoading(false)
         }
+    }
+
+    func switchToUltraLowLatency() {
+        streamType = .ultraLowLatency
+        // Setup Ultra Low Latency broadcast
+        broadcastViewModel.setupSession()
+    }
+    
+    func switchToRealtime() {
+        streamType = .realtime
+        // Stop any ongoing broadcast
+        if broadcastViewModel.isRunning {
+            broadcastViewModel.stopBroadcast()
+        }
+    }
+    
+    func createUltraLowLatencyStream(hostId: String, title: String) {
+        toggleLoading(true)
+        
+        server.createChannel(user: user, onComplete: { [weak self] success, channelCredentials in
+            DispatchQueue.main.async {
+                if success, let channelCredentials = channelCredentials {
+                    self?.broadcastViewModel.endpoint = "rtmps://\(channelCredentials.ingestEndpoint)/app/"
+                    self?.broadcastViewModel.streamKey = channelCredentials.streamKey
+                    self?.broadcastViewModel.startBroadcast()
+                }
+                self?.toggleLoading(false)
+            }
+        })
     }
 
     func createStage(_ type: StageType) {
@@ -531,6 +634,16 @@ class AppModel: NSObject, ObservableObject {
     }
 
     func leaveActiveStage(_ onComplete: @escaping () -> Void) {
+        if streamType == .ultraLowLatency {
+            // Handle Ultra Low Latency broadcast stop
+            if broadcastViewModel.isRunning {
+                broadcastViewModel.stopBroadcast()
+            }
+            clearData()
+            onComplete()
+            return
+        }
+        
         guard let stage = activeStage else {
             print("ℹCPK: ❌ Can't leave - no active stage")
             onComplete()
@@ -717,7 +830,14 @@ class AppModel: NSObject, ObservableObject {
     }
 
     func cleanUp() {
-        stagesModel.clearStages()
+        if streamType == .ultraLowLatency {
+            if broadcastViewModel.isRunning {
+                broadcastViewModel.stopBroadcast()
+            }
+        } else {
+            stagesModel.clearStages()
+        }
+        channelsModel.clearChannels()
         chatModel?.disconnect()
     }
 
@@ -771,6 +891,18 @@ class AppModel: NSObject, ObservableObject {
     }
 
     private func reconnectToStage() {
+        if streamType == .ultraLowLatency {
+            // For Ultra Low Latency, just restart the broadcast if it was running
+            if broadcastViewModel.isRunning {
+                broadcastViewModel.stopBroadcast()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.broadcastViewModel.startBroadcast()
+                }
+            }
+            toggleLoading(false)
+            return
+        }
+        
         guard let stage = activeStage else {
             print("ℹCPK: ❌ Can't reconnect - no active stage set")
             toggleLoading(false)
@@ -1002,16 +1134,20 @@ extension AppModel: ChatEventDelegate {
     }
     
     func didHostReplyPriceOf(_ productId: String) -> String? {
-        let product = self.viewModelAllProduct.products.first(where: {
+        guard let product = self.viewModelAllProduct.products.first(where: {
             $0.id == productId
-        })
-        return "\(product?.name) จากราคา \(product?.price) เหลือเพียง \(product?.discountedPrice)"
+        }) else {
+            return "ขออภัยยังไม่มรายการนี้ถูกปักหมุด"
+        }
+        return "\(product.name) จากราคา \(product.price) เหลือเพียง \(product.discountedPrice)"
     }
     
     func didHostReplyRemainingOf(_ productId: String) -> String? {
-        let product = self.viewModelAllProduct.products.first(where: {
+        guard let product = self.viewModelAllProduct.products.first(where: {
             $0.id == productId
-        })
-        return "\(product?.name) เหลืออยู่ \(product?.stock) ชิ้นครับ"
+        }) else {
+            return "ขออภัยยังไม่มรายการนี้ถูกปักหมุด"
+        }
+        return "\(product.name) เหลืออยู่ \(product.stock) ชิ้นครับ"
     }
 }

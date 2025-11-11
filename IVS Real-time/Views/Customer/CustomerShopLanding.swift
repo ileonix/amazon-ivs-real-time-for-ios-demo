@@ -22,6 +22,7 @@ struct CustomerShopLanding: View {
     @EnvironmentObject var appModel: AppModel
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
+    @ObservedObject var channelsModel: ChannelsModel
     @State private var isStagesListEmpty: Bool = false
     
     @State private var currentBannerIndex = 0
@@ -51,7 +52,7 @@ struct CustomerShopLanding: View {
             VStack(spacing: 8) {
                 ShopAvatarView(avatars: avatars)
                 PromotionBannerSectionView(banners: banners, currentIndex: $currentBannerIndex)
-                ShopLivePreviewView(stagesModel: stagesModel, stageModel: stageModel)
+                ShopLivePreviewView(stagesModel: stagesModel, stageModel: stageModel, channelsModel: channelsModel)
                     .environmentObject(appModel)
                     .task {
                         isStagesListEmpty = stagesModel.logicalStages.isEmpty
@@ -324,19 +325,20 @@ struct ShopLivePreviewView: View {
     @EnvironmentObject var appModel: AppModel
     @ObservedObject var stagesModel: StagesModel
     @ObservedObject var stageModel: StageModel
+    @ObservedObject var channelsModel: ChannelsModel
     @State private var isStagesListEmpty: Bool = false
-    @State var timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
+    @State var timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
     @State private var visibleIndex: Int = -1
-    @State private var isLoading: Bool = true
+    @State private var isLoading: Bool = false//true
     private let skeletonCount = 6
     
     //TODO: remove mock duplicate stages for test many stage
     var mockStages: [Stage] {
         var duplicated = appModel.stagesModel.logicalStages
-//        duplicated += duplicated // Duplicate entire array
-//        duplicated += duplicated
-//        duplicated += duplicated
-//        duplicated += duplicated
+        duplicated += duplicated // Duplicate entire array
+        duplicated += duplicated
+        duplicated += duplicated
+        duplicated += duplicated
         return duplicated
     }
     
@@ -352,8 +354,8 @@ struct ShopLivePreviewView: View {
                     skeletonCell
                 }
             } else {
+                // Real-time stages
                 ForEach(Array(appModel.stagesModel.logicalStages.enumerated()), id: \.offset) { index, stage in
-//                ForEach(Array(mockStages.enumerated()), id: \.offset) { index, stage in
                     if stage.type == .video {
                         ShopPreviewCell(
                             stage: stage,
@@ -369,12 +371,35 @@ struct ShopLivePreviewView: View {
                             }
                         )
                         .environmentObject(appModel)
-                        //.shadow(color: visibleIndex == index ? .green : .red, radius: 8)
                         .trackOffset(index: index)
                         .onTapGesture {
                             appModel.isReadyToGoCustomerLanding = false
                             appModel.selectedStage = stage
                         }
+                    }
+                }
+                
+                // Ultra Low Latency channels
+                ForEach(Array(appModel.channelsModel.logicalChannels.enumerated()), id: \.offset) { index, channel in
+                    let adjustedIndex = index + appModel.stagesModel.logicalStages.count
+                    ChannelPreviewCell(
+                        channel: channel,
+                        isEnableVideoPreview: true
+                    )
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .preference(
+                                    key: ViewOffsetKey.self,
+                                    value: [adjustedIndex: geo.frame(in: .global).minY]
+                                )
+                        }
+                    )
+                    .environmentObject(appModel)
+                    .trackOffset(index: adjustedIndex)
+                    .onTapGesture {
+                        appModel.isReadyToGoCustomerLanding = false
+                        appModel.selectedChannel = channel
                     }
                 }
             }
@@ -398,8 +423,8 @@ struct ShopLivePreviewView: View {
     }
     
     private func fetchData() {
-        appModel.getStages { isSuccess in
-            print("CPK: Fetched stages: \(isSuccess), count: \(appModel.stagesModel.logicalStages.count)")
+        appModel.getAllStreams { isSuccess in
+            print("CPK: Fetched all streams: \(isSuccess), count: \(appModel.stagesModel.logicalStages.count) \(appModel.channelsModel.logicalChannels.count)")
             if isSuccess {
                 withAnimation {
                     isLoading = false
@@ -456,6 +481,33 @@ struct ShopPreviewCell: View {
             }
             if let videoUrl = stage.videoPreviewUrl?.components(separatedBy: "?").first {
                 previewVideoUrl = videoUrl
+            }
+        }
+    }
+}
+
+struct ChannelPreviewCell: View {
+    @EnvironmentObject var appModel: AppModel
+    let channel: ChannelDetails
+    @State private var isVideoReady: Bool = false
+    var isEnableVideoPreview: Bool = false
+
+    var body: some View {
+        ZStack {
+           Rectangle()
+               .border(Color.blue, width: 1)
+               .background(Color.clear)
+               .aspectRatio(9/16, contentMode: .fit)
+               .cornerRadius(8)
+               .overlay(Text(channel.hostId).foregroundColor(.white))
+            
+            if isEnableVideoPreview, let videoURL = URL(string: channel.playbackUrl) {
+                VideoPreview(url: videoURL, isMuted: true, isReady: $isVideoReady)
+                    .aspectRatio(9/16, contentMode: .fit)
+                    .cornerRadius(8)
+                    .clipped()
+                    .opacity(isVideoReady ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: isVideoReady)
             }
         }
     }

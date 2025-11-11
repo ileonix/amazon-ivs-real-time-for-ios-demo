@@ -68,7 +68,12 @@ struct SetupView: View {
                     if appModel.userRole == .merchant {
                         Button {
                             withAnimation {
-                                appModel.createStage(.video)
+                                if appModel.streamType == .ultraLowLatency {
+                                    appModel.createUltraLowLatencyStream(hostId: appModel.user.hostId, title: "Live Stream")
+                                    appModel.isSetupCompleted = true
+                                } else {
+                                    appModel.createStage(.video)
+                                }
                                 appModel.createStream(hostId: appModel.user.hostId, onComplete: { response in
                                     print("CPK: create stream response: \(response)")
                                 })

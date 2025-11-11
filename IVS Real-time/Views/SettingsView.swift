@@ -21,6 +21,16 @@ struct SettingsView: View {
             contentView:
                 VStack {
                     HStack {
+                        Text("Use IVS Real-time")
+                            .font(Constants.fRobotoMonoMedium18)
+                            .foregroundColor(Color("debugViewKeys"))
+                        Spacer()
+                        Toggle(isOn: $appModel.isRealtimeNotUltraLowLantency) {}
+                            .tint(Color("Orange"))
+                    }
+                    .padding(.bottom, 16)
+
+                    HStack {
                         Text("Video stats")
                             .font(Constants.fRobotoMonoMedium18)
                             .foregroundColor(Color("debugViewKeys"))
@@ -76,6 +86,8 @@ struct SettingsView: View {
         )
         .onAppear {
             bitrate = Float(appModel.maxBitrate)
+            // Ensure the toggle reflects the current stream type
+            appModel.isRealtimeNotUltraLowLantency = (appModel.streamType == .realtime)
         }
     }
 }

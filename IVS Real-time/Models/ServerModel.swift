@@ -29,8 +29,9 @@ class ServerModel: ObservableObject {
         case updateMode = "update/mode"
         case updateSeats = "update/seats"
         // Broadcast session endpoints
-        case createChannel = "channel/create"
-        case getChannels = "channels"
+//        case createChannel = "streams"
+//        case getChannels = "streams"//?type=ULTRA_LOW_LATENCY"
+        case streams
         // Common endpoints
         case uploads
         case chatTokenCreate = "chatToken/create"
@@ -166,26 +167,28 @@ class ServerModel: ObservableObject {
     // MARK: - Broadcast Session Methods
     
     func createChannel(user: User, onComplete: @escaping (Bool, ChannelCredentials?) -> Void) {
-        guard let customerCode = UserDefaults.standard.string(forKey: Constants.kCustomerCode) else {
-            delegate?.didEmitError(error: "Customer code not set")
-            return
-        }
+//        guard let customerCode = UserDefaults.standard.string(forKey: Constants.kCustomerCode) else {
+//            delegate?.didEmitError(error: "Customer code not set")
+//            return
+//        }
 
         let body = """
             {
-                "cid": "\(customerCode)",
                 "hostId": "\(user.hostId)",
+                "title": "Live Stream by \(user.hostId)",
                 "hostAttributes": {
-                    "avatarColBottom": "\(user.avatar.colBottom)",
-                    "avatarColLeft": "\(user.avatar.colLeft)",
-                    "avatarColRight": "\(user.avatar.colRight)",
-                    "username": "\(user.username)"
+                  "name": "\(user.hostId)",
+                  "description": "Live Shopping"
                 },
-                "type": "live_shopping"
+                "streamConfig": {
+                  "latencyMode": "LOW",
+                  "recordingEnabled": true,
+                  "maxViewers": 1000
+                }
             }
         """
 
-        send(.POST, endpoint: .createChannel, body: body, onComplete: { [weak self] _, data, errorMessage in
+        send(.POST, endpoint: .streams, body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -211,9 +214,9 @@ class ServerModel: ObservableObject {
     
     func getChannels(onlyActive: Bool = true, _ onComplete: @escaping (Bool, [ChannelDetails]) -> Void) {
         send(.GET,
-             endpoint: .getChannels,
+             endpoint: .streams,
              body: nil,
-             queryItems: onlyActive ? [URLQueryItem(name: "status", value: "active")] : nil,
+             queryItems: onlyActive ? [URLQueryItem(name: "type", value: "ULTRA_LOW_LATENCY")] : nil,
              onComplete: { [weak self] success, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
@@ -228,7 +231,7 @@ class ServerModel: ObservableObject {
 
             do {
                 let rawChannels = try self?.decoder.decode(Channels.self, from: data)
-                guard let channels = rawChannels?.channels else {
+                guard let channels = rawChannels?.streams else {
                     print("ℹ ❌ Got something else than channels array")
                     onComplete(false, [])
                     return

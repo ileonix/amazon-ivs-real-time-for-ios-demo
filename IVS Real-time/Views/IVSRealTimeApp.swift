@@ -30,9 +30,21 @@ struct RootView: View {
                         .transition(.move(edge: .leading))
                 } else if appModel.isReadyToGoCustomerLanding && appModel.userRole == .customer {
                     CustomerShopLanding(stagesModel: appModel.stagesModel,
-                                        stageModel: appModel.stageModel)
+                                        stageModel: appModel.stageModel,
+                                        channelsModel: appModel.channelsModel)
                         .environmentObject(appModel)
                         .transition(.move(edge: .trailing))
+                } else if let selectedChannel = appModel.selectedChannel, appModel.userRole == .customer {
+                    UltraLowLatencyViewerView(channel: selectedChannel)
+                        .environmentObject(appModel)
+                        .transition(.move(edge: .trailing))
+                        .onAppear {
+                            appModel.isSetupCompleted = true
+                            appModel.user.hostId = selectedChannel.hostId
+                            if appModel.webSocketManager.isConnected {
+                                appModel.webSocketManager.clientToServerJoin(hostId: selectedChannel.hostId)
+                            }
+                        }
                 } else if let selectedStage = appModel.selectedStage, appModel.userRole == .customer {
                     VideoStageView(stage: selectedStage)
                         .environmentObject(appModel)
@@ -51,15 +63,20 @@ struct RootView: View {
                             appModel.shouldJoinActiveStage = false
                         }
                 } else if appModel.isSetupCompleted && appModel.userRole == .merchant {
-                    FeedsView(stagesModel: appModel.stagesModel,
-                              stageModel: appModel.stageModel)
-                        .environmentObject(appModel)
-                        .transition(.move(edge: .trailing))
-                        .onAppear {
-                            if appModel.webSocketManager.isConnected {
-                                appModel.webSocketManager.clientToServerJoin(hostId: appModel.user.hostId)
+                    if appModel.streamType == .ultraLowLatency {
+                        LiveBroadcastView(viewModel: appModel.broadcastViewModel)
+                            .transition(.move(edge: .trailing))
+                    } else {
+                        FeedsView(stagesModel: appModel.stagesModel,
+                                  stageModel: appModel.stageModel)
+                            .environmentObject(appModel)
+                            .transition(.move(edge: .trailing))
+                            .onAppear {
+                                if appModel.webSocketManager.isConnected {
+                                    appModel.webSocketManager.clientToServerJoin(hostId: appModel.user.hostId)
+                                }
                             }
-                        }
+                    }
                 } else if appModel.isConnected && !appModel.isSetupCompleted {
                     SetupView()
                         .transition(.opacity)

@@ -23,7 +23,10 @@ struct FeedsView: View {
                 .ignoresSafeArea(.all)
 
             VStack {
-                if stagesModel.stages.isEmpty && !appModel.user.isHost {
+                if appModel.streamType == .ultraLowLatency {
+                    // Show Ultra Low Latency broadcast view instead of stages
+                    LiveBroadcastView(viewModel: appModel.broadcastViewModel)
+                } else if stagesModel.stages.isEmpty && !appModel.user.isHost {
                     ZStack(alignment: .top) {
                         VStack {
                             Image("feed-spinner")
@@ -188,24 +191,30 @@ struct FeedsView: View {
                 .padding(.top, 20)
         }
         .onAppear {
-            appModel.shouldJoinActiveStage = true
+            if appModel.streamType == .realtime {
+                appModel.shouldJoinActiveStage = true
 
-            if !appModel.user.isHost {
-                appModel.getStages(completion: { _ in
-                    DispatchQueue.main.async {
-                        appModel.stagesModel.setActiveStage()
-                        _ = timer.upstream.autoconnect()
-                    }
-                })
+                if !appModel.user.isHost {
+                    appModel.getAllStreams(completion: { _ in
+                        DispatchQueue.main.async {
+                            appModel.stagesModel.setActiveStage()
+                            _ = timer.upstream.autoconnect()
+                        }
+                    })
+                }
             }
         }
         .onDisappear {
-            appModel.shouldJoinActiveStage = false
-            timer.upstream.connect().cancel()
-            appModel.cleanUp()
+            if appModel.streamType == .realtime {
+                appModel.shouldJoinActiveStage = false
+                timer.upstream.connect().cancel()
+                appModel.cleanUp()
+            }
         }
         .onReceive(timer, perform: { _ in
-            appModel.getStages { _ in }
+            if appModel.streamType == .realtime {
+                appModel.getAllStreams { _ in }
+            }
         })
         .environmentObject(appModel)
         .navigationBarHidden(true)
