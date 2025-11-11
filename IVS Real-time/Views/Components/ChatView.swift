@@ -17,6 +17,7 @@ struct ChatView: View {
         VStack(alignment: .center, spacing: 0) {
             if let chatModel = appModel.chatModel {
                 ChatMessagesView(chatModel: chatModel)
+                    .environmentObject(appModel)
                     .allowsHitTesting(false)
             }
 
@@ -39,7 +40,9 @@ struct ChatView: View {
                 }
 
                 HStack(alignment: .bottom) {
-                    AvatarView(avatar: appModel.user.avatar)
+                    AvatarView(avatar: appModel.user.avatar,
+                               profileImage: appModel.user.imageProfile)
+                        .environmentObject(appModel)
                         .padding(.leading, 8)
 
                     CustomTextField(

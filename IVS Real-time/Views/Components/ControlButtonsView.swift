@@ -16,7 +16,8 @@ struct ControlButtonsView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 14) {
             if !appModel.user.isHost, let avatar = appModel.hostAvatar {
-                AvatarView(avatar: avatar, withBorder: true)
+                AvatarView(avatar: avatar, withBorder: true, profileImage: "young_lady2")
+                    .environmentObject(appModel)
             }
             
             if appModel.user.isHost || appModel.user.isOnStage {
@@ -86,12 +87,12 @@ struct ControlButtonsView: View {
              */
             //TODO: remove when no need
             if stage.type != .audio, !appModel.user.isHost {
-                ControlButton(textTitle: "ถามราคา",
+                ControlButton(textTitle: "ราคา",
                               backColor: Color("ButtonBackgroundGray").opacity(0.8)) {
                     appModel.chatModel?.askForPrice(participantId: appModel.user.participantId ?? "-", productId: appModel.viewModelAllProduct.products.first?.id ?? "-")
                 }
                 
-                ControlButton(textTitle: "เหลือกี่ชิ้น",
+                ControlButton(textTitle: "ยังมีไหม",
                               backColor: Color("ButtonBackgroundGray").opacity(0.8)) {
                     appModel.chatModel?.askForPrice(participantId: appModel.user.participantId ?? "-", productId: appModel.viewModelAllProduct.products.first?.id ?? "-")
                     appModel.chatModel?.askForRemaining(participantId: appModel.user.participantId ?? "-", productId: appModel.viewModelAllProduct.products.first?.id ?? "-")

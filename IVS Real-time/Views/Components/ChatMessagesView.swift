@@ -9,6 +9,7 @@ import SwiftUI
 import AmazonIVSChatMessaging
 
 struct ChatMessagesView: View {
+    @EnvironmentObject var appModel: AppModel
     @ObservedObject var chatModel: ChatModel
 
     var body: some View {
@@ -18,6 +19,7 @@ struct ChatMessagesView: View {
                     LazyVStack(alignment: .leading, spacing: 12) {
                         ForEach(chatModel.messages, id: \.id) { message in
                             MessageView(message: message)
+                                .environmentObject(appModel)
                         }
                     }
                     .rotationEffect(.radians(.pi))
@@ -50,6 +52,7 @@ struct ChatMessagesView: View {
 }
 
 struct MessageView: View {
+    @EnvironmentObject var appModel: AppModel
     @State var message: Message
     @State private var offsetY: CGFloat = 50
     @State private var opacity: Double = 0
@@ -57,6 +60,7 @@ struct MessageView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             MessagePreviewView(message: message)
+                .environmentObject(appModel)
         }
         .offset(y: offsetY)
         .opacity(opacity)
@@ -70,12 +74,15 @@ struct MessageView: View {
 }
 
 struct MessagePreviewView: View {
+    @EnvironmentObject var appModel: AppModel
     @State var message: Message
 
     var body: some View {
         if let message = message.message {
             HStack(alignment: .top) {
-                AvatarView(avatar: Avatar(message.sender))
+                AvatarView(avatar: Avatar(message.sender),
+                           profileImage: message.sender.userId == appModel.user.hostId ? "young_lady2" : "young_lady1")
+                    .environmentObject(appModel)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(message.sender.attributes?["username"] ?? "")

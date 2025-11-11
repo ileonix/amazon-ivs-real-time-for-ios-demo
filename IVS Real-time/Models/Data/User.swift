@@ -16,6 +16,9 @@ class User: NSObject, ObservableObject {
     var hostId: String
     var username: String
     var avatar: Avatar
+    var imageProfile: String {
+        return hostId == userId ? "young_lady2" : "young_lady1"
+    }
     var participantId: String?
     var participant: IVSParticipantInfo?
     var seatIndex: Int?

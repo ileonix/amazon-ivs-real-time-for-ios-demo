@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct AvatarView: View {
+    @EnvironmentObject var appModel: AppModel
     var avatar: Avatar?
     var withBorder: Bool = false
     var borderColor: Color = .white
     var size: CGFloat = 42
+    var profileImage: String?
 
     var body: some View {
             VStack(spacing: 0) {
@@ -43,6 +45,13 @@ struct AvatarView: View {
                     Image("no_avatar")
                         .resizable()
                         .frame(width: size, height: size)
+                } else {
+                    if let profileImage = profileImage {
+                        Image(profileImage)
+                            .resizable()
+                            .frame(width: size, height: size)
+                            .clipShape(Circle())
+                    }
                 }
 
                 if withBorder {

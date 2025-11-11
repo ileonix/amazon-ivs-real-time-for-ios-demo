@@ -59,8 +59,13 @@ struct VideoStageView: View {
                     Image("crest-banner")
                         .resizable()
                         .frame(width: 220, height: 220)
-                    AvatarView(avatar: (appModel.votesCountHost > appModel.votesCountParticipant ? appModel.hostAvatar : appModel.activeStageSecondParticipant?.avatar) ?? Avatar(),
-                               size: 63)
+                    AvatarView(avatar:
+                                (
+                                    appModel.votesCountHost > appModel.votesCountParticipant ?
+                                    appModel.hostAvatar : appModel.activeStageSecondParticipant?.avatar
+                                ) ?? Avatar(),
+                               size: 63,
+                               profileImage: appModel.user.imageProfile)
                     .offset(y: -20.5)
                 }
                 .transition(.opacity)
