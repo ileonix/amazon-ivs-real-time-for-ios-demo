@@ -7,23 +7,34 @@
 
 import Foundation
 
+enum StreamType: String, Codable {
+    case REALTIME
+    case ULTRA_LOW_LATENCY
+}
+
 struct ChannelCredentials: Codable {
+    let streamId: String
+    let streamType: StreamType
     let channelArn: String
     let ingestEndpoint: String
     let streamKey: String
     let playbackUrl: String
     let chatRoomArn: String
+    let region: String
 }
 
 struct ChannelDetails: Codable {
-    let channelArn: String
+    let streamId: String
+    let hostId: String
+    let streamType: StreamType
+    let title: String
+    let status: String
+    let createdAt: String
     let playbackUrl: String
     let chatRoomArn: String
-    let hostId: String
-    let status: String
     let hostAttributes: [String: String]?
 }
 
 struct Channels: Codable {
-    let channels: [ChannelDetails]
+    let streams: [ChannelDetails]
 }

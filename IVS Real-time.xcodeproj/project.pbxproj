@@ -69,6 +69,14 @@
 		EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */; };
 		EC551E452E98C891004DBBC0 /* CustomerShopLanding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */; };
 		EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */; };
+		EC7499CB2EC1E02E000A6BE2 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499CA2EC1E028000A6BE2 /* CameraPreviewView.swift */; };
+		EC7499CD2EC1E053000A6BE2 /* LiveBroadcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499CC2EC1E04B000A6BE2 /* LiveBroadcastView.swift */; };
+		EC7499CF2EC1E07E000A6BE2 /* BroadcastViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499CE2EC1E077000A6BE2 /* BroadcastViewModel.swift */; };
+		EC7499D12EC1E0D3000A6BE2 /* UserDefaultsAuthDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D02EC1E0D3000A6BE2 /* UserDefaultsAuthDao.swift */; };
+		EC7499D32EC1E0DB000A6BE2 /* AuthItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D22EC1E0DB000A6BE2 /* AuthItem.swift */; };
+		EC7499D52EC1E100000A6BE2 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D42EC1E100000A6BE2 /* PermissionManager.swift */; };
+		EC7499D72EC20588000A6BE2 /* ChannelsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */; };
+		EC7499D92EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D82EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift */; };
 		ECA318AC2EA78B14002EB9B9 /* flower_face.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189F2EA78B14002EB9B9 /* flower_face.deepar */; };
 		ECA318AD2EA78B14002EB9B9 /* Fire_Effect.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189E2EA78B14002EB9B9 /* Fire_Effect.deepar */; };
 		ECA318AE2EA78B14002EB9B9 /* Humanoid.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A22EA78B14002EB9B9 /* Humanoid.deepar */; };
@@ -173,6 +181,14 @@
 		EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecorder.swift; sourceTree = "<group>"; };
 		EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelection.swift; sourceTree = "<group>"; };
 		EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerShopLanding.swift; sourceTree = "<group>"; };
+		EC7499CA2EC1E028000A6BE2 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
+		EC7499CC2EC1E04B000A6BE2 /* LiveBroadcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveBroadcastView.swift; sourceTree = "<group>"; };
+		EC7499CE2EC1E077000A6BE2 /* BroadcastViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastViewModel.swift; sourceTree = "<group>"; };
+		EC7499D02EC1E0D3000A6BE2 /* UserDefaultsAuthDao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsAuthDao.swift; sourceTree = "<group>"; };
+		EC7499D22EC1E0DB000A6BE2 /* AuthItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthItem.swift; sourceTree = "<group>"; };
+		EC7499D42EC1E100000A6BE2 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
+		EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsModel.swift; sourceTree = "<group>"; };
+		EC7499D82EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltraLowLatencyViewerView.swift; sourceTree = "<group>"; };
 		ECA318982EA78B14002EB9B9 /* makeup_kim.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = makeup_kim.deepar; sourceTree = "<group>"; };
 		ECA318992EA78B14002EB9B9 /* Pixel_Hearts.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pixel_Hearts.deepar; sourceTree = "<group>"; };
 		ECA3189A2EA78B14002EB9B9 /* burning_effect.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = burning_effect.deepar; sourceTree = "<group>"; };
@@ -293,6 +309,7 @@
 		4BB7FD3329D2BB9400E2894D /* IVS Real-time */ = {
 			isa = PBXGroup;
 			children = (
+				EC7499A32EC1D483000A6BE2 /* Ultra low latency */,
 				ECA318C22EA7A452002EB9B9 /* Filter */,
 				ECA318AB2EA78B14002EB9B9 /* Effects */,
 				ECBAA4C62EA5DD340056E526 /* Products.json */,
@@ -331,6 +348,7 @@
 		4BCC450129D2BD43003F371E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */,
 				ECA318D22EAFA0AB002EB9B9 /* WebSocketManager.swift */,
 				ECA318D32EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift */,
 				ECA318C62EA7B78F002EB9B9 /* BroadcastModel.swift */,
@@ -424,6 +442,20 @@
 			children = (
 			);
 			path = Merchant;
+			sourceTree = "<group>";
+		};
+		EC7499A32EC1D483000A6BE2 /* Ultra low latency */ = {
+			isa = PBXGroup;
+			children = (
+				EC7499D82EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift */,
+				EC7499D42EC1E100000A6BE2 /* PermissionManager.swift */,
+				EC7499D22EC1E0DB000A6BE2 /* AuthItem.swift */,
+				EC7499D02EC1E0D3000A6BE2 /* UserDefaultsAuthDao.swift */,
+				EC7499CE2EC1E077000A6BE2 /* BroadcastViewModel.swift */,
+				EC7499CC2EC1E04B000A6BE2 /* LiveBroadcastView.swift */,
+				EC7499CA2EC1E028000A6BE2 /* CameraPreviewView.swift */,
+			);
+			path = "Ultra low latency";
 			sourceTree = "<group>";
 		};
 		ECA318AB2EA78B14002EB9B9 /* Effects */ = {
@@ -610,13 +642,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -653,13 +681,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -675,16 +699,19 @@
 			files = (
 				4B10634F29D465E700242A05 /* StageButtonsOverlayView.swift in Sources */,
 				4BCC450329D2BD59003F371E /* Constants.swift in Sources */,
+				EC7499D32EC1E0DB000A6BE2 /* AuthItem.swift in Sources */,
 				4B10633229D40AED00242A05 /* StagesModel.swift in Sources */,
 				4BCC450B29D2C533003F371E /* CustomerCodeInputView.swift in Sources */,
 				4BB7961629D6FE80005A4521 /* StageModel+Extensions.swift in Sources */,
 				4B10635929D47F6D00242A05 /* ChatTokenRequest.swift in Sources */,
 				ECBAA4B52EA1E81E0056E526 /* VideoPreviewView.swift in Sources */,
 				EC3334FE2EA120DB00C111AD /* ScreenRecorder.swift in Sources */,
+				EC7499CD2EC1E053000A6BE2 /* LiveBroadcastView.swift in Sources */,
 				4B92D07B29E8174700DD440D /* MultiTapView.swift in Sources */,
 				ECA318D42EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift in Sources */,
 				ECA318D52EAFA0AB002EB9B9 /* WebSocketManager.swift in Sources */,
 				EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */,
+				EC7499D12EC1E0D3000A6BE2 /* UserDefaultsAuthDao.swift in Sources */,
 				ECBAA4BF2EA5DC660056E526 /* ProductSwiftUIView.swift in Sources */,
 				4BB7960C29D6EE7A005A4521 /* AvatarView.swift in Sources */,
 				4BB7961229D6FB3B005A4521 /* StageParticipantView.swift in Sources */,
@@ -694,10 +721,12 @@
 				4BE1A2F429E5564F0017BCC2 /* ReactionView.swift in Sources */,
 				ECA318D72EB0744E002EB9B9 /* Toast.swift in Sources */,
 				4BB7960E29D6F015005A4521 /* UIColor.swift in Sources */,
+				EC7499CB2EC1E02E000A6BE2 /* CameraPreviewView.swift in Sources */,
 				4B10635129D46AB000242A05 /* ChatView.swift in Sources */,
 				4B10633029D321E100242A05 /* StageOverlayView.swift in Sources */,
 				4B10632E29D3203400242A05 /* AudioStageView.swift in Sources */,
 				4B9210122A1B4738001AA945 /* UISliderView.swift in Sources */,
+				EC7499CF2EC1E07E000A6BE2 /* BroadcastViewModel.swift in Sources */,
 				ECBAA4CE2EA60CA90056E526 /* ShoppingCartView.swift in Sources */,
 				4B10636029D4814C00242A05 /* Stage.swift in Sources */,
 				ECBAA4C92EA5DDF30056E526 /* CommerceButtonStyle.swift in Sources */,
@@ -706,6 +735,7 @@
 				4BFB13D329D2F7CA00B9AB5E /* BottomSheetConfirmationView.swift in Sources */,
 				4B865C962A0E6AB100D7A1DB /* DebugView.swift in Sources */,
 				ECBAA4C52EA5DCF60056E526 /* Products.swift in Sources */,
+				EC7499D52EC1E100000A6BE2 /* PermissionManager.swift in Sources */,
 				4B92D08129EFB8A600DD440D /* DebugDataView.swift in Sources */,
 				4B10633629D41CA600242A05 /* PKView.swift in Sources */,
 				4B32DFF229F7FF7000EAA130 /* VoteBarView.swift in Sources */,
@@ -722,6 +752,7 @@
 				ECA318CB2EA7B78F002EB9B9 /* BroadcastModel.swift in Sources */,
 				4BCC451029D2C95F003F371E /* View.swift in Sources */,
 				4B10633829D41CC600242A05 /* VideoView.swift in Sources */,
+				EC7499D92EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift in Sources */,
 				4B10636429D5610A00242A05 /* PermissionsManager.swift in Sources */,
 				4B92D07D29E8240700DD440D /* DeviceShake.swift in Sources */,
 				4BB7FD3529D2BB9400E2894D /* IVSRealTimeApp.swift in Sources */,
@@ -732,6 +763,7 @@
 				4B10635B29D47F9D00242A05 /* ServerResponses.swift in Sources */,
 				4B10635529D47F1B00242A05 /* ChatMessagesView.swift in Sources */,
 				4BCC450829D2C45E003F371E /* SetupView.swift in Sources */,
+				EC7499D72EC20588000A6BE2 /* ChannelsModel.swift in Sources */,
 				ECA318C32EA7A452002EB9B9 /* ColorFilterRenderer.swift in Sources */,
 				ECA318C42EA7A452002EB9B9 /* FilterHelper.swift in Sources */,
 				4B32DFF429F7FFB900EAA130 /* JitterView.swift in Sources */,
@@ -872,7 +904,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "IVS-Real-time-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "IVS-Stage-Realtime-Live-Shop";
+				INFOPLIST_KEY_CFBundleDisplayName = "IVS Live Shop";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App needs access to camera";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "App needs access to microphone";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -907,7 +939,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "IVS-Real-time-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "IVS-Stage-Realtime-Live-Shop";
+				INFOPLIST_KEY_CFBundleDisplayName = "IVS Live Shop";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App needs access to camera";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "App needs access to microphone";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
