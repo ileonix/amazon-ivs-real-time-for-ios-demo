@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import LiveCommerceSDK
 
 protocol ServerDelegate: AnyObject {
     func didEmitError(error: String)
@@ -188,7 +189,7 @@ class ServerModel: ObservableObject {
             }
         """
 
-        send(.POST, endpoint: .streams, body: body, onComplete: { [weak self] _, data, errorMessage in
+        sendWithUnsafeDelegate(.POST, endpoint: .streams, body: body, onComplete: { [weak self] _, data, errorMessage in
             if let error = errorMessage {
                 print("ℹ ❌ \(error)")
                 onComplete(false, nil)
@@ -804,6 +805,62 @@ class ServerModel: ObservableObject {
             if let httpResponse = response as? HTTPURLResponse {
                 if ![200, 201, 204].contains(httpResponse.statusCode) {
                     print("CPK: ℹ 🔗 Got status code \(httpResponse.statusCode) when sending \(request)")
+                    if let data = data, let response = String(data: data, encoding: .utf8) {
+                        print(response)
+                        onComplete(false, nil, "Got status code \(httpResponse.statusCode) with response: \(response)")
+                    } else {
+                        print("ℹ 🔗 ❌ Got status code \(httpResponse.statusCode) when sending \(method) to \(request)")
+                    }
+                    return
+                }
+
+                print("ℹ 🔗 sent \(method) to '\(endpoint)' successfully")
+                onComplete(true, data, nil)
+            }
+        }
+        .resume()
+    }
+    
+    private func sendWithUnsafeDelegate(_ method: HTTPMethod, endpoint: Endpoint, body: String?, queryItems: [URLQueryItem]? = nil, onComplete: @escaping (Bool, Data?, String?) -> Void) {
+        guard let customerCode = UserDefaults.standard.string(forKey: Constants.kCustomerCode) else {
+            delegate?.didEmitError(error: "Customer code not set")
+            return
+        }
+
+        let urlComponents = NSURLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = "\(customerCode).\(Constants.API_URL)"
+        urlComponents.queryItems = queryItems
+        urlComponents.path = "/\(endpoint.rawValue)"
+
+        guard let url = urlComponents.url else {
+            onComplete(false, nil, "Couldn't get url from URLComponents")
+            return
+        }
+
+        let session = URLSession(configuration: .default, delegate: UnsafeSessionDelegate(), delegateQueue: nil)
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 30
+        request.httpMethod = method.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue(UserDefaults.standard.string(forKey: Constants.kApiKey) ?? "", forHTTPHeaderField: "x-api-key")
+
+        if let body = body {
+            request.httpBody = body.data(using: .utf8)
+        }
+
+        print("ℹ 🔗 sending \(method) '\(url.absoluteString)' \(body != nil ? "with body: \(body!)" : "")")
+
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("ℹ 🔗 ❌ Failed to send '\(method)' to '\(endpoint)': \(error)")
+                onComplete(false, nil, error.localizedDescription)
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse {
+                if ![200, 201, 204].contains(httpResponse.statusCode) {
+                    print("ℹ 🔗 Got status code \(httpResponse.statusCode) when sending \(request)")
                     if let data = data, let response = String(data: data, encoding: .utf8) {
                         print(response)
                         onComplete(false, nil, "Got status code \(httpResponse.statusCode) with response: \(response)")

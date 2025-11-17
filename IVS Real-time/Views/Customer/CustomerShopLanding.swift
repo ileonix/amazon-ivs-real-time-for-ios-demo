@@ -8,6 +8,7 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import UIKit
+import LiveCommerceSDK
 
 struct BannerItem {
     let imgUrl: String

@@ -8,6 +8,7 @@
 import SwiftUI
 import AmazonIVSBroadcast
 import AVFoundation
+import LiveCommerceSDK
 
 protocol BroadcastModelDelegate: AnyObject {
     func didEmitError(_ error: String)

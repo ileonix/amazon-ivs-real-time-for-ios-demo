@@ -1,26 +1,44 @@
-platform :ios, '14.0'
+# Uncomment the next line to define a global platform for your project
+platform :ios, '15.0'
 
 target 'IVS Real-time' do
-    pod 'AmazonIVSChat', '~> 1.0.1'
-#    pod 'AmazonIVSBroadcast', '1.35.0' #Ultra-low latency streaming a.k.a channels
-    pod 'AmazonIVSPlayer', '~> 1.40.0'
-    pod 'AmazonIVSBroadcast/Stages', '~> 1.35.0' #Real-time streaming a.k.a stage
-    pod 'Socket.IO-Client-Swift', '~> 16.1.1'
-    #pod 'SDWebImageSwiftUI' #use swift package manager instead
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for IVS Real-time
+  
+  # Pods for Ecommerce API
+  pod 'Socket.IO-Client-Swift', '~> 16.1.1'
+  
+  # LiveCommerceSDK - Local development (includes Amazon IVS dependencies)
+  pod 'LiveCommerceSDK', :path => '../LiveCommerceSDK'
+  
+  # Alternative: Use from git repository
+  # pod 'LiveCommerceSDK', :git => 'https://github.com/ileonix/LiveCommerceSDK.git', :tag => '1.0.0'
+  
+  # Alternative: Use specific subspecs only
+  # pod 'LiveCommerceSDK/Core', :path => '../LiveCommerceSDK'
+  # pod 'LiveCommerceSDK/UI', :path => '../LiveCommerceSDK'
+  # pod 'LiveCommerceSDK/Network', :path => '../LiveCommerceSDK'
+  
+  # Debug tool
+  pod 'Wormholy', :configurations => ['Debug']
+
+#  target 'IVS Real-timeTests' do
+#    inherit! :search_paths
+#    # Pods for testing
+#  end
+#
+#  target 'IVS Real-timeUITests' do
+#    # Pods for testing
+#  end
 end
 
-#Android
-#ivs-player = { module = "com.amazonaws:ivs-player", version.ref = "1.41.0" }
-#ivs-broadcast = { module = "com.amazonaws:ivs-broadcast", version.ref = "1.32.2" }
-#ivs-chat-messaging = { module = "com.amazonaws:ivs-chat-messaging", version.ref = "1.1.0" }
-#implementation(libs.ivs.broadcast) {
-#  artifact {
-#    classifier = "stages"
-#    type = "aar"
-#  }
-#}
-#iOS
-#pod 'AmazonIVSPlayer', '~> 1.40.0'
-#pod 'AmazonIVSBroadcast', '1.35.0'
-#pod 'AmazonIVSChat', '~> 1.0.1'
-#pod 'AmazonIVSBroadcast/Stages', '~> 1.35.0'
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      config.build_settings['SWIFT_VERSION'] = '5.9'
+    end
+  end
+end

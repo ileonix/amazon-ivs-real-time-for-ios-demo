@@ -64,11 +64,10 @@
 		4BFB13D329D2F7CA00B9AB5E /* BottomSheetConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFB13D229D2F7CA00B9AB5E /* BottomSheetConfirmationView.swift */; };
 		4BFB13D529D30F5500B9AB5E /* fruits.json in Resources */ = {isa = PBXBuildFile; fileRef = 4BFB13D429D30F5500B9AB5E /* fruits.json */; };
 		4BFB13D729D3100E00B9AB5E /* UsernameProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFB13D629D3100E00B9AB5E /* UsernameProvider.swift */; };
-		8099BA0DF1C1F945EDA27DA2 /* libPods-IVS Real-time.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B68EA93899856DE756F2E31D /* libPods-IVS Real-time.a */; };
+		616B6355E0733F169AEA2D19 /* Pods_IVS_Real_time.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0D9D0EA28FA613DDBCD5622 /* Pods_IVS_Real_time.framework */; };
 		EC3334FE2EA120DB00C111AD /* ScreenRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */; };
 		EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */; };
 		EC551E452E98C891004DBBC0 /* CustomerShopLanding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */; };
-		EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */; };
 		EC7499CB2EC1E02E000A6BE2 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499CA2EC1E028000A6BE2 /* CameraPreviewView.swift */; };
 		EC7499CD2EC1E053000A6BE2 /* LiveBroadcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499CC2EC1E04B000A6BE2 /* LiveBroadcastView.swift */; };
 		EC7499CF2EC1E07E000A6BE2 /* BroadcastViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499CE2EC1E077000A6BE2 /* BroadcastViewModel.swift */; };
@@ -77,6 +76,7 @@
 		EC7499D52EC1E100000A6BE2 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D42EC1E100000A6BE2 /* PermissionManager.swift */; };
 		EC7499D72EC20588000A6BE2 /* ChannelsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */; };
 		EC7499D92EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D82EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift */; };
+		EC7499DE2EC32C8B000A6BE2 /* SDKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499DC2EC32C8B000A6BE2 /* SDKNetworkHelper.swift */; };
 		ECA318AC2EA78B14002EB9B9 /* flower_face.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189F2EA78B14002EB9B9 /* flower_face.deepar */; };
 		ECA318AD2EA78B14002EB9B9 /* Fire_Effect.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189E2EA78B14002EB9B9 /* Fire_Effect.deepar */; };
 		ECA318AE2EA78B14002EB9B9 /* Humanoid.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A22EA78B14002EB9B9 /* Humanoid.deepar */; };
@@ -176,8 +176,9 @@
 		4BFB13D229D2F7CA00B9AB5E /* BottomSheetConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetConfirmationView.swift; sourceTree = "<group>"; };
 		4BFB13D429D30F5500B9AB5E /* fruits.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fruits.json; sourceTree = SOURCE_ROOT; };
 		4BFB13D629D3100E00B9AB5E /* UsernameProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameProvider.swift; sourceTree = "<group>"; };
-		4F84395AA4C69D55CC38D390 /* Pods-IVS Real-time.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.debug.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.debug.xcconfig"; sourceTree = "<group>"; };
-		B68EA93899856DE756F2E31D /* libPods-IVS Real-time.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IVS Real-time.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D27BAB99727C95F20495E9FF /* Pods-IVS Real-time.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.debug.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.debug.xcconfig"; sourceTree = "<group>"; };
+		DD1622DBA8BA0E4B578A126E /* Pods-IVS Real-time.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.release.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.release.xcconfig"; sourceTree = "<group>"; };
+		E0D9D0EA28FA613DDBCD5622 /* Pods_IVS_Real_time.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IVS_Real_time.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC3334FD2EA120D400C111AD /* ScreenRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecorder.swift; sourceTree = "<group>"; };
 		EC551E402E98B7D8004DBBC0 /* RoleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelection.swift; sourceTree = "<group>"; };
 		EC551E442E98C883004DBBC0 /* CustomerShopLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerShopLanding.swift; sourceTree = "<group>"; };
@@ -189,6 +190,7 @@
 		EC7499D42EC1E100000A6BE2 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
 		EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsModel.swift; sourceTree = "<group>"; };
 		EC7499D82EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltraLowLatencyViewerView.swift; sourceTree = "<group>"; };
+		EC7499DC2EC32C8B000A6BE2 /* SDKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKNetworkHelper.swift; sourceTree = "<group>"; };
 		ECA318982EA78B14002EB9B9 /* makeup_kim.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = makeup_kim.deepar; sourceTree = "<group>"; };
 		ECA318992EA78B14002EB9B9 /* Pixel_Hearts.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pixel_Hearts.deepar; sourceTree = "<group>"; };
 		ECA3189A2EA78B14002EB9B9 /* burning_effect.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = burning_effect.deepar; sourceTree = "<group>"; };
@@ -227,7 +229,6 @@
 		ECBAA4C82EA5DDF30056E526 /* CommerceButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommerceButtonStyle.swift; sourceTree = "<group>"; };
 		ECBAA4CB2EA60C910056E526 /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
 		ECBAA4CD2EA60CA90056E526 /* ShoppingCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartView.swift; sourceTree = "<group>"; };
-		EDB6AD6B4EE3CAD44C979997 /* Pods-IVS Real-time.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IVS Real-time.release.xcconfig"; path = "Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,23 +236,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC551E4B2E98EC84004DBBC0 /* SDWebImageSwiftUI in Frameworks */,
 				4B865C992A15FE0300D7A1DB /* CodeScanner in Frameworks */,
-				8099BA0DF1C1F945EDA27DA2 /* libPods-IVS Real-time.a in Frameworks */,
+				616B6355E0733F169AEA2D19 /* Pods_IVS_Real_time.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		092D697F860F4C3016DE0CD3 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				B68EA93899856DE756F2E31D /* libPods-IVS Real-time.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		4B10633929D421D200242A05 /* Overlays */ = {
 			isa = PBXGroup;
 			children = (
@@ -294,7 +286,7 @@
 				4BB7FD3329D2BB9400E2894D /* IVS Real-time */,
 				4BB7FD3229D2BB9400E2894D /* Products */,
 				91A02DF5EE4C19BDE872AADF /* Pods */,
-				092D697F860F4C3016DE0CD3 /* Frameworks */,
+				E61F7D9BDF12D4B06E1AF49D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -348,6 +340,7 @@
 		4BCC450129D2BD43003F371E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				EC7499DD2EC32C8B000A6BE2 /* SDK */,
 				EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */,
 				ECA318D22EAFA0AB002EB9B9 /* WebSocketManager.swift */,
 				ECA318D32EAFA0AB002EB9B9 /* WebSocketManagerDelegate.swift */,
@@ -421,10 +414,18 @@
 		91A02DF5EE4C19BDE872AADF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				4F84395AA4C69D55CC38D390 /* Pods-IVS Real-time.debug.xcconfig */,
-				EDB6AD6B4EE3CAD44C979997 /* Pods-IVS Real-time.release.xcconfig */,
+				D27BAB99727C95F20495E9FF /* Pods-IVS Real-time.debug.xcconfig */,
+				DD1622DBA8BA0E4B578A126E /* Pods-IVS Real-time.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		E61F7D9BDF12D4B06E1AF49D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E0D9D0EA28FA613DDBCD5622 /* Pods_IVS_Real_time.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		EC551E422E98C860004DBBC0 /* Customer */ = {
@@ -456,6 +457,14 @@
 				EC7499CA2EC1E028000A6BE2 /* CameraPreviewView.swift */,
 			);
 			path = "Ultra low latency";
+			sourceTree = "<group>";
+		};
+		EC7499DD2EC32C8B000A6BE2 /* SDK */ = {
+			isa = PBXGroup;
+			children = (
+				EC7499DC2EC32C8B000A6BE2 /* SDKNetworkHelper.swift */,
+			);
+			path = SDK;
 			sourceTree = "<group>";
 		};
 		ECA318AB2EA78B14002EB9B9 /* Effects */ = {
@@ -535,12 +544,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4BB7FD3F29D2BB9400E2894D /* Build configuration list for PBXNativeTarget "IVS Real-time" */;
 			buildPhases = (
-				AC0815EDA87380D5C6C7C2A0 /* [CP] Check Pods Manifest.lock */,
+				5E61A2BBF48BD6698C337D60 /* [CP] Check Pods Manifest.lock */,
 				4BB7FD2D29D2BB9400E2894D /* Sources */,
 				4BB7FD2E29D2BB9400E2894D /* Frameworks */,
 				4BB7FD2F29D2BB9400E2894D /* Resources */,
-				11F2356776A723AC5BB8E9CE /* [CP] Embed Pods Frameworks */,
-				D3D5B928DB457B3B5CE5D0AF /* [CP] Copy Pods Resources */,
+				03D19F7601C1CAA38A08711E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -549,7 +557,6 @@
 			name = "IVS Real-time";
 			packageProductDependencies = (
 				4B865C982A15FE0300D7A1DB /* CodeScanner */,
-				EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */,
 			);
 			productName = "IVS Real-time";
 			productReference = 4BB7FD3129D2BB9400E2894D /* IVS Real-time.app */;
@@ -581,7 +588,6 @@
 			mainGroup = 4BB7FD2829D2BB9400E2894D;
 			packageReferences = (
 				4B865C972A15FE0300D7A1DB /* XCRemoteSwiftPackageReference "CodeScanner" */,
-				EC551E492E98EC84004DBBC0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			productRefGroup = 4BB7FD3229D2BB9400E2894D /* Products */;
 			projectDirPath = "";
@@ -634,7 +640,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		11F2356776A723AC5BB8E9CE /* [CP] Embed Pods Frameworks */ = {
+		03D19F7601C1CAA38A08711E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -651,7 +657,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AC0815EDA87380D5C6C7C2A0 /* [CP] Check Pods Manifest.lock */ = {
+		5E61A2BBF48BD6698C337D60 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -671,23 +677,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D3D5B928DB457B3B5CE5D0AF /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -723,6 +712,7 @@
 				4BB7960E29D6F015005A4521 /* UIColor.swift in Sources */,
 				EC7499CB2EC1E02E000A6BE2 /* CameraPreviewView.swift in Sources */,
 				4B10635129D46AB000242A05 /* ChatView.swift in Sources */,
+				EC7499DE2EC32C8B000A6BE2 /* SDKNetworkHelper.swift in Sources */,
 				4B10633029D321E100242A05 /* StageOverlayView.swift in Sources */,
 				4B10632E29D3203400242A05 /* AudioStageView.swift in Sources */,
 				4B9210122A1B4738001AA945 /* UISliderView.swift in Sources */,
@@ -893,7 +883,7 @@
 		};
 		4BB7FD4029D2BB9400E2894D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4F84395AA4C69D55CC38D390 /* Pods-IVS Real-time.debug.xcconfig */;
+			baseConfigurationReference = D27BAB99727C95F20495E9FF /* Pods-IVS Real-time.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -928,7 +918,7 @@
 		};
 		4BB7FD4129D2BB9400E2894D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EDB6AD6B4EE3CAD44C979997 /* Pods-IVS Real-time.release.xcconfig */;
+			baseConfigurationReference = DD1622DBA8BA0E4B578A126E /* Pods-IVS Real-time.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -993,14 +983,6 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		EC551E492E98EC84004DBBC0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.1.3;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1008,11 +990,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B865C972A15FE0300D7A1DB /* XCRemoteSwiftPackageReference "CodeScanner" */;
 			productName = CodeScanner;
-		};
-		EC551E4A2E98EC84004DBBC0 /* SDWebImageSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EC551E492E98EC84004DBBC0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
-			productName = SDWebImageSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

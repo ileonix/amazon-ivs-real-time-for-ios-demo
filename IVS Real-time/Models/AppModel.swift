@@ -8,9 +8,11 @@
 import SwiftUI
 import Network
 import AmazonIVSBroadcast
+import LiveCommerceSDK
 
 class AppModel: NSObject, ObservableObject {
     @ObservedObject var server: ServerModel
+    @ObservedObject var sdkNetworkHelper: SDKNetworkHelper
     
     //IVS Real-time streaming
     @ObservedObject var stagesModel: StagesModel
@@ -129,6 +131,7 @@ class AppModel: NSObject, ObservableObject {
 
     override init() {
         self.server = ServerModel()
+        self.sdkNetworkHelper = SDKNetworkHelper()
         self.user = User(isLocal: true, username: UsernameProvider.getRandomUsername(), avatar: Avatar())
         self.stagesModel = StagesModel()
         self.stageModel = StageModel()
@@ -364,25 +367,50 @@ class AppModel: NSObject, ObservableObject {
         }
     }
     
-    func createUltraLowLatencyStream(hostId: String, title: String) {
+    func createChannel(completion: @escaping (Bool, ChannelCredentials?) -> Void) {
         toggleLoading(true)
         
-        server.createChannel(user: user, onComplete: { [weak self] success, channelCredentials in
+        sdkNetworkHelper.createChannel(user: user) { [weak self] (success: Bool, channelCredentials: ChannelCredentials?) in
             DispatchQueue.main.async {
                 if success, let channelCredentials = channelCredentials {
-                    self?.broadcastViewModel.endpoint = "rtmps://\(channelCredentials.ingestEndpoint)/app/"
-                    self?.broadcastViewModel.streamKey = channelCredentials.streamKey
-                    self?.broadcastViewModel.startBroadcast()
+                    // Create Channel model for selectedChannel
+                    let channel = ChannelDetails(
+                        streamId: channelCredentials.streamId,
+                        hostId: self?.user.hostId ?? "",
+                        title: "Live Stream",
+                        status: "LIVE",
+                        createdAt: ISO8601DateFormatter().string(from: Date()),
+                        playbackUrl: channelCredentials.playbackUrl,
+                        chatRoomArn: channelCredentials.chatRoomArn,
+                        hostAttributes: nil
+                    )
+                    self?.selectedChannel = channel
                 }
                 self?.toggleLoading(false)
+                completion(success, channelCredentials)
             }
-        })
+        }
+    }
+    
+    func createUltraLowLatencyStream(hostId: String, title: String) {
+        createChannel { [weak self] success, channelCredentials in
+            if success, let channelCredentials = channelCredentials {
+                let endpoint = "rtmps://\(channelCredentials.ingestEndpoint)/app/"
+                print("CPK: Setting broadcast endpoint: \(endpoint)")
+                print("CPK: Setting broadcast streamKey: \(channelCredentials.streamKey)")
+                self?.broadcastViewModel.endpoint = endpoint
+                self?.broadcastViewModel.streamKey = channelCredentials.streamKey
+                self?.broadcastViewModel.startBroadcast()
+            } else {
+                print("CPK: Failed to create channel for Ultra Low Latency stream")
+            }
+        }
     }
 
-    func createStage(_ type: StageType) {
+    func createStage(_ type: StageType, completion: @escaping (Bool) -> Void = { _ in }) {
         toggleLoading(true)
 
-        server.createStage(type: type, user: user) { [weak self] success, hostToken in
+        sdkNetworkHelper.createStage(type: type, user: user) { [weak self] (success: Bool, hostToken: HostParticipantToken?) in
             if success {
                 print("ℹCPK: ✅ stage created")
                 self?.stageModel.stageType = type
@@ -403,8 +431,11 @@ class AppModel: NSObject, ObservableObject {
 
                     self?.getCreatedStage({ stage in
                         self?.finishStageCreation(stage)
+                        completion(true)
                     })
                 })
+            } else {
+                completion(false)
             }
         }
     }

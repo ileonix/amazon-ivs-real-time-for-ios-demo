@@ -7,8 +7,10 @@
 
 import SwiftUI
 import AmazonIVSBroadcast
+import LiveCommerceSDK
 
 struct LiveBroadcastView: View {
+    @StateObject private var broadcastManager = LiveCommerceSDK.createBroadcastManager()
     @ObservedObject var viewModel: BroadcastViewModel
     @State private var showingPermissionAlert = false
     
@@ -18,8 +20,8 @@ struct LiveBroadcastView: View {
     
     var body: some View {
         ZStack {
-            // Fullscreen Camera Preview
-            CameraPreviewView(camera: viewModel.attachedCamera)
+            // Fullscreen Camera Preview using SDK
+            CameraPreviewView(camera: broadcastManager.attachedCamera)
                 .ignoresSafeArea()
                 .onTapGesture {
                     hideKeyboard()
@@ -68,12 +70,12 @@ struct LiveBroadcastView: View {
                 VStack(spacing: 12) {
                     // Input Fields
                     VStack(spacing: 8) {
-                        TextField("Endpoint URL", text: $viewModel.endpoint)
+                        TextField("Endpoint URL", text: $broadcastManager.endpoint)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
                         
-                        TextField("Stream Key", text: $viewModel.streamKey)
+                        TextField("Stream Key", text: $broadcastManager.streamKey)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
@@ -82,7 +84,7 @@ struct LiveBroadcastView: View {
                     // Control Buttons
                     HStack(spacing: 16) {
                         Button(action: {
-                            viewModel.showDeviceSelection(for: .camera)
+                            broadcastManager.showDeviceSelection(for: .camera)
                         }) {
                             VStack {
                                 Image(systemName: "camera")
@@ -95,7 +97,7 @@ struct LiveBroadcastView: View {
                         .buttonStyle(.bordered)
                         
                         Button(action: {
-                            viewModel.showDeviceSelection(for: .microphone)
+                            broadcastManager.showDeviceSelection(for: .microphone)
                         }) {
                             VStack {
                                 Image(systemName: "mic")
@@ -107,27 +109,27 @@ struct LiveBroadcastView: View {
                         }
                         .buttonStyle(.bordered)
                         
-                        Button(action: viewModel.toggleMute) {
-                            Image(systemName: viewModel.isMuted ? "speaker.slash" : "speaker")
-                                .foregroundColor(viewModel.isMuted ? .red : .white)
+                        Button(action: broadcastManager.toggleMute) {
+                            Image(systemName: broadcastManager.isMuted ? "speaker.slash" : "speaker")
+                                .foregroundColor(broadcastManager.isMuted ? .red : .white)
                         }
                         .buttonStyle(.bordered)
                     }
                     
                     // Start/Stop Button
                     Button(action: {
-                        if viewModel.isRunning {
-                            viewModel.stopBroadcast()
+                        if broadcastManager.isStreaming {
+                            broadcastManager.stopBroadcast()
                         } else {
-                            viewModel.startBroadcast()
+                            broadcastManager.startBroadcast()
                         }
                     }) {
-                        Text(viewModel.isRunning ? "Stop Broadcast" : "Start Broadcast")
+                        Text(broadcastManager.isStreaming ? "Stop Broadcast" : "Start Broadcast")
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(viewModel.isRunning ? Color.red : Color.blue)
+                            .background(broadcastManager.isStreaming ? Color.red : Color.blue)
                             .cornerRadius(10)
                     }
                 }
@@ -153,25 +155,25 @@ struct LiveBroadcastView: View {
         } message: {
             Text("Camera and microphone access is required for broadcasting.")
         }
-        .alert("Error", isPresented: $viewModel.showingError) {
+        .alert("Error", isPresented: $broadcastManager.showingError) {
             Button("OK") { }
         } message: {
-            Text(viewModel.errorMessage ?? "Unknown error")
+            Text(broadcastManager.errorMessage ?? "Unknown error")
         }
-        .sheet(isPresented: $viewModel.showingDeviceSelection) {
+        .sheet(isPresented: $broadcastManager.showingDeviceSelection) {
             DeviceSelectionView(
-                devices: viewModel.availableDevices,
-                deviceType: viewModel.deviceSelectionType,
+                devices: broadcastManager.availableDevices,
+                deviceType: broadcastManager.deviceSelectionType,
                 onDeviceSelected: { device in
-                    viewModel.selectDevice(device)
-                    viewModel.showingDeviceSelection = false
+                    broadcastManager.selectDevice(device)
+                    broadcastManager.showingDeviceSelection = false
                 }
             )
         }
     }
     
     private var connectionColor: Color {
-        switch viewModel.connectionState {
+        switch broadcastManager.connectionState {
         case .invalid, .disconnected:
             return .gray
         case .connecting:
@@ -186,7 +188,7 @@ struct LiveBroadcastView: View {
     }
     
     private var connectionStatusText: String {
-        switch viewModel.connectionState {
+        switch broadcastManager.connectionState {
         case .invalid:
             return "Invalid"
         case .connecting:
@@ -205,7 +207,7 @@ struct LiveBroadcastView: View {
     private func checkPermissions() {
         PermissionManager.checkAVPermissions { granted in
             if granted {
-                viewModel.setupSession()
+                broadcastManager.setupSession()
             } else {
                 showingPermissionAlert = true
             }

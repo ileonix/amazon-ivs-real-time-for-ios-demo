@@ -6,16 +6,41 @@
 //
 
 import SwiftUI
+import LiveCommerceSDK
+
+import Wormholy
 
 @main
 struct IVSRealTimeApp: App {
-    @StateObject var appModel = AppModel()
+    @StateObject var appModel: AppModel
+    
+    init() {
+        // Configure SDK before creating AppModel
+        let prefixAPIUrl = UserDefaults.standard.string(forKey: Constants.kCustomerCode) ?? ""
+        LiveCommerceInterface.configure(
+            baseURL: "ddqs04nk76rcv.\(Constants.API_URL)",
+            apiKey: UserDefaults.standard.string(forKey: Constants.kApiKey) ?? "",
+            ecommerceURL: Constants.ECOMMERECE_API_URL
+        )
+        
+        
+        
+        // Now create AppModel after SDK is configured
+        _appModel = StateObject(wrappedValue: AppModel())
+    }
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(appModel)
         }
+    }
+    
+    func setupWormholy() {
+        Wormholy.shakeEnabled = true
+        Wormholy.limit = 20
+        Wormholy.swiftyInitialize()
+        Wormholy.swiftyLoad()
     }
 }
 
@@ -35,7 +60,13 @@ struct RootView: View {
                         .environmentObject(appModel)
                         .transition(.move(edge: .trailing))
                 } else if let selectedChannel = appModel.selectedChannel, appModel.userRole == .customer {
-                    UltraLowLatencyViewerView(channel: selectedChannel)
+                    SDKUltraLowLatencyConsumerView(
+                        channel: selectedChannel,
+                        onBack: { 
+                            appModel.selectedChannel = nil
+                            appModel.isReadyToGoCustomerLanding = true
+                        }
+                    )
                         .environmentObject(appModel)
                         .transition(.move(edge: .trailing))
                         .onAppear {
@@ -46,14 +77,12 @@ struct RootView: View {
                             }
                         }
                 } else if let selectedStage = appModel.selectedStage, appModel.userRole == .customer {
-                    VideoStageView(stage: selectedStage)
+                    SDKRealtimeConsumerView(stage: selectedStage)
                         .environmentObject(appModel)
                         .transition(.move(edge: .trailing))
                         .onAppear {
                             appModel.shouldJoinActiveStage = true
                             appModel.isSetupCompleted = true
-                            // Directly join the selected stage
-                            appModel.join(selectedStage)
                             appModel.user.hostId = selectedStage.hostId
                             if appModel.webSocketManager.isConnected {
                                 appModel.webSocketManager.clientToServerJoin(hostId: selectedStage.hostId)
@@ -64,11 +93,15 @@ struct RootView: View {
                         }
                 } else if appModel.isSetupCompleted && appModel.userRole == .merchant {
                     if appModel.streamType == .ultraLowLatency {
-                        LiveBroadcastView(viewModel: appModel.broadcastViewModel)
-                            .transition(.move(edge: .trailing))
+                        SDKUltraLowLatencyMerchantView(
+                            endpoint: appModel.broadcastViewModel.endpoint, 
+                            streamKey: appModel.broadcastViewModel.streamKey,
+                            onBack: { appModel.isSetupCompleted = false }
+                        )
+                        .environmentObject(appModel)
+                        .transition(.move(edge: .trailing))
                     } else {
-                        FeedsView(stagesModel: appModel.stagesModel,
-                                  stageModel: appModel.stageModel)
+                        SDKRealtimeMerchantView(hostToken: appModel.user.hostParticipantToken?.tokenData.token ?? "")
                             .environmentObject(appModel)
                             .transition(.move(edge: .trailing))
                             .onAppear {

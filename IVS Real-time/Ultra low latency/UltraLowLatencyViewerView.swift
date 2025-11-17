@@ -7,9 +7,11 @@
 
 import SwiftUI
 import AmazonIVSPlayer
+import LiveCommerceSDK
 
 struct UltraLowLatencyViewerView: View {
     @EnvironmentObject var appModel: AppModel
+    @Environment(\.dismiss) private var dismiss
     let channel: ChannelDetails
     @State private var player: IVSPlayer?
     @State private var playerView: IVSPlayerView?
@@ -24,6 +26,7 @@ struct UltraLowLatencyViewerView: View {
                     Button {
                         appModel.selectedChannel = nil
                         appModel.isReadyToGoCustomerLanding = true
+                        dismiss()
                     } label: {
                         Image(systemName: "arrow.left")
                             .foregroundColor(.white)
@@ -76,6 +79,9 @@ struct UltraLowLatencyViewerView: View {
         player = IVSPlayer()
         playerView = IVSPlayerView()
         playerView?.player = player
+        
+        // Hide player controls
+        playerView?.isUserInteractionEnabled = false
         
         player?.load(url)
         player?.play()

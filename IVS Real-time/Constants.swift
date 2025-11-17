@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Constants {
+    static let AWS_REGION = "ap-northeast-1" //not us-east-1
     static let API_URL = "cloudfront.net"
     static let ECOMMERECE_API_URL = "implorable-tisa-intercondyloid.ngrok-free.dev"
 
