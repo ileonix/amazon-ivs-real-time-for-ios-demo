@@ -168,6 +168,7 @@ class AppModel: NSObject, ObservableObject {
     func generateRandomUsername() {
         username = UsernameProvider.getRandomUsername()
         user.username = username
+        user.hostId = username
     }
 
     private func toggleLoading(_ value: Bool) {
@@ -655,7 +656,7 @@ class AppModel: NSObject, ObservableObject {
             let region = user.isHost ? user.hostParticipantToken?.region : user.participantToken?.region
             let tokenRequest = ChatTokenRequest(user: user,
                                                 stageHostId: hostId,
-                                                awsRegion: region ?? "us-west-2",
+                                                awsRegion: region ?? "ap-northeast-1",
                                                 chatRoomToken: chatAuthToken)
             self?.chatModel?.connectChatRoom(tokenRequest) { error in
                 print("ℹCPK: ❌ Couldn't connect to chat: \(String(describing: error))")

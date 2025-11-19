@@ -77,6 +77,12 @@
 		EC7499D72EC20588000A6BE2 /* ChannelsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */; };
 		EC7499D92EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499D82EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift */; };
 		EC7499DE2EC32C8B000A6BE2 /* SDKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7499DC2EC32C8B000A6BE2 /* SDKNetworkHelper.swift */; };
+		EC90954E2ECC874D00787E7C /* SDKRealtimeConsumerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC90954A2ECC874D00787E7C /* SDKRealtimeConsumerView.swift */; };
+		EC90954F2ECC874D00787E7C /* SDKUltraLowLatencyConsumerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC90954C2ECC874D00787E7C /* SDKUltraLowLatencyConsumerView.swift */; };
+		EC9095502ECC874D00787E7C /* SDKUltraLowLatencyMerchantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC90954D2ECC874D00787E7C /* SDKUltraLowLatencyMerchantView.swift */; };
+		EC9095512ECC874D00787E7C /* SDKRealtimeMerchantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC90954B2ECC874D00787E7C /* SDKRealtimeMerchantView.swift */; };
+		EC9095542ECC875C00787E7C /* LiveRealtimeMerchantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9095522ECC875C00787E7C /* LiveRealtimeMerchantView.swift */; };
+		EC9095552ECC875C00787E7C /* LiveUltraLowLatencyMerchantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9095532ECC875C00787E7C /* LiveUltraLowLatencyMerchantView.swift */; };
 		ECA318AC2EA78B14002EB9B9 /* flower_face.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189F2EA78B14002EB9B9 /* flower_face.deepar */; };
 		ECA318AD2EA78B14002EB9B9 /* Fire_Effect.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA3189E2EA78B14002EB9B9 /* Fire_Effect.deepar */; };
 		ECA318AE2EA78B14002EB9B9 /* Humanoid.deepar in Resources */ = {isa = PBXBuildFile; fileRef = ECA318A22EA78B14002EB9B9 /* Humanoid.deepar */; };
@@ -191,6 +197,12 @@
 		EC7499D62EC20588000A6BE2 /* ChannelsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsModel.swift; sourceTree = "<group>"; };
 		EC7499D82EC20C58000A6BE2 /* UltraLowLatencyViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltraLowLatencyViewerView.swift; sourceTree = "<group>"; };
 		EC7499DC2EC32C8B000A6BE2 /* SDKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKNetworkHelper.swift; sourceTree = "<group>"; };
+		EC90954A2ECC874D00787E7C /* SDKRealtimeConsumerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKRealtimeConsumerView.swift; sourceTree = "<group>"; };
+		EC90954B2ECC874D00787E7C /* SDKRealtimeMerchantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKRealtimeMerchantView.swift; sourceTree = "<group>"; };
+		EC90954C2ECC874D00787E7C /* SDKUltraLowLatencyConsumerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKUltraLowLatencyConsumerView.swift; sourceTree = "<group>"; };
+		EC90954D2ECC874D00787E7C /* SDKUltraLowLatencyMerchantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKUltraLowLatencyMerchantView.swift; sourceTree = "<group>"; };
+		EC9095522ECC875C00787E7C /* LiveRealtimeMerchantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRealtimeMerchantView.swift; sourceTree = "<group>"; };
+		EC9095532ECC875C00787E7C /* LiveUltraLowLatencyMerchantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveUltraLowLatencyMerchantView.swift; sourceTree = "<group>"; };
 		ECA318982EA78B14002EB9B9 /* makeup_kim.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = makeup_kim.deepar; sourceTree = "<group>"; };
 		ECA318992EA78B14002EB9B9 /* Pixel_Hearts.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pixel_Hearts.deepar; sourceTree = "<group>"; };
 		ECA3189A2EA78B14002EB9B9 /* burning_effect.deepar */ = {isa = PBXFileReference; lastKnownFileType = file; path = burning_effect.deepar; sourceTree = "<group>"; };
@@ -320,6 +332,12 @@
 		4BCC450029D2BD33003F371E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EC9095522ECC875C00787E7C /* LiveRealtimeMerchantView.swift */,
+				EC9095532ECC875C00787E7C /* LiveUltraLowLatencyMerchantView.swift */,
+				EC90954A2ECC874D00787E7C /* SDKRealtimeConsumerView.swift */,
+				EC90954B2ECC874D00787E7C /* SDKRealtimeMerchantView.swift */,
+				EC90954C2ECC874D00787E7C /* SDKUltraLowLatencyConsumerView.swift */,
+				EC90954D2ECC874D00787E7C /* SDKUltraLowLatencyMerchantView.swift */,
 				ECA318D02EAB9BEC002EB9B9 /* Warehouse */,
 				ECBAA4CA2EA60AEC0056E526 /* ShoppingCart */,
 				ECBAA4C02EA5DCB20056E526 /* Product */,
@@ -648,9 +666,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IVS Real-time/Pods-IVS Real-time-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -702,6 +724,8 @@
 				EC551E412E98B7E6004DBBC0 /* RoleSelection.swift in Sources */,
 				EC7499D12EC1E0D3000A6BE2 /* UserDefaultsAuthDao.swift in Sources */,
 				ECBAA4BF2EA5DC660056E526 /* ProductSwiftUIView.swift in Sources */,
+				EC9095542ECC875C00787E7C /* LiveRealtimeMerchantView.swift in Sources */,
+				EC9095552ECC875C00787E7C /* LiveUltraLowLatencyMerchantView.swift in Sources */,
 				4BB7960C29D6EE7A005A4521 /* AvatarView.swift in Sources */,
 				4BB7961229D6FB3B005A4521 /* StageParticipantView.swift in Sources */,
 				ECBAA4C22EA5DCB90056E526 /* ProductsContainerView.swift in Sources */,
@@ -722,6 +746,10 @@
 				ECBAA4C92EA5DDF30056E526 /* CommerceButtonStyle.swift in Sources */,
 				4B10636229D54CCD00242A05 /* ServerModel.swift in Sources */,
 				4B10635329D46AD900242A05 /* ControlButtonsView.swift in Sources */,
+				EC90954E2ECC874D00787E7C /* SDKRealtimeConsumerView.swift in Sources */,
+				EC90954F2ECC874D00787E7C /* SDKUltraLowLatencyConsumerView.swift in Sources */,
+				EC9095502ECC874D00787E7C /* SDKUltraLowLatencyMerchantView.swift in Sources */,
+				EC9095512ECC874D00787E7C /* SDKRealtimeMerchantView.swift in Sources */,
 				4BFB13D329D2F7CA00B9AB5E /* BottomSheetConfirmationView.swift in Sources */,
 				4B865C962A0E6AB100D7A1DB /* DebugView.swift in Sources */,
 				ECBAA4C52EA5DCF60056E526 /* Products.swift in Sources */,

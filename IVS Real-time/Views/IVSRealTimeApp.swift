@@ -23,10 +23,15 @@ struct IVSRealTimeApp: App {
             ecommerceURL: Constants.ECOMMERECE_API_URL
         )
         
-        
+        Wormholy.shakeEnabled = true
+        Wormholy.limit = 20
+        Wormholy.swiftyInitialize()
+        Wormholy.swiftyLoad()
         
         // Now create AppModel after SDK is configured
         _appModel = StateObject(wrappedValue: AppModel())
+        
+//        setupWormholy()
     }
 
     var body: some Scene {
@@ -141,74 +146,3 @@ struct RootView: View {
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
-//@main
-//struct IVSRealTimeApp: App {
-//    @ObservedObject var appModel: AppModel = AppModel()
-//
-//    var body: some Scene {
-//        WindowGroup {
-//            NavigationView {
-//                ZStack(alignment: .top) {
-//                    if !appModel.isConnected {
-//                        WelcomeView()
-//                            .transition(.move(edge: .leading))
-//                            .preferredColorScheme(.light)
-//                    }
-//
-//                    if appModel.isConnected && !appModel.isSetupCompleted {
-//                        SetupView()
-//                            .transition(!appModel.isSetupCompleted ? .opacity : .move(edge: .trailing))
-//                            .preferredColorScheme(.light)
-//                    }
-//                    
-//                    NavigationLink(
-//                        destination: CustomerShopLanding(stagesModel: appModel.stagesModel,
-//                                                         stageModel: appModel.stageModel)
-//                            .environmentObject(appModel)
-//                            .preferredColorScheme(.dark),
-//                        isActive: $appModel.isReadyToGoCustomerLanding
-//                    ){ EmptyView() }
-//                    
-//                    NavigationLink(
-//                        destination: appModel.selectedStage.map { VideoStageView(stage: $0)
-//                            .onDisappear {
-//                                appModel.selectedStage = nil
-//                                appModel.isReadyToGoCustomerLanding = true
-//                            }
-//                        }
-//                            .environmentObject(appModel),
-//                        isActive: .constant(appModel.selectedStage != nil)
-//                    ){ EmptyView() }
-//                    
-//                    NavigationLink(
-//                        destination: FeedsView(stagesModel: appModel.stagesModel,
-//                                               stageModel: appModel.stageModel)
-//                            .environmentObject(appModel)
-//                            .preferredColorScheme(.dark),
-//                        isActive: appModel.user.isHost ? $appModel.isSetupCompleted : $appModel.isReadyToGoFeedView //.isSetupCompleted
-//                    ) { EmptyView() }
-//
-//                    if appModel.isLoading {
-//                        LoadingView()
-//                    }
-//
-//                    ErrorView()
-//                }
-//                .environmentObject(appModel)
-//                .onFirstAppear {
-//                    checkAVPermissions { granted in
-//                        if !granted {
-//                            appModel.appendErrorMessage("No camera/microphone permission granted")
-//                        }
-//
-//                        if UserDefaults.standard.string(forKey: Constants.kCustomerCode) != nil {
-//                            appModel.verify(silent: true) { _ in }
-//                        }
-//                    }
-//                }
-//                .navigationBarHidden(true)
-//            }
-//            .navigationViewStyle(.stack)
-//        }
-//    }
-//}

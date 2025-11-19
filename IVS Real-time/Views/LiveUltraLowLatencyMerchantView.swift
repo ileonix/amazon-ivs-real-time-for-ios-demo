@@ -2,77 +2,77 @@ import SwiftUI
 import LiveCommerceSDK
 import AmazonIVSBroadcast
 
-struct LiveUltraLowLatencyMerchantView: View {
-    @EnvironmentObject var appModel: AppModel
-    @StateObject private var broadcastManager = LiveCommerceSDK.createBroadcastManager()
-    
-    var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            
-            // Camera preview (full screen)
-            CameraPreviewView(manager: broadcastManager)
-            
-            // Left side controls (similar to Real-time layout)
-            VStack {
-                HStack {
-                    LeftSideControls(manager: broadcastManager)
-                    Spacer()
-                }
-                Spacer()
-            }
-            
-            // Top status bar
-            VStack {
-                HStack {
-                    Spacer()
-                    
-                    // Live indicator
-                    HStack {
-                        Circle()
-                            .fill(broadcastManager.isStreaming ? Color.red : Color.gray)
-                            .frame(width: 8, height: 8)
-                        Text(broadcastManager.isStreaming ? "LIVE" : "OFFLINE")
-                            .foregroundColor(.white)
-                            .font(.caption)
-                            .fontWeight(.bold)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(broadcastManager.isStreaming ? Color.red : Color.gray)
-                    .cornerRadius(15)
-                }
-                .padding()
-                
-                Spacer()
-            }
-            
-            // E-commerce overlay
-            EcommerceOverlay()
-        }
-        .onAppear {
-            setupBroadcast()
-        }
-        .onDisappear {
-            broadcastManager.stopBroadcast()
-        }
-        .alert("Error", isPresented: $broadcastManager.showingError) {
-            Button("OK") { }
-        } message: {
-            Text(broadcastManager.errorMessage ?? "Unknown error")
-        }
-    }
-    
-    private func setupBroadcast() {
-        broadcastManager.setupSession()
-        
-        // Set endpoint and stream key from app model
-        if let channel = appModel.selectedChannel {
-            broadcastManager.endpoint = channel.ingestEndpoint
-            broadcastManager.streamKey = channel.streamKey
-        }
-    }
-}
+//struct LiveUltraLowLatencyMerchantView: View {
+//    @EnvironmentObject var appModel: AppModel
+//    @StateObject private var broadcastManager = LiveCommerceSDK.createBroadcastManager()
+//    
+//    var body: some View {
+//        ZStack {
+//            Color.black.ignoresSafeArea()
+//            
+//            // Camera preview (full screen)
+//            CameraPreviewView(manager: broadcastManager)
+//            
+//            // Left side controls (similar to Real-time layout)
+//            VStack {
+//                HStack {
+//                    LeftSideControls(manager: broadcastManager)
+//                    Spacer()
+//                }
+//                Spacer()
+//            }
+//            
+//            // Top status bar
+//            VStack {
+//                HStack {
+//                    Spacer()
+//                    
+//                    // Live indicator
+//                    HStack {
+//                        Circle()
+//                            .fill(broadcastManager.isStreaming ? Color.red : Color.gray)
+//                            .frame(width: 8, height: 8)
+//                        Text(broadcastManager.isStreaming ? "LIVE" : "OFFLINE")
+//                            .foregroundColor(.white)
+//                            .font(.caption)
+//                            .fontWeight(.bold)
+//                    }
+//                    .padding(.horizontal, 12)
+//                    .padding(.vertical, 6)
+//                    .background(broadcastManager.isStreaming ? Color.red : Color.gray)
+//                    .cornerRadius(15)
+//                }
+//                .padding()
+//                
+//                Spacer()
+//            }
+//            
+//            // E-commerce overlay
+//            EcommerceOverlay()
+//        }
+//        .onAppear {
+//            setupBroadcast()
+//        }
+//        .onDisappear {
+//            broadcastManager.stopBroadcast()
+//        }
+//        .alert("Error", isPresented: $broadcastManager.showingError) {
+//            Button("OK") { }
+//        } message: {
+//            Text(broadcastManager.errorMessage ?? "Unknown error")
+//        }
+//    }
+//    
+//    private func setupBroadcast() {
+//        broadcastManager.setupSession()
+//        
+//        // Set endpoint and stream key from app model
+//        if let channel = appModel.selectedChannel {
+//            broadcastManager.endpoint = channel.ingestEndpoint
+//            broadcastManager.streamKey = channel.streamKey
+//        }
+//    }
+//}
 
 /// Left side controls matching Real-time layout
 private struct LeftSideControls: View {
@@ -139,38 +139,38 @@ private struct LeftSideControls: View {
 }
 
 /// Camera preview view
-private struct CameraPreviewView: UIViewRepresentable {
-    @ObservedObject var manager: BroadcastManager
-    
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .black
-        
-        // Add camera preview if available
-        if let camera = manager.attachedCamera {
-            let previewView = IVSImagePreviewView()
-            previewView.imageDevice = camera
-            previewView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(previewView)
-            
-            NSLayoutConstraint.activate([
-                previewView.topAnchor.constraint(equalTo: view.topAnchor),
-                previewView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                previewView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            ])
-        }
-        
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // Update camera preview if needed
-        if let previewView = uiView.subviews.first as? IVSImagePreviewView {
-            previewView.imageDevice = manager.attachedCamera
-        }
-    }
-}
+//private struct CameraPreviewView: UIViewRepresentable {
+//    @ObservedObject var manager: BroadcastManager
+//    
+//    func makeUIView(context: Context) -> UIView {
+//        let view = UIView()
+//        view.backgroundColor = .black
+//        
+//        // Add camera preview if available
+//        if let camera = manager.attachedCamera {
+//            let previewView = IVSImagePreviewView()
+//            previewView.imageDevice = camera
+//            previewView.translatesAutoresizingMaskIntoConstraints = false
+//            view.addSubview(previewView)
+//            
+//            NSLayoutConstraint.activate([
+//                previewView.topAnchor.constraint(equalTo: view.topAnchor),
+//                previewView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//                previewView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//                previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+//            ])
+//        }
+//        
+//        return view
+//    }
+//    
+//    func updateUIView(_ uiView: UIView, context: Context) {
+//        // Update camera preview if needed
+//        if let previewView = uiView.subviews.first as? IVSImagePreviewView {
+//            previewView.imageDevice = manager.attachedCamera
+//        }
+//    }
+//}
 
 /// Device selection sheet
 private struct DeviceSelectionSheet: View {
